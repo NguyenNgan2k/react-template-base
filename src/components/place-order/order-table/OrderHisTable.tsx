@@ -1,0 +1,287 @@
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import _ from "lodash";
+import { memo, useEffect, useState } from "react";
+import { FaPen, FaTrash } from "react-icons/fa";
+
+import { usePrevious } from "../../../hooks/usePrevious";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { selectAccountProfile } from "../../../store/slices/client/selector";
+import {
+  selectListOrdersInday,
+  selectListOrdersIndayStatus,
+} from "../../../store/slices/place-order/selector";
+import { fetchListOrdersIndayRequest } from "../../../store/slices/place-order/slice";
+import type { OrderTable } from "../../../types";
+import { canDeleteOrder, canEditOrder, getOrderStatus } from "../../../utils";
+import OrderCancelModal from "./OrderCancelModal";
+import OrderEditModal from "./OrderEditModal";
+import OrderTableSkeleton from "./OrderTableSkeleton";
+
+function OrderHisTable() {
+  const dispatch = useAppDispatch();
+
+  const listOrdersInday = useAppSelector(selectListOrdersInday);
+  const { loading } = useAppSelector(selectListOrdersIndayStatus);
+  const accountProfile = useAppSelector(selectAccountProfile);
+
+  const [tableData, setTableData] = useState<OrderTable[]>([]);
+  const [dataOrderEdit, setDataOrderEdit] = useState<OrderTable | undefined>();
+  const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
+  const [dataOrderCancel, setDataOrderCancel] = useState<
+    OrderTable | undefined
+  >();
+  const [openModalCancel, setOpenModalCancel] = useState<boolean>(false);
+
+  const preListOrdersInday = usePrevious(listOrdersInday);
+
+  useEffect(() => {
+    if (!accountProfile?.cAccountDefault) return;
+
+    dispatch(
+      fetchListOrdersIndayRequest({
+        accountCode: accountProfile?.cAccountDefault || "",
+      })
+    );
+  }, [accountProfile, dispatch]);
+
+  useEffect(() => {
+    if (
+      !listOrdersInday ||
+      listOrdersInday.length === 0 ||
+      _.isEqual(listOrdersInday, preListOrdersInday)
+    )
+      return;
+
+    const tableData = listOrdersInday.map((item) => ({
+      orderId: item.pkFrontOrder,
+      time: new Date(item.orderTime).toLocaleTimeString(), // convert timestamp -> HH:MM:SS
+      side: item.side === "B" ? "Mua" : "Bán",
+      symbol: item.shareCode,
+      price: item.orderShowPrice || item.orderPrice.toLocaleString(),
+      volume: item.orderVolume.toString(),
+      total: (item.orderPrice * item.orderVolume).toLocaleString(),
+      status: getOrderStatus(
+        item.orderStatus,
+        +item.matchedVolume,
+        +item.orderVolume
+      ),
+      statusId: item.orderStatus + "",
+      matchVolume: item.matchedVolume + "",
+      tradeTable: item.tradeTable + "",
+      accountCode: item.accountCode,
+      orderType: "1",
+      orderNo: item.orderNo + "",
+    }));
+
+    setTableData(tableData);
+  }, [listOrdersInday, preListOrdersInday]);
+
+  const handleEditOrder = (data: OrderTable) => {
+    setDataOrderEdit(data);
+    setOpenModalEdit(true);
+  };
+
+  const handleOrderCancel = (data: OrderTable) => {
+    setDataOrderCancel(data);
+    setOpenModalCancel(true);
+  };
+
+  /** Cấu hình cột */
+  const columns: ColumnDef<OrderTable>[] = [
+    {
+      header: "LOẠI LỆNH",
+      columns: [
+        { header: "Order ID", accessorKey: "orderId" },
+        { header: "Thời gian đặt", accessorKey: "time" },
+        { header: "Lệnh", accessorKey: "side" },
+        { header: "Mã", accessorKey: "symbol" },
+      ],
+    },
+    {
+      header: "CHI TIẾT LỆNH",
+      columns: [
+        { header: "Giá đặt", accessorKey: "price" },
+        { header: "KL đặt", accessorKey: "volume" },
+        { header: "Giá trị đặt (₫)", accessorKey: "total" },
+        { header: "Trạng thái", accessorKey: "status" },
+      ],
+    },
+    {
+      header: "THAO TÁC",
+      columns: [
+        {
+          header: "Thao tác",
+          id: "action",
+          cell: ({ row }) => {
+            const order = row.original;
+            const canEdit = canEditOrder(
+              order.statusId,
+              order.volume,
+              order.matchVolume
+            );
+            const canCancel = canDeleteOrder(
+              order.statusId,
+              order.volume,
+              order.matchVolume
+            );
+
+            return (
+              <div className="flex items-center justify-center gap-4">
+                {canEdit && (
+                  <button
+                    onClick={() => handleEditOrder(order)}
+                    className="text-text-title hover:text-text-subtitle"
+                    title="Sửa lệnh"
+                  >
+                    <FaPen size={14} />
+                  </button>
+                )}
+                {canCancel && (
+                  <button
+                    onClick={() => handleOrderCancel(order)}
+                    className="text-red-400 hover:text-red-300"
+                    title="Hủy lệnh"
+                  >
+                    <FaTrash size={14} />
+                  </button>
+                )}
+              </div>
+            );
+          },
+        },
+      ],
+    },
+  ];
+
+  const table = useReactTable({
+    data: tableData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  if (loading) {
+    return <OrderTableSkeleton />;
+  }
+
+  return (
+    <div className="w-full h-full overflow-auto rounded-md text-text-title text-xs hide-scrollbar">
+      <table className="w-full border-collapse">
+        <thead className="sticky top-0 z-10 bg-background-primary">
+          {/* --- Hàng đầu: nhóm header --- */}
+          {table.getHeaderGroups().map((headerGroup, index) => (
+            <tr
+              key={headerGroup.id}
+              className={index === 0 ? "mb-2.5" : "h-10 "}
+            >
+              {headerGroup.headers.map((header) => {
+                const headerText = String(header.column.columnDef.header);
+                const groupClass =
+                  headerText === "LOẠI LỆNH"
+                    ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
+                    : headerText === "CHI TIẾT LỆNH"
+                    ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
+                    : headerText === "THAO TÁC"
+                    ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
+                    : "";
+
+                return (
+                  <th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className={`border-none px-2 py-1 text-center`}
+                  >
+                    <div
+                      className={`${groupClass} flex items-center justify-center`}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
+            </tr>
+          ))}
+        </thead>
+
+        <tbody>
+          {!listOrdersInday || listOrdersInday.length === 0 ? (
+            <tr>
+              <td colSpan={9} className="text-center text-text-subtitle py-2">
+                Không có dữ liệu!
+              </td>
+            </tr>
+          ) : (
+            <>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id} className=" hover:bg-surface">
+                  {row.getVisibleCells().map((cell) => {
+                    const accessorKey = (
+                      cell.column.columnDef as {
+                        accessorKey?: keyof OrderTable;
+                      }
+                    )?.accessorKey;
+                    const value = cell.getValue();
+
+                    let customClass = "";
+
+                    switch (accessorKey) {
+                      case "side":
+                        customClass =
+                          value === "Mua"
+                            ? "text-green-400 font-semibold"
+                            : "text-red-400 font-semibold";
+                        break;
+
+                      case "status":
+                        customClass = "orderStt_" + row.original.statusId;
+                        break;
+
+                      default:
+                        break;
+                    }
+
+                    return (
+                      <td
+                        key={cell.id}
+                        className={`px-2 h-9 text-center ${customClass}`}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </>
+          )}
+        </tbody>
+      </table>
+      {openModalEdit && (
+        <OrderEditModal
+          isOpen={openModalEdit}
+          onClose={() => setOpenModalEdit(false)}
+          data={dataOrderEdit}
+        />
+      )}
+
+      {openModalCancel && (
+        <OrderCancelModal
+          isOpen={openModalCancel}
+          onClose={() => setOpenModalCancel(false)}
+          data={dataOrderCancel}
+        />
+      )}
+    </div>
+  );
+}
+
+export default memo(OrderHisTable);

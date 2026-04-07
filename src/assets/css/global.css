@@ -1,0 +1,160 @@
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: var(--color-text-base);
+  background-color: var(--bg-base);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+:root {
+  --app-height: 100vh; /* fallback */
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-600) transparent;
+  outline: none;
+  transition:
+    color 0.25s,
+    background-color 0.25s,
+    border-color 0.25s,
+    opacity 0.25s,
+    outline-color 0.25s;
+  box-sizing: border-box;
+}
+
+.header,
+.footer,
+.card {
+  @apply bg-bg-surface;
+}
+
+.panel {
+  @apply bg-bg-elevated;
+}
+
+.table thead {
+  @apply sticky top-0 z-1;
+}
+
+.table th,
+td {
+  @apply h-6 p-0.5 bg-bg-surface-strong;
+}
+
+.table th {
+  @apply text-text-base font-medium border border-bd-default;
+}
+
+.table td {
+  @apply border border-bd-default;
+}
+
+.table-borderless thead {
+  @apply bg-transparent;
+}
+
+.table-borderless th {
+  @apply border-b border-bd-default text-xs;
+}
+
+.table-borderless td {
+  @apply border-none! text-xs;
+}
+
+button {
+  cursor: pointer;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px var(--color-input) inset !important; /* đổi nền */
+  -webkit-text-fill-color: var(--color-text-title) !important; /* màu chữ */
+  transition: background-color 5000s ease-in-out 0s; /* ngăn nhảy màu */
+}
+
+.bg-type-margin {
+  background: linear-gradient(127.72deg, #4531e0 14.81%, #ae5ef1 100.61%);
+}
+
+.orderStt_PX,
+.orderStt_PCX,
+.orderStt_PCMX .orderStt_PMX,
+.orderStt_PMCX,
+.orderStt_PWX,
+.orderStt_PCWX,
+.orderStt_1,
+.orderStt_2 {
+  border-color: var(--color-red-500);
+  color: var(--color-red-500);
+}
+
+.orderStt_PW,
+.orderStt_P,
+.orderStt_PC,
+.orderStt_PMC,
+.orderStt_0 {
+  border-color: var(--color-yellow-500);
+  color: var(--color-yellow-500);
+}
+.orderStt_PM,
+.orderStt_PCM {
+  color: var(--color-green-500);
+  border-color: var(--color-green-500);
+}
+
+.form-row {
+  @apply flex items-center;
+}
+
+.form-control {
+  @apply !h-7 !px-2 !flex !items-center !justify-between 
+         !rounded-md !border !border-bd-default !cursor-pointer !bg-bg-input !min-h-7;
+}
+
+.form-symbol {
+  @apply !bg-bg-input !rounded-xl !min-h-9 !h-9 !text-text-title !text-xs !w-[10px] !border !border-transparent;
+}
+
+/* style react-day-picker */
+.rdp-root {
+  --rdp-accent-color: var(--color-DTND-500) !important;
+  --rdp-day_button-height: 32px !important;
+  --rdp-day_button-width: 32px !important;
+}
+
+.rdp-caption_label {
+  font-size: 16px !important;
+}
+
+.rdp-selected .rdp-day_button {
+  font-size: 14px !important;
+}
+
+.bg-switch {
+  transition: left 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#global-tooltip {
+  z-index: 10000000 !important;
+}
+
+.grecaptcha-badge {
+  display: none !important;
+}
+
+.pill {
+  @apply bg-bg-elevated-2 rounded px-2 min-w-[50px] h-5.5;
+}
+
+p {
+  @apply h-6;
+}
+
+span {
+  @apply h-6 flex items-center;
+}

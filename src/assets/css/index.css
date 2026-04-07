@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "./colors.css";
+@import "./global.css";
+@import "./modal.css";
+@import "swiper/css";
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-balham.css";
+@import "./font.css";
+@import "./animations.css";
+@import "./scroll.css";
+@import "./toast.css";
+@import "./priceboard.css";
+@import "./driverOverrides.css";
+@import "./openAccount.css";
+@import "./loading.css";

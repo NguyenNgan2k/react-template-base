@@ -1,0 +1,92 @@
+@theme {
+  /* Semantic */
+  /* Base (body)
+↓
+Surface (card, table, input)
+↓
+Elevated (modal, dropdown)
+↓
+Overlay (tooltip, popover) */
+  /* --color-{component}-{variant}-{property}-{state}:{value} */
+
+  --color-bg-base: #1b1a26;
+  --color-bg-surface: #323143;
+  --color-bg-surface-strong: #14101d;
+  --color-bg-elevated: #1b1a26;
+  --color-bg-elevated-2: #2d2d2d;
+  --color-bg-elevated-3: #167c16;
+
+  --color-bd-default: #2c2935;
+  --color-bd-active: #ffebea;
+
+  --color-bg-input: #484a63;
+
+  --color-btn-primary-bg-default: #d69930;
+  --color-btn-buy-bg-default: #0bdf39;
+  --color-btn-sell-bg-default: #ff0d0d;
+
+  --color-text-base: #ffffffe0;
+  --color-text-title: #ffffff;
+  --color-text-subtitle: #ffffffa3;
+  --color-text-disable: #ffffff52;
+  --color-text-hyperlink: #00b7e8;
+
+  --color-primary-darker: #032317;
+  --color-primary-dark: #0b4d86;
+  --color-primary-default: #bd720f;
+  --color-primary-light: #10a86ecc;
+  --color-primary-lighter: #10a86e99;
+
+  --color-stock-text-green: #0bdf39;
+  --color-stock-text-red: #ff0d0d;
+  --color-stock-text-yellow: #fdff12;
+  --color-stock-text-purple: #f23aff;
+  --color-stock-text-blue: #52d3f9;
+  --color-stock-text-blue-100: #00b2ff;
+
+  --color-warning-darker: #fdff121a;
+  --color-warning-dark: #6a6b08;
+  --color-warning-default: #fdff12;
+  --color-warning-light: #feff60;
+  --color-warning-lighter: #ffffe7;
+
+  --color-error-darker: #ff00171a;
+  --color-error-dark: #6a1915;
+  --color-error-default: #fd3b31;
+  --color-error-light: #fe7c75;
+  --color-error-lighter: #ffebea;
+
+  --color-success-darker: #34c85a1a;
+  --color-success-dark: #165426;
+  --color-success-default: #34c85a;
+  --color-success-light: #77da90;
+  --color-success-lighter: #ebfaef;
+
+  --color-button-default: #fdff12;
+  --color-button-primary: #2ac281;
+  --color-button-hover: #34c85a;
+  --color-button-disable: #3b3b3c;
+  --color-button-lighter: #feebff;
+
+  --color-button-gray: #2a2e3c;
+  --color-button-green: #20bf7b;
+}
+
+@layer utilities {
+  .bg-base {
+    background: var(--color-bg-base);
+  }
+  .bg-surface {
+    background: var(--color-bg-surface);
+  }
+  .bg-elevated {
+    background: var(--color-bg-elevated);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+  .border-default {
+    border-color: var(--color-border-default);
+  }
+}

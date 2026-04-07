@@ -1,0 +1,300 @@
+import { usePerfectScrollbar } from "@/hooks/usePerfectScrollbar.ts.ts";
+import { socketClient } from "@/services/socket/index.ts";
+import { useAppSelector } from "@/store/hook.ts";
+import { selectSymbolsByBoardId } from "@/store/slices/priceboard/selector.ts";
+import {
+  selectSnapshots,
+  selectSnapshotsBySymbols,
+} from "@/store/slices/stock/selector.ts";
+import type { SnapshotDataCompact } from "@/types/socketCient.ts";
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { memo, useCallback, useEffect, useState } from "react";
+import { List, type ListRowProps } from "react-virtualized";
+import type { RenderedRows } from "react-virtualized/dist/es/List";
+import BodyTableCW from "./BodyTable.tsx";
+import HeaderColumnsCW from "./HeaderTable.tsx";
+
+const ROW_HEIGHT = 29;
+const HEADER_HEIGHT = 58;
+
+// === CẤU TRÚC CACHE ===
+interface CachedBoardData {
+  groupId: string;
+  symbols: string[];
+}
+
+// === PROPS ===
+interface PriceBoardCWProps {
+  boardId: string;
+}
+
+// === SORTABLE ROW ===
+interface SortableRowProps {
+  symbol: string;
+  snapshot: SnapshotDataCompact;
+  underlyingSnapshot: SnapshotDataCompact | undefined;
+  index: number;
+}
+
+function SortableRow({
+  symbol,
+  snapshot,
+  index,
+  underlyingSnapshot,
+}: SortableRowProps) {
+  const { attributes, listeners, setNodeRef, transform, isDragging, isOver } =
+    useSortable({ id: symbol });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition: isDragging ? "none" : "all 0.2s ease",
+    opacity: isDragging ? 0.9 : 1,
+    zIndex: isDragging ? 999 : 1,
+    position: "relative",
+    boxShadow: isDragging
+      ? "0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)"
+      : "none",
+    transformOrigin: "center",
+    scale: isDragging ? "0.98" : "1",
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`
+        ${index % 2 === 1 ? "bg-gray-300/30" : ""}
+        ${
+          isDragging
+            ? "ring-2 ring-DTND-500 ring-opacity-50 border-t border-border"
+            : "hover:bg-gray-300"
+        }
+      `}
+    >
+      {isOver && !isDragging && (
+        <div
+          className="absolute inset-x-0 -top-px h-0.5 bg-linear-to-r from-DTND-500 to-DTND-400 animate-pulse"
+          style={{ zIndex: 100 }}
+        />
+      )}
+      <BodyTableCW
+        symbol={symbol}
+        snapshot={snapshot}
+        dragListeners={listeners}
+        dragAttributes={attributes}
+        underlyingSnapshot={underlyingSnapshot}
+      />
+    </div>
+  );
+}
+
+// === MAIN COMPONENT ===
+function PriceBoardBase({ boardId }: PriceBoardCWProps) {
+  const { containerRef } = usePerfectScrollbar();
+  const [containerWidth, setContainerWidth] = useState(1200);
+  const [listHeight, setListHeight] = useState(500);
+
+  // Redux
+  const baseSymbols = useAppSelector((state) =>
+    selectSymbolsByBoardId(state, boardId),
+  );
+  const snapshots = useAppSelector((state) =>
+    selectSnapshotsBySymbols(state, baseSymbols),
+  );
+  const listSnapshots = useAppSelector(selectSnapshots);
+
+  const [symbols, setSymbols] = useState<string[]>([]);
+
+  // === 1. KHỞI TẠO TỪ CACHE ===
+  useEffect(() => {
+    const cacheKey = `stocks_${boardId}`;
+    const cachedData = localStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      try {
+        const parsed = JSON.parse(cachedData) as unknown;
+        if (
+          typeof parsed === "object" &&
+          parsed !== null &&
+          "groupId" in parsed &&
+          "symbols" in parsed &&
+          Array.isArray((parsed as CachedBoardData).symbols)
+        ) {
+          const data = parsed as CachedBoardData;
+          const ordered = data.symbols.filter((s) => baseSymbols.includes(s));
+          const missing = baseSymbols.filter((s) => !ordered.includes(s));
+          setSymbols([...ordered, ...missing]);
+          return;
+        }
+      } catch (e) {
+        console.warn("Failed to parse cache", e);
+      }
+    }
+    setSymbols(baseSymbols);
+  }, [baseSymbols, boardId]);
+
+  // === 2. ĐỒNG BỘ baseSymbols ===
+  useEffect(() => {
+    setSymbols((prev) => {
+      const newSymbols = [...prev];
+      baseSymbols.forEach((s) => !newSymbols.includes(s) && newSymbols.push(s));
+      const filtered = newSymbols.filter((s) => baseSymbols.includes(s));
+
+      const cacheKey = `stocks_${boardId}`;
+      const cachedData = localStorage.getItem(cacheKey);
+      if (cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData) as Partial<CachedBoardData>;
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({
+              groupId: parsed.groupId || boardId,
+              symbols: filtered,
+            }),
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      return filtered;
+    });
+  }, [baseSymbols, boardId]);
+
+  // === 3. RESIZE ===
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver((entries) => {
+      const rect = entries[0].contentRect;
+      setContainerWidth(rect.width);
+      setListHeight(rect.height - HEADER_HEIGHT);
+    });
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, [containerRef]);
+
+  // === 4. VISIBLE SYMBOLS ===
+  const updateVisibleSymbols = useCallback(
+    ({ startIndex, stopIndex }: RenderedRows) => {
+      const visible = symbols.slice(startIndex, stopIndex + 1);
+      socketClient.setVisibleSymbols(visible);
+    },
+    [symbols],
+  );
+
+  // === 5. DnD SENSORS ===
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  // === 6. DRAG END ===
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setSymbols((items) => {
+      const oldIndex = items.indexOf(active.id as string);
+      const newIndex = items.indexOf(over.id as string);
+      const newOrder = arrayMove(items, oldIndex, newIndex);
+
+      const cacheKey = `stocks_${boardId}`;
+      const cachedData = localStorage.getItem(cacheKey);
+      const updated: CachedBoardData = cachedData
+        ? {
+            ...(JSON.parse(cachedData) as Partial<CachedBoardData>),
+            groupId: boardId,
+            symbols: newOrder,
+          }
+        : { groupId: boardId, symbols: newOrder };
+
+      localStorage.setItem(cacheKey, JSON.stringify(updated));
+      return newOrder;
+    });
+  };
+
+  // === 7. ROW RENDERER ===
+  const rowRenderer = ({ index, key, style }: ListRowProps) => {
+    const symbol = symbols[index];
+    if (!symbol) return null;
+    const snapshot = snapshots[symbol] ?? { symbol };
+
+    const underlyingSymbol = snapshot.refPrices?.["42"];
+
+    const underlyingSnapshot = underlyingSymbol
+      ? listSnapshots[underlyingSymbol]
+      : undefined;
+
+    return (
+      <div key={key} style={style}>
+        <SortableRow
+          symbol={symbol}
+          snapshot={snapshot}
+          index={index}
+          underlyingSnapshot={underlyingSnapshot}
+        />
+      </div>
+    );
+  };
+
+  // === RENDER ===
+  return (
+    <div
+      className="h-[calc(var(--app-height)-289px)] overflow-hidden relative"
+      ref={containerRef}
+    >
+      <div className="min-w-[1408px] flex flex-col h-full w-full">
+        <div style={{ height: HEADER_HEIGHT }}>
+          <HeaderColumnsCW />
+        </div>
+
+        {!baseSymbols || baseSymbols.length === 0 ? (
+          // <NoData />
+          <div className="w-full h-full grid place-items-center">
+            <div className="loader-bar"></div>
+          </div>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={symbols}
+              strategy={verticalListSortingStrategy}
+            >
+              <List
+                height={listHeight}
+                rowCount={symbols.length}
+                rowHeight={ROW_HEIGHT}
+                rowRenderer={rowRenderer}
+                width={Math.max(containerWidth, 1408)}
+                onRowsRendered={updateVisibleSymbols}
+                className="hide-scrollbar"
+              />
+            </SortableContext>
+          </DndContext>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default memo(PriceBoardBase);

@@ -1,0 +1,82 @@
+/* highlight (vùng khoanh) */
+.driver-highlight {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  border-radius: 10px !important;
+  padding: 6px !important;
+  border: 2px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* popup chính - background, border, shadow, typograhy */
+.driver-popover {
+  background: var(--color-neutral-800) !important;
+  border-radius: 12px !important;
+  padding: 18px !important;
+  max-width: 360px !important;
+  box-shadow: 0 12px 40px rgba(16, 24, 40, 0.35) !important;
+  color: var(--color-text-title) !important;
+  font-family: Inter, Roboto, Arial, sans-serif !important;
+}
+
+/* title trong popover nếu có */
+.driver-popover .driver-popover-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+/* description trong popover */
+.driver-popover .driver-popover-description {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* nút điều hướng */
+.driver-next-btn,
+.driver-previous-btn,
+.driver-close-btn {
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-weight: 600;
+  min-width: 44px;
+  box-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* style nút Next nổi bật */
+.driver-next-btn {
+  background: linear-gradient(90deg, #2563eb, #4f46e5) !important;
+  color: white !important;
+  border: none !important;
+}
+
+/* đặt các nút ở hàng dưới căn giữa */
+.driver-popover .driver-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* progress bar */
+.driver-progress {
+  height: 6px !important;
+  border-radius: 6px !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden;
+}
+.driver-progress > span {
+  background: linear-gradient(90deg, #10b981, #06b6d4) !important;
+}
+
+/* responsive: thu popup trên màn nhỏ */
+@media (max-width: 520px) {
+  .driver-popover {
+    max-width: calc(100vw - 32px) !important;
+    padding: 14px !important;
+    border-radius: 8px !important;
+  }
+}
+
+.driver-popover {
+  border: 1px solid var(--color-border); /* Tùy chọn: Thay đổi viền popover để khớp màu */
+}

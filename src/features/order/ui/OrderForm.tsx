@@ -1,0 +1,228 @@
+import Button from '@/components/common/Button';
+import MaskFormField from '@/components/inputs/mask/MaskFormField';
+import TextFormField from '@/components/inputs/text/TextFormField';
+import { yupResolver } from "@hookform/resolvers/yup";
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { IoToggle } from 'react-icons/io5';
+import { useDispatch } from 'react-redux';
+import * as yup from "yup";
+import OrderConfirm from './OrderConfirm';
+import { minusPrice, minusVolume, plusPrice, plusVolume, validatePrice, validateVolume } from '../orderBusiness';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import { showToast } from "@/hooks/useToast";
+import { StringToDouble } from '@/utils';
+import { fetchAccountBalanceRequest, fetchAccountInfoRequest } from '@/features/account/redux/accountSlice';
+import type { AccountBalanceRequest } from '@/features/account/accountType';
+import { fetchStockInfoRequest } from '@/features/stock/redux/stockSlice';
+import type { StockInfoRequest } from '@/features/stock/stockType';
+
+type FormValues = {
+  account: string;
+  symbol: string;
+  price: string;
+  volume: string;
+}
+
+const schema: yup.ObjectSchema<FormValues> = yup.object({
+  account: yup
+    .string()
+    .required("Nhập tài khoản")
+    .matches(/^\d{7}$/, "Tài khoản phải có 7 chữ số"),
+  symbol: yup
+    .string()
+    .required("Nhập mã chứng khoán"),
+  price: yup
+    .string()
+    .required("Nhập giá"),
+  volume: yup
+    .string()
+    .required("Nhập khối lượng")
+    .matches(/^\d+$/, "Khối lượng phải là số nguyên dương")
+})
+
+const OrderForm = () => {
+  const dispatch = useDispatch()
+  const [isOpenOrderConfirm, setIsOpenOrderConfirm] = React.useState(false)
+  const form = useForm<FormValues>({
+    resolver: yupResolver(schema),
+  })
+
+  const onSubmit = (data: FormValues) => {
+    event?.preventDefault();
+
+    let validPrice = validatePrice(data.price, 0, 0, []);
+    if (!validPrice.isValid) {
+      form.setError("price", { type: "error", });
+      validPrice.message && showToast(validPrice.message, "warning");
+      return;
+    }
+
+    let validVolume = validateVolume(data.volume);
+    if (!validVolume.isValid) {
+      form.setError("volume", { type: "error", });
+      validVolume.message && showToast(validVolume.message, "warning");
+      return;
+    }
+    setIsOpenOrderConfirm(true)
+  }
+
+  const handleOnClickChangePrice = (type: 'plus' | 'minus') => {
+    const currentPrice = StringToDouble(form.getValues().price);
+    let newPrice;
+    if (type === 'plus') {
+      newPrice = plusPrice(currentPrice, 0, 0, 0);
+    } else {
+      newPrice = minusPrice(currentPrice, 0, 0, 0);
+    }
+
+    form.setValue('price', newPrice.toString());
+  }
+
+  const handleOnClickChangeVolume = (type: 'plus' | 'minus') => {
+    const currentVolume = StringToDouble(form.getValues().volume);
+    let newVolume;
+    if (type === 'plus') {
+      newVolume = plusVolume(currentVolume, 100);
+    } else {
+      newVolume = minusVolume(currentVolume, 100);
+    }
+    form.setValue('volume', newVolume.toString());
+  }
+
+  const handleOnBlurAccount = () => {
+    const account = form.getValues().account;
+    handleFetchAccountInfo(account);
+    handleFetchAccountBalance(account);
+    handleFetchAccountPortfolio(account);
+  }
+
+  const handleOnBlurSymbol = () => {
+    const symbol = form.getValues().symbol.toUpperCase();
+    const account = form.getValues().account;
+    handleFetchStockInfo(symbol);
+    handleFetchAccountBalance(account);
+  }
+
+  const handleFetchAccountInfo = (account: string) => {
+    if (!account) return;
+    dispatch(fetchAccountInfoRequest({ account }));
+  }
+
+  const handleFetchAccountPortfolio = (account: string) => {
+
+  }
+
+  const handleFetchStockInfo = (symbol: string) => {
+    if (!symbol) return;
+    const params: StockInfoRequest = {
+      stock: symbol,
+      data: {
+        account: form.getValues().account,
+        volume: form.getValues().volume,
+        type: 'N'
+      }
+    }
+    dispatch(fetchStockInfoRequest(params))
+  }
+
+  const handleFetchAccountBalance = (account: string) => {
+    if (!account) return;
+    const params: AccountBalanceRequest = {
+      account: account,
+      data: {
+        symbol: form.getValues().symbol,
+        price: form.getValues().price,
+        side: 'B'
+      }
+    }
+    dispatch(fetchAccountBalanceRequest(params))
+  }
+
+  return (
+    <div className='flex flex-col gap-1'>
+      <div className='flex justify-between'>
+        <div className='flex gap-2'>
+          Mode:
+          <IoToggle className='text-xl' />
+        </div>
+        <div className='w-3xs mx-2'>
+          <div className='h-6 p-0.5 flex justify-between border-b border-bd-default'>
+            <span>Tỷ lệ ký quỹ</span>
+            <span>-</span>
+          </div>
+          <div className='h-6 p-0.5 flex justify-between border-b border-bd-default'>
+            <span>GT đặt lệnh</span>
+            <span>-</span>
+          </div>
+        </div>
+      </div>
+      <div className='flex justify-between'>
+        <div>
+          Ngày giao dịch
+        </div>
+        <div className='flex gap-2'>
+          <span className='pill'>...</span>
+          <span className='pill'>...</span>
+          <span className='pill'>...</span>
+          <span className='pill'>Sàn: ...</span>
+          <span className='pill'>Bảng:...</span>
+        </div>
+        <div></div>
+      </div>
+      <FormProvider {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className='grid grid-cols-6 gap-1'>
+            <div className='flex flex-col items-center'>
+              <span>Loại</span>
+              <div className='py-1 h-7 w-full bg-bg-elevated-3 text-center'>Mua</div>
+            </div>
+            <div className='flex flex-col items-center'>
+              <span>Tài khoản</span>
+              <TextFormField
+                name='account'
+                maxLength={7}
+                showErrorMessage={false}
+                onBlur={handleOnBlurAccount}
+              />
+            </div>
+            <div className='flex flex-col items-center'>
+              <span>Mã CK</span>
+              <TextFormField
+                name='symbol'
+                showErrorMessage={false}
+                onBlur={handleOnBlurSymbol}
+              />
+            </div>
+            <div className='flex flex-col items-center'>
+              <span>Giá</span>
+              <TextFormField
+                name='price'
+                showErrorMessage={false}
+                prefixIcon={<FiPlus onClick={() => handleOnClickChangePrice('plus')} />}
+                suffixIcon={<FiMinus onClick={() => handleOnClickChangePrice('minus')} />}
+              />
+            </div>
+            <div className='flex flex-col items-center'>
+              <span>Khối lượng</span>
+              <MaskFormField
+                name='volume'
+                showErrorMessage={false}
+                prefixIcon={<FiPlus onClick={() => handleOnClickChangeVolume('plus')} />}
+                suffixIcon={<FiMinus onClick={() => handleOnClickChangeVolume('minus')} />}
+              />
+            </div>
+            <div className='flex flex-col justify-end mb-1'>
+              <Button type='submit' className='w-22' variant='success'>Xác nhân</Button>
+            </div>
+          </div>
+        </form>
+      </FormProvider >
+      {
+        isOpenOrderConfirm && <OrderConfirm onClose={() => setIsOpenOrderConfirm(false)} />
+      }
+    </div>
+  )
+}
+
+export default OrderForm;

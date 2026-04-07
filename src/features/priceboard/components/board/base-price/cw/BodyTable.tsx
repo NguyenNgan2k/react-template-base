@@ -1,0 +1,105 @@
+import { ALL_COLUMNS_CW } from "@/configs";
+import type { SnapshotDataCompact, TableColumn } from "@/types";
+import { unregisterVisibleCell } from "@/utils";
+import type {
+  DraggableAttributes,
+  DraggableSyntheticListeners,
+} from "@dnd-kit/core";
+import { memo, useEffect } from "react";
+import PriceCell from "./PriceCell";
+
+interface BodyTableProps {
+  symbol: string;
+  snapshot: SnapshotDataCompact;
+  underlyingSnapshot: SnapshotDataCompact | undefined;
+  dragListeners?: DraggableSyntheticListeners;
+  dragAttributes?: DraggableAttributes;
+}
+
+function BodyTableCw({
+  symbol,
+  snapshot,
+  underlyingSnapshot,
+  dragListeners,
+  dragAttributes,
+}: BodyTableProps) {
+  const columns: TableColumn[] = (() => {
+    const saved = localStorage.getItem("clientConfig");
+    try {
+      return saved ? JSON.parse(saved) : ALL_COLUMNS_CW;
+    } catch {
+      return ALL_COLUMNS_CW;
+    }
+  })();
+
+  useEffect(() => {
+    return () => {
+      unregisterVisibleCell(symbol);
+    };
+  }, [symbol]);
+
+  return (
+    <div className="flex border-x border-b border-border divide-x divide-border w-full">
+      {columns.map((col) => {
+        const hasChildren = !!col.children?.length;
+
+        if (col.key === "symbol") {
+          return (
+            <div
+              key={col.key}
+              className="h-7 grid place-items-center"
+              style={{ width: col.width }}
+            >
+              <div
+                className="flex items-center justify-center h-7 cursor-grab active:cursor-grabbing"
+                {...dragListeners}
+                {...dragAttributes}
+              >
+                <PriceCell
+                  symbol={symbol}
+                  cellKey={col.key}
+                  snapshot={snapshot}
+                  underlyingSnapshot={underlyingSnapshot}
+                  disableFlash={true} // TẮT FLASH CHO SYMBOL
+                />
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div
+            key={col.key}
+            className="flex flex-col"
+            style={{ width: col.width }} // parent width
+          >
+            {!hasChildren ? (
+              <PriceCell
+                symbol={symbol}
+                cellKey={col.key}
+                width={"100%"}
+                snapshot={snapshot}
+                underlyingSnapshot={underlyingSnapshot}
+              />
+            ) : (
+              <div className="flex divide-x divide-border text-xs font-medium">
+                {col.children?.map((child) => (
+                  <PriceCell
+                    key={child.key}
+                    cellKey={child.key}
+                    symbol={symbol}
+                    snapshot={snapshot}
+                    underlyingSnapshot={underlyingSnapshot}
+                    width={`${100 / (col.children?.length || 1)}%`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default memo(BodyTableCw);

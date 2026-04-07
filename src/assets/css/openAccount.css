@@ -1,0 +1,26 @@
+.ic-step__unactive path {
+  fill: var(--color-background-primary) !important;
+}
+
+.ic-step__unactive circle {
+  fill: var(--color-background-primary) !important;
+}
+
+.ic-step__active path {
+  fill: linear-gradient(180deg, rgba(18, 19, 19, 0) 7.14%, #02e56a 138.1%);
+}
+
+.ic-step__active circle {
+  fill: #02e56a !important;
+}
+
+.bg-text-title {
+  -webkit-text-fill-color: #0000;
+  background: radial-gradient(
+    79.29% 79.29% at 20.71% 34.85%,
+    rgba(239, 239, 239, 0.88) 0%,
+    rgba(239, 255, 97, 0.88) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
