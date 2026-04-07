@@ -1,5 +1,5 @@
 services:
-  web-trade:
-    image: registry.dtnd.vn/rnd/web-trade
+  web-broker:
+    image: registry.dtnd.vn/rnd/web-broker
     ports:
-      - "8000:80"
+      - "8001:80"
