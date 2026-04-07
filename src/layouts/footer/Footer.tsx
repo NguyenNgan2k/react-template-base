@@ -5,7 +5,7 @@ import OrderPage from "@/features/order/ui/OrderPage";
 import React from "react";
 
 const Footer = () => {
-  const [isOpenOrderPage, setIsOpenOrderPage] = React.useState(false);
+  const [isOpenOrderPage, setIsOpenOrderPage] = React.useState(true);
   return (
     <div className='footer h-8 px-2 py-1 flex bg-indigo-1000 justify-between items-center relative'>
       <div className="flex gap-2">

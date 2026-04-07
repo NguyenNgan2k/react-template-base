@@ -11,11 +11,13 @@ import OrderConfirm from './OrderConfirm';
 import { minusPrice, minusVolume, plusPrice, plusVolume, validatePrice, validateVolume } from '../orderBusiness';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { showToast } from "@/hooks/useToast";
-import { StringToDouble } from '@/utils';
-import { fetchAccountBalanceRequest, fetchAccountInfoRequest } from '@/features/account/redux/accountSlice';
+import { numberFormat, StringToDouble } from '@/utils';
+import { fetchAccountBalanceRequest, fetchAccountInfoRequest, selectAccountBalance } from '@/features/account/redux/accountSlice';
 import type { AccountBalanceRequest } from '@/features/account/accountType';
-import { fetchStockInfoRequest } from '@/features/stock/redux/stockSlice';
+import { fetchStockInfoRequest, selectStockInfo } from '@/features/stock/redux/stockSlice';
 import type { StockInfoRequest } from '@/features/stock/stockType';
+import { useAppSelector } from '@/store/hook';
+import { getNameMarket } from '@/features/stock/stockBusiness';
 
 type FormValues = {
   account: string;
@@ -43,7 +45,14 @@ const schema: yup.ObjectSchema<FormValues> = yup.object({
 
 const OrderForm = () => {
   const dispatch = useDispatch()
+
+  const { stockInfo, accountBalance } = useAppSelector(state => ({
+    stockInfo: selectStockInfo(state),
+    accountBalance: selectAccountBalance(state),
+  }));
+
   const [isOpenOrderConfirm, setIsOpenOrderConfirm] = React.useState(false)
+
   const form = useForm<FormValues>({
     resolver: yupResolver(schema),
   })
@@ -139,6 +148,8 @@ const OrderForm = () => {
     dispatch(fetchAccountBalanceRequest(params))
   }
 
+
+
   return (
     <div className='flex flex-col gap-1'>
       <div className='flex justify-between'>
@@ -149,11 +160,11 @@ const OrderForm = () => {
         <div className='w-3xs mx-2'>
           <div className='h-6 p-0.5 flex justify-between border-b border-bd-default'>
             <span>Tỷ lệ ký quỹ</span>
-            <span>-</span>
+            <span>{`${accountBalance?.im_ck}%` || '-'}</span>
           </div>
           <div className='h-6 p-0.5 flex justify-between border-b border-bd-default'>
             <span>GT đặt lệnh</span>
-            <span>-</span>
+            <span>{ }</span>
           </div>
         </div>
       </div>
@@ -162,11 +173,11 @@ const OrderForm = () => {
           Ngày giao dịch
         </div>
         <div className='flex gap-2'>
-          <span className='pill'>...</span>
-          <span className='pill'>...</span>
-          <span className='pill'>...</span>
-          <span className='pill'>Sàn: ...</span>
-          <span className='pill'>Bảng:...</span>
+          <span className='pill c'>{stockInfo?.c || '...'}</span>
+          <span className='pill f'>{stockInfo?.f || '...'}</span>
+          <span className='pill r'>{stockInfo?.r || '...'}</span>
+          <span className='pill'>Sàn: {stockInfo?.mc && getNameMarket(stockInfo?.mc) || '...'}</span>
+          <span className='pill'>Bảng:{stockInfo?.board_id || '...'}</span>
         </div>
         <div></div>
       </div>

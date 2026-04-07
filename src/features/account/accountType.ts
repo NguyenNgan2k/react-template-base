@@ -31,10 +31,8 @@ export type AccountBalance = {
   marginratio: string;
   accName: string;
   maxFee: string;
-
-  // Tài khoản N
   cashAvaiable: string;
-
   ee: string;
   pp: string;
+  im_ck: string;
 };

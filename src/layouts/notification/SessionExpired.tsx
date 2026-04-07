@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { logout } from "@/store/slices/auth/slice";
+import { logout } from "@/features/auth/login/redux/loginSlice";
 import { selectSessionExpired } from "@/store/slices/client/selector";
 import { setSessionExpired } from "@/store/slices/client/slice";
 import Button from "@/components/common/Button";
@@ -34,7 +34,7 @@ export default function SessionExpiredModal() {
   const handleConfirm = () => {
     dispatch(setSessionExpired(false));
     dispatch(logout());
-    navigate("/price-board");
+    navigate("/login");
   };
 
   return (
