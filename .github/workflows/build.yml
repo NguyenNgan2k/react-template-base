@@ -27,7 +27,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          registry.dtnd.vn/rnd/web-trade:latest
+          registry.dtnd.vn/rnd/web-broker:latest
 
   deploy:
     needs: build
@@ -45,7 +45,7 @@ jobs:
         username: root
         key: ${{ secrets.SERVER_SSH_KEY }}
         source: "docker-compose.yml"
-        target: "/root/containers/web-trade/"
+        target: "/root/containers/web-broker/"
 
     - name: Deploy with docker-compose
       uses: appleboy/ssh-action@v1
@@ -54,7 +54,7 @@ jobs:
         username: root
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /root/containers/web-trade
+          cd /root/containers/web-broker
 
           # Stop and remove existing containers
           docker compose down || true
