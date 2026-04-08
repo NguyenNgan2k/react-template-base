@@ -5,10 +5,8 @@ import { numberFormat } from "@/utils";
 
 
 const AccountInfo = () => {
-  const { accountInfo, accountBalance } = useAppSelector(state => ({
-    accountInfo: selectAccountInfo(state),
-    accountBalance: selectAccountBalance(state),
-  }));
+  const accountInfo = useAppSelector(selectAccountInfo)
+  const accountBalance = useAppSelector(selectAccountBalance)
 
   const items_1: DescriptionsProps['items'] = [
     {

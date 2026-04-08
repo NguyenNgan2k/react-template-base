@@ -55,10 +55,8 @@ const OrderForm = () => {
   const dispatch = useDispatch()
   const orderValueRef = useRef<OrderValues | null>(null)
 
-  const { stockInfo, accountBalance } = useAppSelector(state => ({
-    stockInfo: selectStockInfo(state),
-    accountBalance: selectAccountBalance(state),
-  }));
+  const stockInfo = useAppSelector(selectStockInfo)
+  const accountBalance = useAppSelector(selectAccountBalance)
 
   const [isOpenOrderConfirm, setIsOpenOrderConfirm] = React.useState(false)
 

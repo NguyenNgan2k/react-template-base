@@ -11,9 +11,8 @@ type StockInfoProps = {
 }
 
 const StockInfo: React.FC<StockInfoProps> = (props) => {
-  let perBuy = 0
-  let preSell = 0
   const [symbol, setSymbol] = React.useState<string | null>(null)
+  const [perBuy,setPerBuy] =React.useState<number>(0)
 
   const snapshot = useAppSelector((state) =>
     selectSnapshotBySymbol(state, 'CEO:G1:STX'),
@@ -42,10 +41,14 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
   }, [symbol]);
 
   React.useEffect(() => {
-    const totalBuy = StringToDouble(snapshot.volumeBuy1) + StringToDouble(snapshot.volumeBuy2) + StringToDouble(snapshot.volumeBuy3);
-    const totalSell = StringToDouble(snapshot.volumeSell1) + StringToDouble(snapshot.volumeSell2) + StringToDouble(snapshot.volumeSell3);
-    perBuy = totalBuy * 100 / totalBuy + totalSell;
+    handleGetPerBuy()
   }, [snapshot])
+
+  const handleGetPerBuy = () => {
+    const totalBuy:number = StringToDouble(snapshot.volumeBuy1) + StringToDouble(snapshot.volumeBuy2) + StringToDouble(snapshot.volumeBuy3);
+    const totalSell:number = StringToDouble(snapshot.volumeSell1) + StringToDouble(snapshot.volumeSell2) + StringToDouble(snapshot.volumeSell3);
+    setPerBuy(Math.round(totalBuy * 100 / (totalBuy + totalSell)))
+  }
 
   return (
     <div className="rounded border border-bd-default flex flex-col gap-2">
@@ -96,9 +99,14 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
           <div className="grid grid-cols-12">
             <div className="col-span-2 text-center">{perBuy}%</div>
             <div className="col-span-8 flex items-center">
-              <div className="h-1 w-full bg-bg-elevated-3 rounded-full" />
+              <div className="h-1 w-full bg-bg-sell rounded-full" >
+                <div   
+                 className="h-full bg-bg-buy rounded-full"
+                  style={{ width: `${perBuy}%` }}
+                />
+              </div>
             </div>
-            <div className="col-span-2 text-center">35%</div>
+            <div className="col-span-2 text-center">{100-perBuy}%</div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="grid grid-cols-12 gap-1">
