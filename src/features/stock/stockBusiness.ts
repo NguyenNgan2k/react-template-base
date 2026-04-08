@@ -4,7 +4,7 @@ import {
   getColumnValueCompact,
   StringToDouble,
 } from "@/utils";
-import type { StockInfo, StockInfoResponse } from "./stockType";
+import type { SnapShot, StockInfo, StockInfoResponse } from "./stockType";
 import type { SnapshotDataCompact } from "@/types";
 
 /**
@@ -80,7 +80,7 @@ export const mapDataStockInfo = (stockInfo: StockInfoResponse): StockInfo => ({
   market_price: getMarketPrice(stockInfo.mc),
 });
 
-export const mapDataSnapshot = (snapshot: SnapshotDataCompact) => {
+export const mapDataSnapshot = (snapshot: SnapshotDataCompact): SnapShot => {
   const keys = [
     "ref",
     "ceiling",
@@ -107,5 +107,5 @@ export const mapDataSnapshot = (snapshot: SnapshotDataCompact) => {
   ];
   return Object.fromEntries(
     keys.map((key) => [key, getColumnValueCompact(snapshot, key)]),
-  );
+  ) as SnapShot;
 };

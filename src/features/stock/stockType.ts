@@ -62,3 +62,28 @@ export type StockInfo = {
   board_id: string;
   market_price: Array<string>;
 };
+
+export type SnapShot = {
+  ref: string;
+  ceiling: string;
+  floor: string;
+  high: string;
+  low: string;
+  avg: string;
+  totalVol: string;
+  foreignBuy: string;
+  foreignSell: string;
+  foreignRoom: string;
+  priceBuy1: string;
+  volumeBuy1: string;
+  priceBuy2: string;
+  volumeBuy2: string;
+  priceBuy3: string;
+  volumeBuy3: string;
+  priceSell1: string;
+  volumeSell1: string;
+  priceSell2: string;
+  volumeSell2: string;
+  priceSell3: string;
+  volumeSell3: string;
+};
