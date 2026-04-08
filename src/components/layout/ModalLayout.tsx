@@ -9,6 +9,7 @@ interface ModalProps {
   onClose: Function;
   title?: any;
   classContent?: string;
+  onAccept: Function;
 }
 
 const ModalLayout: React.FC<ModalProps> = (props) => {
@@ -30,7 +31,7 @@ const ModalLayout: React.FC<ModalProps> = (props) => {
           <Button
             variant="success"
             className="w-22"
-            onClick={() => onClose()}>Xác nhận</Button>
+            onClick={() => props.onAccept()}>Xác nhận</Button>
         </div>
       </div>
     </div>,

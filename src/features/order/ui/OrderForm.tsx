@@ -2,7 +2,7 @@ import Button from '@/components/common/Button';
 import MaskFormField from '@/components/inputs/mask/MaskFormField';
 import TextFormField from '@/components/inputs/text/TextFormField';
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from 'react';
+import React, { useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IoToggle } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
@@ -26,6 +26,14 @@ type FormValues = {
   volume: string;
 }
 
+export type OrderValues = {
+  account: string;
+  symbol: string;
+  side: string;
+  price: string;
+  volume: string;
+}
+
 const schema: yup.ObjectSchema<FormValues> = yup.object({
   account: yup
     .string()
@@ -45,6 +53,7 @@ const schema: yup.ObjectSchema<FormValues> = yup.object({
 
 const OrderForm = () => {
   const dispatch = useDispatch()
+  const orderValueRef = useRef<OrderValues | null>(null)
 
   const { stockInfo, accountBalance } = useAppSelector(state => ({
     stockInfo: selectStockInfo(state),
@@ -74,6 +83,13 @@ const OrderForm = () => {
       form.setError("volume", { type: "error", });
       validVolume.message && showToast(validVolume.message, "warning");
       return;
+    }
+    orderValueRef.current = {
+      account: form.getValues().account,
+      symbol: form.getValues().symbol,
+      side: 'B',
+      price: form.getValues().price,
+      volume: form.getValues().volume,
     }
     setIsOpenOrderConfirm(true)
   }
@@ -239,7 +255,12 @@ const OrderForm = () => {
         </form>
       </FormProvider >
       {
-        isOpenOrderConfirm && <OrderConfirm onClose={() => setIsOpenOrderConfirm(false)} />
+        isOpenOrderConfirm && orderValueRef.current &&
+        <OrderConfirm
+          onAccept={() => { }}
+          order={orderValueRef.current}
+          onClose={() => setIsOpenOrderConfirm(false)}
+        />
       }
     </div>
   )
