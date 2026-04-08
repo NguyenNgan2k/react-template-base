@@ -38,13 +38,14 @@ body {
   @apply bg-bg-elevated;
 }
 
-.table thead {
+.table thead,
+th {
   @apply sticky top-0 z-1;
 }
 
 .table th,
 td {
-  @apply h-6 p-0.5 bg-bg-surface-strong;
+  @apply h-6 py-0.5 px-1 bg-bg-surface-strong;
 }
 
 .table th {

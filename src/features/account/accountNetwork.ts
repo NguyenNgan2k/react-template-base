@@ -4,6 +4,8 @@ import type {
   AccountInfo,
   AccountBalanceRequest,
   AccountBalance,
+  AccountPortfolioRequest,
+  AccountPortfolio,
 } from "./accountType";
 
 export const apiFetchAccountInfo = async (
@@ -20,6 +22,17 @@ export const apiFetchAccountBalance = async (
 ): Promise<AccountBalance> => {
   const res = await apiRequest.get<AccountBalance>(
     `/broker/accounts/${params?.account}/balance`,
+    { params: params?.data },
+  );
+  return res.data;
+};
+
+export const apiFetchAccountPortfolio = async (
+  params?: AccountPortfolioRequest,
+): Promise<AccountPortfolio> => {
+  console.log("apiFetchAccountPortfolio called with params: ", params);
+  const res = await apiRequest.get<AccountPortfolio>(
+    `/broker/accounts/${params?.account}/portfolio`,
     { params: params?.data },
   );
   return res.data;

@@ -4,16 +4,20 @@ import type {
   AccountInfoRequest,
   AccountBalance,
   AccountBalanceRequest,
+  AccountPortfolio,
+  AccountPortfolioRequest,
 } from "../accountType";
 
 type AccountState = {
   accountInfo: AccountInfo | null;
   accountBalance: AccountBalance | null;
+  accountPortfolio: AccountPortfolio[] | null;
 };
 
 const initialState: AccountState = {
   accountInfo: null,
   accountBalance: null,
+  accountPortfolio: null,
 };
 
 export const accountSlice = createSlice({
@@ -42,6 +46,17 @@ export const accountSlice = createSlice({
       state.accountBalance = action.payload;
     },
     fetchAccountBalanceError: (state: AccountState) => {},
+    fetchAccountPortfolioRequest: (
+      state: AccountState,
+      action: PayloadAction<AccountPortfolioRequest>,
+    ) => {},
+    fetchAccountPortfolioSuccess: (
+      state: AccountState,
+      action: PayloadAction<AccountPortfolio[]>,
+    ) => {
+      state.accountPortfolio = action.payload;
+    },
+    fetchAccountPortfolioError: (state: AccountState) => {},
   },
 });
 
@@ -52,6 +67,9 @@ export const {
   fetchAccountBalanceRequest,
   fetchAccountBalanceSuccess,
   fetchAccountBalanceError,
+  fetchAccountPortfolioRequest,
+  fetchAccountPortfolioSuccess,
+  fetchAccountPortfolioError,
 } = accountSlice.actions;
 export default accountSlice.reducer;
 
@@ -60,3 +78,6 @@ export const selectAccountInfo = (state: { account: AccountState }) =>
 
 export const selectAccountBalance = (state: { account: AccountState }) =>
   state.account.accountBalance;
+
+export const selectAccountPortfolio = (state: { account: AccountState }) =>
+  state.account.accountPortfolio;

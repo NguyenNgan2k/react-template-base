@@ -1,4 +1,5 @@
 import { StringToDouble } from "@/utils/format";
+import type { StockInfo } from "../stock/stockType";
 
 /**
  * Tính toán giá mới dựa trên các tham số đầu vào như giá hiện tại, bước nhảy, trần, sàn,tham chiếu.
@@ -19,14 +20,12 @@ export const plusPrice = (
   step = 0.1,
 ): string => {
   let newPrice = currentPrice;
-  if (newPrice === 0 || isNaN(newPrice)) {
+  if (newPrice === 0) {
     newPrice = ref;
-  }
-  newPrice += step;
-  if (newPrice > ceiling) {
-    newPrice = ceiling;
-  } else if (newPrice < floor) {
-    newPrice = floor;
+  } else {
+    newPrice = (newPrice * 1000 + step * 1000) / 1000;
+    if (newPrice > ceiling) newPrice = ceiling;
+    if (newPrice < floor) newPrice = floor;
   }
   return newPrice.toString();
 };
@@ -36,14 +35,15 @@ export const plusPrice = (
  * Hàm này sẽ đảm bảo rằng giá mới không vượt quá trần và không thấp hơn sàn, đồng thời sẽ giảm giá hiện tại theo bước đã định.
  *
  * @param currentPrice - Giá hiện tại.
- * @param step - Bước nhảy. Mặc định là 0.1.
  * @param ceiling - Giá trần.
  * @param floor - Giá sàn.
  * @param ref - Giá tham chiếu.
+ * @param step - Bước nhảy. Mặc định là 0.1.
  * @returns Giá mới sau khi đã được tính toán.
  */
 export const minusPrice = (
   currentPrice: number,
+  ceiling: number,
   floor: number,
   ref: number,
   step = 0.1,
@@ -51,12 +51,10 @@ export const minusPrice = (
   let newPrice = currentPrice;
   if (newPrice === 0) {
     newPrice = ref;
-  }
-  newPrice -= step;
-  if (newPrice < floor) {
-    newPrice = floor;
-  } else if (newPrice > floor) {
-    newPrice = floor;
+  } else {
+    newPrice = (newPrice * 1000 - step * 1000) / 1000;
+    if (newPrice < floor) newPrice = floor;
+    if (newPrice > ceiling) newPrice = ceiling;
   }
   return newPrice.toString();
 };

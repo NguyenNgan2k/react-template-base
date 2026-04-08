@@ -12,8 +12,8 @@ import { minusPrice, minusVolume, plusPrice, plusVolume, validatePrice, validate
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { showToast } from "@/hooks/useToast";
 import { numberFormat, StringToDouble } from '@/utils';
-import { fetchAccountBalanceRequest, fetchAccountInfoRequest, selectAccountBalance } from '@/features/account/redux/accountSlice';
-import type { AccountBalanceRequest } from '@/features/account/accountType';
+import { fetchAccountBalanceRequest, fetchAccountInfoRequest, fetchAccountPortfolioRequest, selectAccountBalance, selectAccountPortfolio } from '@/features/account/redux/accountSlice';
+import type { AccountBalanceRequest, AccountPortfolioRequest } from '@/features/account/accountType';
 import { fetchStockInfoRequest, selectStockInfo } from '@/features/stock/redux/stockSlice';
 import type { StockInfoRequest } from '@/features/stock/stockType';
 import { useAppSelector } from '@/store/hook';
@@ -57,6 +57,8 @@ const OrderForm = () => {
     resolver: yupResolver(schema),
   })
 
+  const orderValue: number = ((StringToDouble(form.watch().price) * 1000) * StringToDouble(form.watch().volume))
+
   const onSubmit = (data: FormValues) => {
     event?.preventDefault();
 
@@ -77,12 +79,13 @@ const OrderForm = () => {
   }
 
   const handleOnClickChangePrice = (type: 'plus' | 'minus') => {
+    if (!stockInfo) return
     const currentPrice = StringToDouble(form.getValues().price);
     let newPrice;
     if (type === 'plus') {
-      newPrice = plusPrice(currentPrice, 0, 0, 0);
+      newPrice = plusPrice(currentPrice, stockInfo.c, stockInfo.f, stockInfo.r, stockInfo.step);
     } else {
-      newPrice = minusPrice(currentPrice, 0, 0, 0);
+      newPrice = minusPrice(currentPrice, stockInfo.c, stockInfo.f, stockInfo.r, stockInfo.step);
     }
 
     form.setValue('price', newPrice.toString());
@@ -119,7 +122,15 @@ const OrderForm = () => {
   }
 
   const handleFetchAccountPortfolio = (account: string) => {
-
+    if (!account) return;
+    const params: AccountPortfolioRequest = {
+      account: account,
+      data: {
+        page: 1,
+        number: 1000
+      }
+    }
+    dispatch(fetchAccountPortfolioRequest(params))
   }
 
   const handleFetchStockInfo = (symbol: string) => {
@@ -148,8 +159,6 @@ const OrderForm = () => {
     dispatch(fetchAccountBalanceRequest(params))
   }
 
-
-
   return (
     <div className='flex flex-col gap-1'>
       <div className='flex justify-between'>
@@ -160,11 +169,11 @@ const OrderForm = () => {
         <div className='w-3xs mx-2'>
           <div className='h-6 p-0.5 flex justify-between border-b border-bd-default'>
             <span>Tỷ lệ ký quỹ</span>
-            <span>{`${accountBalance?.im_ck}%` || '-'}</span>
+            <span>{accountBalance?.im_ck ? `${accountBalance?.im_ck}%` : '-'}</span>
           </div>
           <div className='h-6 p-0.5 flex justify-between border-b border-bd-default'>
             <span>GT đặt lệnh</span>
-            <span>{ }</span>
+            <span>{numberFormat(orderValue) || 0}</span>
           </div>
         </div>
       </div>

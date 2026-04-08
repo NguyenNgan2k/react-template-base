@@ -1,91 +1,112 @@
 import Table from "@/components/table/Table"
+import type { AccountPortfolio } from "@/features/account/accountType";
+import { selectAccountPortfolio } from "@/features/account/redux/accountSlice";
+import { useAppSelector } from "@/store/hook";
 import type { Column } from "@/types";
+import { numberFormat, StringToDouble } from "@/utils";
 
 
-const columns: Column<unknown>[] = [
+const columns: Column<AccountPortfolio>[] = [
   {
     key: "symbol",
     title: "Mã CK",
-    render: (row) => <></>
+    className: "text-center",
+    render: (row) => <div className={StringToDouble(row.gain_loss_value) > 0 ? 'u' : 'd'}>{row.symbol}</div>
   },
   {
-    key: "symbol",
+    key: "actual_vol",
     title: "Tổng",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.actual_vol, 0)
   },
   {
-    key: "symbol",
+    key: "avaiable_vol",
     title: "Khả dụng",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.avaiable_vol, 0)
   },
   {
-    key: "symbol",
+    key: "right_vol",
     title: "Quyền",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.right_vol, 0)
   },
   {
-    key: "symbol",
+    key: "buy_t2",
     title: "T2 Mua",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.buy_t2, 0)
   },
   {
-    key: "symbol",
+    key: "sell_t2",
     title: "T2 Bán",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.sell_t2, 0)
   },
   {
-    key: "symbol",
+    key: "buy_t1",
     title: "T1 Mua",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.buy_t1, 0)
   },
   {
-    key: "symbol",
+    key: "sell_t1",
     title: "T1 Bán",
-    render: (row) => <></>
+    render: (row) => numberFormat(row.sell_t1, 0)
   },
   {
-    key: "symbol",
+    key: "buy_t0",
     title: "T0 Mua",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.buy_t0, 0)
   },
   {
-    key: "symbol",
+    key: "sell_t0",
     title: "T0 Bán",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => numberFormat(row.sell_t0, 0)
   },
   {
-    key: "symbol",
+    key: "avg_price",
     title: "Giá TB",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => row.avg_price
   },
   {
-    key: "symbol",
-    title: "Giá trị",
-    render: (row) => <></>
+    key: "market_value",
+    title: "Giá trị TT",
+    className: "text-right",
+    render: (row) => numberFormat(row.market_value, 0)
   },
   {
-    key: "symbol",
+    key: "market_price",
     title: "Giá TT",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => row.market_price
   },
   {
-    key: "symbol",
+    key: "gain_loss_value",
     title: "Lãi/Lỗ",
-    render: (row) => <></>
+    className: "text-right",
+    render: (row) => <div className={StringToDouble(row.gain_loss_value) > 0 ? 'u' : 'd'}>{numberFormat(row.gain_loss_value)}</div>
   },
   {
-    key: "symbol",
-    title: "%",
-    render: (row) => <></>
+    key: "gain_loss_per",
+    title: "% Lãi/Lỗ",
+    className: "text-right",
+    render: (row) => <div className={StringToDouble(row.gain_loss_value) > 0 ? 'u' : 'd'}>{row.gain_loss_per}</div>
   },
 ];
 
 const Portfolio = () => {
+  const accountPortfolio = useAppSelector(selectAccountPortfolio)
+
   return (
     <div className="h-[140px]">
       <Table
+        classWrapper="max-h-[140px] overflow-auto"
         columns={columns}
-        data={[]}
+        data={accountPortfolio || []}
       />
     </div>
   )

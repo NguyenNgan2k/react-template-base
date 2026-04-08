@@ -1,3 +1,6 @@
+import { StringToDouble } from "@/utils";
+import type { StockInfo, StockInfoResponse } from "./stockType";
+
 /**
  * Lấy giá thị trường dựa trên tham số đầu vào sàn
  *
@@ -56,3 +59,17 @@ export const getNameMarket = (mc: string) => {
   };
   return marketNames[mc];
 };
+
+export const mapDataStockInfo = (stockInfo: StockInfoResponse): StockInfo => ({
+  id: stockInfo.id,
+  sym: stockInfo.sym,
+  fullName: stockInfo.fullName,
+  name_vn: stockInfo.name_vn,
+  c: StringToDouble(stockInfo.c),
+  f: StringToDouble(stockInfo.f),
+  r: StringToDouble(stockInfo.r),
+  mc: stockInfo.mc,
+  board_id: stockInfo.board_id,
+  step: getStepPrice(stockInfo.mc, StringToDouble(stockInfo.r)),
+  market_price: getMarketPrice(stockInfo.mc),
+});

@@ -7,7 +7,7 @@ export type StockInfoRequest = {
   };
 };
 
-export type StockInfo = {
+export type StockInfoResponse = {
   id: number;
   sym: string;
   fullName: string;
@@ -47,4 +47,18 @@ export type StockInfo = {
   avePrice: string;
   listedVol: string;
   marginFlag: string;
+};
+
+export type StockInfo = {
+  id: number;
+  sym: string;
+  fullName: string;
+  name_vn: string;
+  c: number;
+  f: number;
+  r: number;
+  step: number;
+  mc: string;
+  board_id: string;
+  market_price: Array<string>;
 };

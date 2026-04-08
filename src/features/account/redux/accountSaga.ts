@@ -7,8 +7,16 @@ import {
   type ForkEffect,
   type PutEffect,
 } from "redux-saga/effects";
-import { apiFetchAccountInfo, apiFetchAccountBalance } from "../accountNetwork";
-import type { AccountBalance, AccountInfo } from "../accountType";
+import {
+  apiFetchAccountInfo,
+  apiFetchAccountBalance,
+  apiFetchAccountPortfolio,
+} from "../accountNetwork";
+import type {
+  AccountInfo,
+  AccountBalance,
+  AccountPortfolio,
+} from "../accountType";
 import {
   fetchAccountInfoError,
   fetchAccountInfoRequest,
@@ -16,6 +24,9 @@ import {
   fetchAccountBalanceError,
   fetchAccountBalanceRequest,
   fetchAccountBalanceSuccess,
+  fetchAccountPortfolioError,
+  fetchAccountPortfolioRequest,
+  fetchAccountPortfolioSuccess,
 } from "./accountSlice";
 
 type GeneratorYield = CallEffect | PutEffect | ForkEffect;
@@ -28,11 +39,8 @@ function* fetchAccountInfoSaga(
       apiFetchAccountInfo,
       action.payload,
     )) as AccountInfo;
-    // Dispatch success
     yield put(fetchAccountInfoSuccess(data));
   } catch (error) {
-    // Dispatch error
-
     yield put(fetchAccountInfoError());
   }
 }
@@ -45,12 +53,23 @@ function* fetchAccountBalanceSaga(
       apiFetchAccountBalance,
       action.payload,
     )) as AccountBalance;
-    // Dispatch success
     yield put(fetchAccountBalanceSuccess(data));
   } catch (error) {
-    // Dispatch error
-
     yield put(fetchAccountBalanceError());
+  }
+}
+
+function* fetchAccountPortfolioSaga(
+  action: ReturnType<typeof fetchAccountPortfolioRequest>,
+): Generator<GeneratorYield, void, AccountPortfolio[]> {
+  try {
+    const data = (yield call(
+      apiFetchAccountPortfolio,
+      action.payload,
+    )) as AccountPortfolio[];
+    yield put(fetchAccountPortfolioSuccess(data));
+  } catch (error) {
+    yield put(fetchAccountPortfolioError());
   }
 }
 
@@ -58,5 +77,6 @@ export default function* AccountWatcher() {
   yield all([
     takeLatest(fetchAccountInfoRequest.type, fetchAccountInfoSaga),
     takeLatest(fetchAccountBalanceRequest.type, fetchAccountBalanceSaga),
+    takeLatest(fetchAccountPortfolioRequest.type, fetchAccountPortfolioSaga),
   ]);
 }
