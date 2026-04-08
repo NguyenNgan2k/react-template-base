@@ -61,8 +61,8 @@ const OrderForm = () => {
 
   const onSubmit = (data: FormValues) => {
     event?.preventDefault();
-
-    let validPrice = validatePrice(data.price, 0, 0, []);
+    if (!stockInfo) return showToast('Không có dữ liệu mã chứng khoán', 'error')
+    let validPrice = validatePrice(data.price, stockInfo?.c, stockInfo?.f, stockInfo?.market_price);
     if (!validPrice.isValid) {
       form.setError("price", { type: "error", });
       validPrice.message && showToast(validPrice.message, "warning");

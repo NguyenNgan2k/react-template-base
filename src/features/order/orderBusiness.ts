@@ -102,10 +102,10 @@ export const validatePrice = (
   floor: number,
   marketPrice: Array<string>,
 ): { isValid: boolean; message?: string } => {
-  if (!marketPrice.some((item) => item === price)) {
-    return { isValid: false, message: "Giá không hợp lệ" };
+  if (marketPrice.some((item) => item === price)) {
+    return { isValid: true };
   } else if (StringToDouble(price) === 0) {
-    return { isValid: false, message: "Giá không được bằng 0" };
+    return { isValid: false, message: "Giá không hợp lệ" };
   } else if (StringToDouble(price) > ceiling) {
     return { isValid: false, message: "Giá vượt quá trần" };
   } else if (StringToDouble(price) < floor) {
