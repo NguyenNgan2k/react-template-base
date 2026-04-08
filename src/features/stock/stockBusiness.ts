@@ -1,5 +1,11 @@
-import { StringToDouble } from "@/utils";
+import {
+  formatPrice,
+  formatVolPrice,
+  getColumnValueCompact,
+  StringToDouble,
+} from "@/utils";
 import type { StockInfo, StockInfoResponse } from "./stockType";
+import type { SnapshotDataCompact } from "@/types";
 
 /**
  * Lấy giá thị trường dựa trên tham số đầu vào sàn
@@ -73,3 +79,33 @@ export const mapDataStockInfo = (stockInfo: StockInfoResponse): StockInfo => ({
   step: getStepPrice(stockInfo.mc, StringToDouble(stockInfo.r)),
   market_price: getMarketPrice(stockInfo.mc),
 });
+
+export const mapDataSnapshot = (snapshot: SnapshotDataCompact) => {
+  const keys = [
+    "ref",
+    "ceiling",
+    "floor",
+    "high",
+    "low",
+    "avg",
+    "totalVol",
+    "foreignBuy",
+    "foreignSell",
+    "foreignRoom",
+    "priceBuy1",
+    "volumeBuy1",
+    "priceBuy2",
+    "volumeBuy2",
+    "priceBuy3",
+    "volumeBuy3",
+    "priceSell1",
+    "volumeSell1",
+    "priceSell2",
+    "volumeSell2",
+    "priceSell3",
+    "volumeSell3",
+  ];
+  return Object.fromEntries(
+    keys.map((key) => [key, getColumnValueCompact(snapshot, key)]),
+  );
+};

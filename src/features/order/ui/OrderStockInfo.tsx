@@ -1,11 +1,43 @@
 import Button from "@/components/common/Button";
 import Text from "@/components/inputs/text/Text";
+import { selectSnapshotBySymbol, selectSnapshotsBySymbols } from "@/features/stock/redux/stockSelector";
+import { socketClient } from "@/networks/socket";
+import { useAppSelector } from "@/store/hook";
+import React from "react";
 
 type StockInfoProps = {
 
 }
 
 const StockInfo: React.FC<StockInfoProps> = (props) => {
+  const [symbol, setSymbol] = React.useState<string | null>(null)
+
+  const snapshots = useAppSelector((state) =>
+    selectSnapshotBySymbol(state, ['CEO:G1:STX']),
+  );
+
+  const prevSymbolKeyRef = React.useRef<string | null>(null)
+  React.useEffect(() => {
+    socketClient.subscribe({ symbols: ['CEO:G1:STX'] });
+  }, [])
+
+  React.useEffect(() => {
+    if (!symbol) return;
+    // const currentSymbolKey = `${orderSymbol.value}:G1:${orderSymbol.post_to}`;
+    const symbolKey = 'CEO:G1:STX'
+
+    if (prevSymbolKeyRef.current !== symbolKey) {
+      // Unsubscribe mã cũ
+      if (prevSymbolKeyRef.current) {
+        socketClient.unsubscribe({ symbols: [prevSymbolKeyRef.current] });
+      }
+      // Subscribe mã mới
+      socketClient.subscribe({ symbols: [symbolKey] });
+      // Cập nhật ref để theo dõi
+      prevSymbolKeyRef.current = symbolKey;
+    }
+  }, [symbol]);
+
   return (
     <div className="rounded border border-bd-default flex flex-col gap-2">
       <div className="h-6">
@@ -17,7 +49,10 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
           <div className=" grid grid-cols-3">
             <div className='flex flex-col items-center'>
               <span>Cao</span>
-              <span>-</span>
+              <span
+                data-symbol='CEO:G1:STX'
+                data-key='high'>
+              </span>
             </div>
             <div className='flex flex-col items-center'>
               <span>Thấp</span>

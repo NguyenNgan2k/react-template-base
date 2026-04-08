@@ -1,7 +1,7 @@
+import { ID_HNX, ID_HOSE, ID_UPCOM, ID_VN30 } from "@/configs";
+import type { RootState } from "@/store";
+import type { IndexData, SnapshotDataCompact } from "@/types";
 import { createSelector } from "@reduxjs/toolkit";
-import type { RootState } from "../..";
-import { ID_HNX, ID_HOSE, ID_UPCOM, ID_VN30 } from "../../../configs";
-import type { IndexData, SnapshotDataCompact } from "../../../types";
 
 // === STOCK SELECTORS ===
 export const selectSnapshots = (state: RootState) => state.stock.snapshots;
@@ -16,6 +16,20 @@ export const selectAllSymbols = createSelector(
 );
 
 export const selectSnapshotsBySymbols = createSelector(
+  [selectSnapshots, (_: RootState, symbols: readonly string[]) => symbols],
+  (snapshots, symbols): Readonly<Record<string, SnapshotDataCompact>> => {
+    const result: Record<string, SnapshotDataCompact> = {};
+
+    for (const sym of symbols) {
+      const snap = snapshots.entities[sym];
+      if (snap) result[sym] = snap;
+    }
+
+    return result;
+  },
+);
+
+export const selectSnapshotBySymbol = createSelector(
   [selectSnapshots, (_: RootState, symbols: readonly string[]) => symbols],
   (snapshots, symbols): Readonly<Record<string, SnapshotDataCompact>> => {
     const result: Record<string, SnapshotDataCompact> = {};

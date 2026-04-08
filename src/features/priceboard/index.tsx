@@ -1,9 +1,9 @@
 import { lazy, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { selectDetailSymbol } from "../../store/slices/stock/selector";
-import { setDetailSymbol } from "../../store/slices/stock/slice";
 import StockDetailModal from "./components/stock-detail";
+import { selectDetailSymbol } from "../stock/redux/stockSelector";
+import { setDetailSymbol } from "../stock/redux/stockSlice";
 
 const Board = lazy(() => import("./components/board"));
 const MenuDashboard = lazy(() => import("./components/menu-board"));

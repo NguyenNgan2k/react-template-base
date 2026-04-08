@@ -1,9 +1,9 @@
 import { FaCartShopping } from "react-icons/fa6"
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import Portfolio from "./Portfolio.tsx";
-import AccountInfo from "./AccountInfo.tsx";
+import Portfolio from "./OrderPortfolio.tsx";
+import AccountInfo from "./OrderAccountInfo.tsx";
 import OrderForm from "./OrderForm.tsx";
-import StockInfo from "./StockInfo.tsx";
+import StockInfo from "./OrderStockInfo.tsx";
 
 type OrderPageProps = {
   onClose: () => void;

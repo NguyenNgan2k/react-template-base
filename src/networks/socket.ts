@@ -13,7 +13,7 @@ import {
   setTopVMessage,
   updateIndex,
   updateSnapshots,
-} from "../store/slices/stock/slice";
+} from "@/features/stock/redux/stockSlice";
 import type {
   FullSnapshotMessage,
   SnapshotDataCompact,
