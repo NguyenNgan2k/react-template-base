@@ -3,7 +3,7 @@ import type { Column } from "@/types";
 
 export type TableProps<T> = {
   columns: Column<T>[];
-  data: T[];
+  data: T[]|null;
   classWrapper?: string;
   classTable?: string;
 }
@@ -23,14 +23,14 @@ export default function Table<T>({ columns, data, classWrapper, classTable }: Ta
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 ? (
+          {data?.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="text-center py-4 border-none">
                 Không có dữ liệu
               </td>
             </tr>
           ) : (
-            data.map((row, idx) => (
+            data?.map((row, idx) => (
               <tr key={idx}>
                 {columns.map(col => (
                   <td key={col.key} className={col.className}>

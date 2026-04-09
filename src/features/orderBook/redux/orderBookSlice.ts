@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { OrderBook, OrderBookRequest } from "../orderBookType";
 
 type OrderBookState = {
-  orderBook: OrderBook | null;
+  orderBook: OrderBook[] | null;
 };
 
 const initialState: OrderBookState = {
@@ -19,7 +19,7 @@ export const orderBookSlice = createSlice({
     ) => {},
     fetchOrderBookSuccess: (
       state: OrderBookState,
-      action: PayloadAction<OrderBook>,
+      action: PayloadAction<OrderBook[]>,
     ) => {
       state.orderBook = action.payload;
     },
