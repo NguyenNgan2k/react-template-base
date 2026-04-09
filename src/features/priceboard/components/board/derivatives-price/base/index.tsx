@@ -29,11 +29,11 @@ import {
   selectSymbolsByBoardId,
 } from "@/store/slices/priceboard/selector.ts";
 import { setScrollToSymbol } from "@/store/slices/priceboard/slice.ts";
-import { selectSnapshotsBySymbols } from "@/store/slices/stock/selector.ts";
 import type { CachedBoardData } from "@/types/priceBoard.ts";
 import type { SnapshotDataCompact } from "@/types/socketCient.ts";
 import BodyTableBase from "./BodyTable.tsx";
 import HeaderColumnsBase from "./HeaderTable.tsx";
+import { selectSnapshotsBySymbols } from "@/features/stock/redux/stockSelector.ts";
 
 // === PROPS ===
 interface PriceBoardBaseProps {
@@ -72,10 +72,9 @@ function SortableRow({ symbol, snapshot, index, highlight }: SortableRowProps) {
       ref={setNodeRef}
       style={style}
       className={`
-        ${index % 2 === 1 ? "bg-gray-300/30" : ""} ${
-          isDragging
-            ? "ring-2 ring-DTND-500 ring-opacity-50 border-t border-border"
-            : "hover:bg-gray-300"
+        ${index % 2 === 1 ? "bg-gray-300/30" : ""} ${isDragging
+          ? "ring-2 ring-DTND-500 ring-opacity-50 border-t border-border"
+          : "hover:bg-gray-300"
         } ${flashStyle}
       `}
     >
@@ -237,10 +236,10 @@ function PriceBoardBase({ boardId }: PriceBoardBaseProps) {
       const cachedData = localStorage.getItem(cacheKey);
       const updated: CachedBoardData = cachedData
         ? {
-            ...(JSON.parse(cachedData) as Partial<CachedBoardData>),
-            groupId: boardId,
-            symbols: newOrder,
-          }
+          ...(JSON.parse(cachedData) as Partial<CachedBoardData>),
+          groupId: boardId,
+          symbols: newOrder,
+        }
         : { groupId: boardId, symbols: newOrder };
 
       localStorage.setItem(cacheKey, JSON.stringify(updated));

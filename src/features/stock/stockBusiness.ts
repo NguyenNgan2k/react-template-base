@@ -1,10 +1,10 @@
-import {
-  formatPrice,
-  formatVolPrice,
-  getColumnValueCompact,
-  StringToDouble,
-} from "@/utils";
-import type { SnapShot, StockInfo, StockInfoResponse } from "./stockType";
+import { getColumnValueCompact, StringToDouble } from "@/utils";
+import type {
+  SnapShot,
+  Stock,
+  StockInfo,
+  StockInfoResponse,
+} from "./stockType";
 import type { SnapshotDataCompact } from "@/types";
 
 /**
@@ -109,3 +109,11 @@ export const mapDataSnapshot = (snapshot: SnapshotDataCompact): SnapShot => {
     keys.map((key) => [key, getColumnValueCompact(snapshot, key)]),
   ) as SnapShot;
 };
+
+/** Sử dụng để lấy key symbol đăng ký mã
+ *
+ * @param stock - obj stock.
+ * @returns key symbol
+ */
+export const getSymbolKey = (stock: Stock): string =>
+  `${stock.shareCode}:G1:${stock.tradeTable}`;

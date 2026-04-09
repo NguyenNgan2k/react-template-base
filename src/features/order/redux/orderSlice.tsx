@@ -1,21 +1,15 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { OrderPayload, OrderResponse } from "../orderType";
-import type { ApiStatus } from "@/types/common";
+import type { RootState } from "@/store";
 
 export interface OrderState {
-  data: {
-    orderResult: OrderResponse["data"] | null;
-  };
-  status: { placeOrder: ApiStatus };
+  orderResult: OrderResponse["data"] | null;
+  selectedSymbol: string;
 }
 
 const initialState: OrderState = {
-  data: {
-    orderResult: null,
-  },
-  status: {
-    placeOrder: { loading: false, error: null },
-  },
+  orderResult: null,
+  selectedSymbol: '',
 };
 
 const orderSlice = createSlice({
@@ -23,19 +17,23 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     orderRequest: (state, action: PayloadAction<OrderPayload>) => {
-      state.status.placeOrder = { loading: true, error: null };
     },
     orderSuccess: (state, action: PayloadAction<OrderResponse["data"]>) => {
-      state.data.orderResult = action.payload;
-      state.status.placeOrder = { loading: false, error: null };
+      state.orderResult = action.payload;
     },
     orderFailure: (state, action: PayloadAction<string>) => {
-      state.data.orderResult = null;
-      state.status.placeOrder = { loading: false, error: action.payload };
+      state.orderResult = null;
     },
+
+    selectedSymbol: (state, action: PayloadAction<string>) => {
+      state.selectedSymbol = action.payload
+    }
   },
 });
 
-export const { orderRequest, orderSuccess, orderFailure } = orderSlice.actions;
+export const { orderRequest, orderSuccess, orderFailure, selectedSymbol } = orderSlice.actions;
 
 export default orderSlice.reducer;
+
+export const selectSelectedSymbol = (state: RootState): string =>
+  state.order.selectedSymbol;

@@ -1,9 +1,9 @@
 import { FaCartShopping } from "react-icons/fa6"
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import Portfolio from "./OrderPortfolio.tsx";
-import AccountInfo from "./OrderAccountInfo.tsx";
+import OrderPortfolio from "./OrderPortfolio.tsx";
+import OrderAccountInfo from "./OrderAccountInfo.tsx";
 import OrderForm from "./OrderForm.tsx";
-import StockInfo from "./OrderStockInfo.tsx";
+import OrderStockInfo from "./OrderStockInfo.tsx";
 
 type OrderPageProps = {
   onClose: () => void;
@@ -21,17 +21,17 @@ const OrderPage = (props: OrderPageProps) => {
             </div>
             <IoIosCloseCircleOutline className="text-xl mr-4 cursor-pointer" onClick={props.onClose} />
           </div>
-          <Portfolio />
+          <OrderPortfolio />
           <div className="grid grid-cols-12 gap-2">
             <div className="col-span-7">
               <OrderForm />
             </div>
             <div className="col-span-5">
-              <AccountInfo />
+              <OrderAccountInfo />
             </div>
           </div>
         </div>
-        <StockInfo />
+        <OrderStockInfo />
       </div>
     </div>
   )

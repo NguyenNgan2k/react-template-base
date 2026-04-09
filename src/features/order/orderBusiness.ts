@@ -1,5 +1,5 @@
 import { StringToDouble } from "@/utils/format";
-import type { StockInfo } from "../stock/stockType";
+import type { Stock } from "../stock/stockType";
 
 /**
  * Tính toán giá mới dựa trên các tham số đầu vào như giá hiện tại, bước nhảy, trần, sàn,tham chiếu.

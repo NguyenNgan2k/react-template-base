@@ -1,5 +1,5 @@
 import { apiRequest } from "@/networks/apiRequest";
-import type { StockInfoRequest, StockInfoResponse } from "./stockType";
+import type { StockInfoRequest, StockInfoResponse, Stock } from "./stockType";
 
 export const apiFetchStockInfo = async (
   params?: StockInfoRequest,
@@ -8,5 +8,10 @@ export const apiFetchStockInfo = async (
     `/broker/stocks/${params?.stock}/info`,
     { params: params?.data },
   );
+  return res.data;
+};
+
+export const apiFetchStockList = async (): Promise<Stock[]> => {
+  const res = await apiRequest.get<Stock[]>(`/reference/shares`);
   return res.data;
 };

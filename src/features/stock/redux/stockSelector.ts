@@ -3,7 +3,7 @@ import type { RootState } from "@/store";
 import type { IndexData, SnapshotDataCompact } from "@/types";
 import { createSelector } from "@reduxjs/toolkit";
 import { mapDataSnapshot } from "../stockBusiness";
-import type { SnapShot } from "../stockType";
+import type { SnapShot, Stock } from "../stockType";
 
 // === STOCK SELECTORS ===
 export const selectSnapshots = (state: RootState) => state.stock.snapshots;
@@ -95,3 +95,6 @@ export const selectTopVData = (state: RootState) => state.stock.topVMessage;
 
 /**Lấy data Top KL mua bán nước ngoài */
 export const selectTopFVData = (state: RootState) => state.stock.topFVMessage;
+
+export const selectStockList = (state: RootState): Stock[] | null =>
+  state.stock.stockList;

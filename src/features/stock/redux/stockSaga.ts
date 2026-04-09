@@ -7,9 +7,12 @@ import {
   type ForkEffect,
   type PutEffect,
 } from "redux-saga/effects";
-import { apiFetchStockInfo } from "../stockNetwork";
-import type { StockInfoResponse } from "../stockType";
+import { apiFetchStockInfo, apiFetchStockList } from "../stockNetwork";
+import type { StockInfoResponse, Stock } from "../stockType";
 import {
+  fetchStockListError,
+  fetchStockListRequest,
+  fetchStockListSuccess,
   fetchStockInfoError,
   fetchStockInfoRequest,
   fetchStockInfoSuccess,
@@ -32,6 +35,18 @@ function* fetchStockInfoSaga(
   }
 }
 
+function* fetchStockListSaga(): Generator<GeneratorYield, void, Stock[]> {
+  try {
+    const data = (yield call(apiFetchStockList)) as Stock[];
+    yield put(fetchStockListSuccess(data));
+  } catch (error) {
+    yield put(fetchStockListError());
+  }
+}
+
 export default function* StockWatcher() {
-  yield all([takeLatest(fetchStockInfoRequest.type, fetchStockInfoSaga)]);
+  yield all([
+    takeLatest(fetchStockInfoRequest.type, fetchStockInfoSaga),
+    takeLatest(fetchStockListRequest, fetchStockListSaga),
+  ]);
 }

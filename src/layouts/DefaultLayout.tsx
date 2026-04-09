@@ -10,11 +10,11 @@ import { useIdleLogout } from "../hooks/useIdleLogout";
 import { usePrevious } from "../hooks/usePrevious";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { logout } from "../store/slices/auth/slice";
-import { fetchListShareStockRequest } from "../store/slices/place-order/slice";
 import { selectQuickOrderSymbol } from "../store/slices/priceboard/selector";
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import { selectUserData } from "@/features/auth/login/redux/loginSlice";
+import { fetchStockListRequest } from "@/features/stock/redux/stockSlice";
 
 export default function DefaultLayout() {
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export default function DefaultLayout() {
 
   // Lấy list mã chứng khoán
   useEffect(() => {
-    dispatch(fetchListShareStockRequest());
+    dispatch(fetchStockListRequest());
   }, [dispatch]);
 
   useEffect(() => {

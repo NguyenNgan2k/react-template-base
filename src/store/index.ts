@@ -11,13 +11,22 @@ import accountSlice from "@/features/account/redux/accountSlice";
 import stockSaga from "@/features/stock/redux/stockSaga";
 import stockSlice from "@/features/stock/redux/stockSlice";
 
+import orderSaga from "@/features/order/redux/orderSaga";
+import orderSlice from "@/features/order/redux/orderSlice";
+
 import clientSaga from "./slices/client/saga";
 import clientSlice from "./slices/client/slice";
 
 import priceBoardSlice from "./slices/priceboard/slice";
 
 function* rootSaga() {
-  yield all([loginSaga(), accountSaga(), stockSaga(), clientSaga()]);
+  yield all([
+    loginSaga(),
+    accountSaga(),
+    stockSaga(),
+    orderSaga(),
+    clientSaga(),
+  ]);
 }
 
 const sagaMiddleware = createSagaMiddleware();
@@ -30,6 +39,7 @@ export const store = configureStore({
     stockInfo: stockSlice,
     client: clientSlice,
     stock: stockSlice,
+    order: orderSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -87,3 +87,11 @@ export type SnapShot = {
   priceSell3: string;
   volumeSell3: string;
 };
+
+export type Stock = {
+  fullName: string;
+  fullNameEnglish: string;
+  shareCode: string;
+  shareName: string;
+  tradeTable: string;
+};

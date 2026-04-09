@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { StockInfo, StockInfoRequest } from "../stockType";
+import type { StockInfo, StockInfoRequest, Stock } from "../stockType";
 import type {
   DealData,
   IndexData,
@@ -18,6 +18,7 @@ const snapshotsAdapter = createEntityAdapter<SnapshotDataCompact, string>({
 
 type StockState = {
   stockInfo: StockInfo | null;
+  stockList: Stock[] | null;
   snapshots: ReturnType<typeof snapshotsAdapter.getInitialState>;
   subscribedOrder: string[];
   indices: Record<string, IndexData>;
@@ -29,6 +30,7 @@ type StockState = {
 
 const initialState: StockState = {
   stockInfo: null,
+  stockList: null,
   snapshots: snapshotsAdapter.getInitialState(),
   subscribedOrder: [],
   indices: {},
@@ -168,6 +170,15 @@ export const stockSlice = createSlice({
       state.detailSymbol = action.payload;
     },
 
+    //Lấy list mã chứng khoán
+    fetchStockListRequest: (state) => {},
+    fetchStockListSuccess: (state, action: PayloadAction<Stock[]>) => {
+      state.stockList = action.payload;
+    },
+    fetchStockListError: (state) => {
+      state.stockList = null;
+    },
+
     fetchStockInfoRequest: (
       state: StockState,
       action: PayloadAction<StockInfoRequest>,
@@ -194,6 +205,10 @@ export const {
   setTopFVMessage,
   setDetailSymbol,
 
+  fetchStockListRequest,
+  fetchStockListSuccess,
+  fetchStockListError,
+
   fetchStockInfoRequest,
   fetchStockInfoSuccess,
   fetchStockInfoError,
@@ -202,3 +217,6 @@ export default stockSlice.reducer;
 
 export const selectStockInfo = (state: { stockInfo: StockState }) =>
   state.stockInfo.stockInfo;
+
+export const selectSymbol = (state: { stockInfo: StockState }) =>
+  state.stockInfo.stockInfo?.sym;

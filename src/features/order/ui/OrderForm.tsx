@@ -15,9 +15,11 @@ import { numberFormat, StringToDouble } from '@/utils';
 import { fetchAccountBalanceRequest, fetchAccountInfoRequest, fetchAccountPortfolioRequest, selectAccountBalance, selectAccountPortfolio } from '@/features/account/redux/accountSlice';
 import type { AccountBalanceRequest, AccountPortfolioRequest } from '@/features/account/accountType';
 import { fetchStockInfoRequest, selectStockInfo } from '@/features/stock/redux/stockSlice';
-import type { StockInfoRequest } from '@/features/stock/stockType';
+import type { Stock, StockInfoRequest } from '@/features/stock/stockType';
 import { useAppSelector } from '@/store/hook';
 import { getNameMarket } from '@/features/stock/stockBusiness';
+import { selectedSymbol } from '../redux/orderSlice';
+import { selectStockList } from '@/features/stock/redux/stockSelector';
 
 type FormValues = {
   account: string;
@@ -57,6 +59,7 @@ const OrderForm = () => {
 
   const stockInfo = useAppSelector(selectStockInfo)
   const accountBalance = useAppSelector(selectAccountBalance)
+  const stockList = useAppSelector(selectStockList)
 
   const [isOpenOrderConfirm, setIsOpenOrderConfirm] = React.useState(false)
 
@@ -71,14 +74,14 @@ const OrderForm = () => {
     if (!stockInfo) return showToast('Không có dữ liệu mã chứng khoán', 'error')
     let validPrice = validatePrice(data.price, stockInfo?.c, stockInfo?.f, stockInfo?.market_price);
     if (!validPrice.isValid) {
-      form.setError("price", { type: "error", });
+      form.setError("price", { type: "error" });
       validPrice.message && showToast(validPrice.message, "warning");
       return;
     }
 
     let validVolume = validateVolume(data.volume);
     if (!validVolume.isValid) {
-      form.setError("volume", { type: "error", });
+      form.setError("volume", { type: "error" });
       validVolume.message && showToast(validVolume.message, "warning");
       return;
     }
@@ -126,8 +129,15 @@ const OrderForm = () => {
   const handleOnBlurSymbol = () => {
     const symbol = form.getValues().symbol.toUpperCase();
     const account = form.getValues().account;
+    if (!symbol) return;
+    const stock = stockList?.find((stock: Stock) => stock.shareCode === symbol)
+    if (!stock) {
+      showToast('Không tìm thấy thông tin mã chứng khoán', 'error')
+      return;
+    }
     handleFetchStockInfo(symbol);
     handleFetchAccountBalance(account);
+    dispatch(selectedSymbol(symbol))
   }
 
   const handleFetchAccountInfo = (account: string) => {
