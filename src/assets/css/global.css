@@ -114,11 +114,11 @@ input:-webkit-autofill {
 
 .form-control {
   @apply !h-7 !px-2 !flex !items-center !justify-between 
-         !rounded-md !border !border-bd-default !cursor-pointer !bg-bg-input !min-h-7;
+         !rounded-md !border !border-bd-default !cursor-pointer !bg-bg-input !min-h-6;
 }
 
 .form-symbol {
-  @apply !bg-bg-input !rounded-xl !min-h-9 !h-9 !text-text-title !text-xs !w-[10px] !border !border-transparent;
+  @apply !bg-bg-input !rounded-xl !min-h-6 !h-9 !text-text-title !text-xs !w-[10px] !border !border-transparent;
 }
 
 /* style react-day-picker */

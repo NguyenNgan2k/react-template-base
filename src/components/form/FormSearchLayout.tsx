@@ -13,10 +13,10 @@ const Body = (props: { children?: React.ReactNode }) => {
 };
 
 
-const FormField = (props: { lable: string, children?: React.ReactNode }) => {
-  return <div className="grid grid-cols-[auto_80px] gap-1 items-center">
-    <div>{props.lable}</div>
-    <div>{props.children}</div>
+const FormField = (props: { label: string, children?: React.ReactNode }) => {
+  return <div className="flex gap-1 items-center">
+    <div>{props.label}</div>
+    <div className="w-28">{props.children}</div>
   </div>;
 };
 

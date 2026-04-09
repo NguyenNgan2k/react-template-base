@@ -83,7 +83,7 @@ const Select = ({
       </div>
       {
         showSelect && (
-          <ul className="absolute w-full max-h-60 p-2 left-0 mt-1 top-full z-20 bg-dark-blue rounded-lg border border-none">
+          <ul className="absolute w-full max-h-60 p-2 left-0 mt-1 top-full z-20 bg-bg-elevated rounded-lg border border-none">
             {options && options.length ? (
               options.map((item) => {
                 return (
@@ -91,8 +91,8 @@ const Select = ({
                     key={item.value}
                     onClick={() => handleSelect(item.value)}
                     className={clsx(
-                      'p-2 mb-1 rounded-md flex items-center cursor-pointer',
-                      value === item.value ? "bg-DTND-500" : "hover:bg-DTND-500",
+                      'p-1 mb-1 rounded-md flex items-center cursor-pointer',
+                      value === item.value ? "bg-bg-elevated-active" : "hover:bg-bg-elevated-active",
                       item.disabled && "opacity-60 cursor-not-allowed",
                     )}
                   >
