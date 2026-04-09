@@ -1,9 +1,9 @@
 import Descriptions, { type DescriptionsProps } from "@/components/desctiption/Descriptions";
 import ModalLayout from "@/components/layout/ModalLayout";
-import type { OrderValues } from "./OrderForm";
+import type { OrderValue } from "../orderType";
 
 type OrderConfirmProps = {
-  order: OrderValues,
+  order: OrderValue,
   onClose: () => void
   onAccept: () => void
 }

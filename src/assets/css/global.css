@@ -152,6 +152,10 @@ input:-webkit-autofill {
   @apply bg-bg-elevated-2 rounded px-2 min-w-[50px] h-5.5;
 }
 
+.pill-orderbook {
+  @apply text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded;
+}
+
 p {
   @apply h-6;
 }

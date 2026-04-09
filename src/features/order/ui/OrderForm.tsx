@@ -2,7 +2,7 @@ import Button from '@/components/common/Button';
 import MaskFormField from '@/components/inputs/mask/MaskFormField';
 import TextFormField from '@/components/inputs/text/TextFormField';
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useRef } from 'react';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IoToggle } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
@@ -12,26 +12,20 @@ import { minusPrice, minusVolume, plusPrice, plusVolume, validatePrice, validate
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { showToast } from "@/hooks/useToast";
 import { numberFormat, StringToDouble } from '@/utils';
-import { fetchAccountBalanceRequest, fetchAccountInfoRequest, fetchAccountPortfolioRequest, selectAccountBalance, selectAccountPortfolio } from '@/features/account/redux/accountSlice';
+import { fetchAccountBalanceRequest, fetchAccountInfoRequest, fetchAccountPortfolioRequest, selectAccountBalance } from '@/features/account/redux/accountSlice';
 import type { AccountBalanceRequest, AccountPortfolioRequest } from '@/features/account/accountType';
 import { fetchStockInfoRequest, selectStockInfo } from '@/features/stock/redux/stockSlice';
 import type { Stock, StockInfoRequest } from '@/features/stock/stockType';
 import { useAppSelector } from '@/store/hook';
 import { getNameMarket } from '@/features/stock/stockBusiness';
-import { selectedSymbol } from '../redux/orderSlice';
+import { selectedSymbol, selectSelectedOrder } from '../redux/orderSlice';
 import { selectStockList } from '@/features/stock/redux/stockSelector';
+import type { OrderValue } from '../orderType';
+import clsx from 'clsx';
 
 type FormValues = {
   account: string;
   symbol: string;
-  price: string;
-  volume: string;
-}
-
-export type OrderValues = {
-  account: string;
-  symbol: string;
-  side: string;
   price: string;
   volume: string;
 }
@@ -55,11 +49,13 @@ const schema: yup.ObjectSchema<FormValues> = yup.object({
 
 const OrderForm = () => {
   const dispatch = useDispatch()
-  const orderValueRef = useRef<OrderValues | null>(null)
+  const orderValueRef = React.useRef<OrderValue | null>(null)
+  const sideRef = React.useRef<string>('B')
 
   const stockInfo = useAppSelector(selectStockInfo)
   const accountBalance = useAppSelector(selectAccountBalance)
   const stockList = useAppSelector(selectStockList)
+  const selectedOrder = useAppSelector(selectSelectedOrder)
 
   const [isOpenOrderConfirm, setIsOpenOrderConfirm] = React.useState(false)
 
@@ -67,7 +63,14 @@ const OrderForm = () => {
     resolver: yupResolver(schema),
   })
 
-  const orderValue: number = ((StringToDouble(form.watch().price) * 1000) * StringToDouble(form.watch().volume))
+  const price = form.watch().volume
+  const volume = form.watch().volume
+  const orderValue: number = React.useMemo(() => (StringToDouble(price) * 1000) * StringToDouble(volume), [price, volume])
+
+  React.useEffect(() => {
+    if (!selectedOrder) return;
+    handleSetOrderForm(selectedOrder)
+  }, [selectedOrder, dispatch])
 
   const onSubmit = (data: FormValues) => {
     event?.preventDefault();
@@ -88,7 +91,7 @@ const OrderForm = () => {
     orderValueRef.current = {
       account: form.getValues().account,
       symbol: form.getValues().symbol,
-      side: 'B',
+      side: sideRef.current,
       price: form.getValues().price,
       volume: form.getValues().volume,
     }
@@ -104,7 +107,6 @@ const OrderForm = () => {
     } else {
       newPrice = minusPrice(currentPrice, stockInfo.c, stockInfo.f, stockInfo.r, stockInfo.step);
     }
-
     form.setValue('price', newPrice.toString());
   }
 
@@ -151,7 +153,7 @@ const OrderForm = () => {
       account: account,
       data: {
         page: 1,
-        number: 1000
+        size: 1000
       }
     }
     dispatch(fetchAccountPortfolioRequest(params))
@@ -181,6 +183,14 @@ const OrderForm = () => {
       }
     }
     dispatch(fetchAccountBalanceRequest(params))
+  }
+
+  const handleSetOrderForm = (selectedOrder: OrderValue) => {
+    sideRef.current = selectedOrder.side
+    form.setValue('symbol', selectedOrder.symbol);
+    form.setValue('price', selectedOrder.price);
+    form.setValue('volume', selectedOrder.volume);
+    handleOnBlurSymbol()
   }
 
   return (
@@ -219,7 +229,12 @@ const OrderForm = () => {
           <div className='grid grid-cols-6 gap-1'>
             <div className='flex flex-col items-center'>
               <span>Loại</span>
-              <div className='py-1 h-7 w-full bg-bg-elevated-3 text-center'>Mua</div>
+              <div className={clsx(
+                'py-1 h-7 w-full text-center',
+                sideRef.current === 'B' ? 'bg-bg-buy' : "bg-bg-sell"
+              )}>
+                {sideRef.current === 'B' ? "Mua" : "Bán"}
+              </div>
             </div>
             <div className='flex flex-col items-center'>
               <span>Tài khoản</span>

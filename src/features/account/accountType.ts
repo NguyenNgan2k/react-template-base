@@ -41,7 +41,7 @@ export type AccountPortfolioRequest = {
   account: string;
   data: {
     page: number;
-    number: number;
+    size: number;
   };
 };
 

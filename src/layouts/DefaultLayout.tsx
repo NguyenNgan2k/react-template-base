@@ -33,7 +33,7 @@ export default function DefaultLayout() {
   // Lấy list mã chứng khoán
   useEffect(() => {
     dispatch(fetchStockListRequest());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (!userData || !quickOrderSymbol) return;

@@ -99,17 +99,16 @@ export default function OrderConfirmModal({
                       Lệnh
                     </span>
                     <span
-                      className={`text-sm font-normal ${
-                        data?.orderSide === "B"
+                      className={`text-sm font-normal ${data?.orderSide === "B"
                           ? "text-green-500"
                           : "text-red-500"
-                      }`}
+                        }`}
                     >
                       {data?.orderSide === "B"
                         ? "Mua"
                         : data?.orderSide === "S"
-                        ? "Bán"
-                        : ""}
+                          ? "Bán"
+                          : ""}
                     </span>
                   </div>
 
@@ -150,8 +149,8 @@ export default function OrderConfirmModal({
                     <span className="text-text-title text-sm font-normal">
                       {numberFormat(
                         StringToDouble(data?.orderPrice) *
-                          1000 *
-                          StringToInt(data?.orderVolume)
+                        1000 *
+                        StringToInt(data?.orderVolume)
                       )}
                     </span>
                   </div>

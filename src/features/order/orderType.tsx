@@ -22,3 +22,11 @@ export interface OrderResponse {
   msg: string;
   data: null;
 }
+
+export type OrderValue = {
+  symbol: string;
+  account: string;
+  side: string;
+  price: string;
+  volume: string;
+}

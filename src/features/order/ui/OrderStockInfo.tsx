@@ -8,23 +8,21 @@ import _ from "lodash";
 import React from "react";
 import type { Stock } from "@/features/stock/stockType";
 import { getSymbolKey } from "@/features/stock/stockBusiness";
-import { selectSelectedSymbol } from "../redux/orderSlice";
+import { selectedOrder, selectSelectedSymbol } from "../redux/orderSlice";
+import type { OrderValue } from "../orderType";
 
 type StockInfoProps = {
 
 }
 
-const StockInfo: React.FC<StockInfoProps> = (props) => {
+const StockInfo: React.FC<StockInfoProps> = () => {
   const dispatch = useAppDispatch()
   const [stock, setStock] = React.useState<Stock | null>(null)
+  const prevSymbolKeyRef = React.useRef<string>('')
 
-  const snapshot = useAppSelector((state) =>
-    stock ? selectSnapshotBySymbol(state, getSymbolKey(stock)) : undefined,
-  );
-  const stockList = useAppSelector(selectStockList)
   const selectedSymbol = useAppSelector(selectSelectedSymbol)
-
-  const prevSymbolKeyRef = React.useRef<string | null>(null)
+  const stockList = useAppSelector(selectStockList)
+  const snapshot = useAppSelector((state) => selectSnapshotBySymbol(state, prevSymbolKeyRef.current));
 
   const buyPercent = React.useMemo(() => {
     if (!snapshot) return 0;
@@ -72,6 +70,19 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
     setStock(stock)
   }
 
+  const handleOnClickButtonBuySell = (side: "B" | "S", level: 1 | 2 | 3) => {
+    if (!stock || !snapshot) return;
+    const order: OrderValue = {
+      side: side,
+      account: '',
+      symbol: stock.shareCode,
+      price: snapshot[`price${side === 'B' ? 'Buy' : 'Sell'}${level}`],
+      volume: snapshot[`volume${side === 'B' ? 'Buy' : 'Sell'}${level}`],
+    }
+    dispatch(selectedOrder(order))
+  }
+
+
   return (
     <div className="rounded border border-bd-default flex flex-col gap-2">
       <div className="h-6">
@@ -83,11 +94,7 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
           <div className=" grid grid-cols-3">
             <div className='flex flex-col items-center'>
               <span>Cao</span>
-              <span
-                data-symbol='CEO:G1:STX'
-                data-key='high'>
-                {snapshot?.high}
-              </span>
+              <span> {snapshot?.high}</span>
             </div>
             <div className='flex flex-col items-center'>
               <span>Thấp</span>
@@ -113,10 +120,8 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
         </div>
         <div>
           <div className="grid grid-cols-12">
-            <span className="col-span-2" />
-            <span className="col-span-4">Giá bán tốt nhất</span>
-            <span className="col-span-4">Giá mua tốt nhất</span>
-            <span className="col-span-2" />
+            <div className="col-start-3 col-end-7">Giá bán tốt nhất</div>
+            <div className="col-start-7 col-end-11 text-right">Giá mua tốt nhất</div>
           </div>
           <div className="grid grid-cols-12">
             <div className="col-span-2 text-center">{buyPercent}%</div>
@@ -132,40 +137,67 @@ const StockInfo: React.FC<StockInfoProps> = (props) => {
           </div>
           <div className="flex flex-col gap-1">
             <div className="grid grid-cols-12 gap-1">
-              <Button className="col-span-2" variant="success">Mua</Button>
-              <div className="text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded">
+              <Button
+                className="col-span-2" variant="success"
+                onClick={() => handleOnClickButtonBuySell('B', 1)}  >
+                Mua
+              </Button>
+              <div className="pill-orderbook ">
                 <span>{snapshot?.priceBuy1}</span>
                 <span>{snapshot?.volumeBuy1}</span>
               </div>
-              <div className="text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded">
+              <div className="pill-orderbook ">
                 <span>{snapshot?.priceSell1}</span>
                 <span>{snapshot?.volumeSell1}</span>
               </div>
-              <Button className="col-span-2" variant="danger">Bán</Button>
+              <Button
+                className="col-span-2" variant="danger"
+                onClick={() => handleOnClickButtonBuySell('S', 1)}
+              >
+                Bán
+              </Button>
             </div>
             <div className="grid grid-cols-12 gap-1">
-              <Button className="col-span-2" variant="success">Mua</Button>
-              <div className="text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded">
+              <Button
+                className="col-span-2" variant="success"
+                onClick={() => handleOnClickButtonBuySell('B', 2)}  >
+                Mua
+              </Button>
+              <div className="pill-orderbook ">
                 <span>{snapshot?.priceBuy2}</span>
                 <span>{snapshot?.volumeBuy2}</span>
               </div>
-              <div className="text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded">
+              <div className="pill-orderbook ">
                 <span>{snapshot?.priceSell2}</span>
                 <span>{snapshot?.volumeSell2}</span>
               </div>
-              <Button className="col-span-2" variant="danger">Bán</Button>
+              <Button
+                className="col-span-2" variant="danger"
+                onClick={() => handleOnClickButtonBuySell('S', 2)}
+              >
+                Bán
+              </Button>
             </div>
             <div className="grid grid-cols-12 gap-1">
-              <Button className="col-span-2" variant="success">Mua</Button>
-              <div className="text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded">
+              <Button
+                className="col-span-2" variant="success"
+                onClick={() => handleOnClickButtonBuySell('B', 3)}  >
+                Mua
+              </Button>
+              <div className="pill-orderbook ">
                 <span>{snapshot?.priceBuy3}</span>
                 <span>{snapshot?.volumeBuy3}</span>
               </div>
-              <div className="text-[11px] px-1 col-span-4 flex items-center justify-between border border-bd-default rounded">
+              <div className="pill-orderbook ">
                 <span>{snapshot?.priceSell3}</span>
                 <span>{snapshot?.volumeSell3}</span>
               </div>
-              <Button className="col-span-2" variant="danger">Bán</Button>
+              <Button
+                className="col-span-2" variant="danger"
+                onClick={() => handleOnClickButtonBuySell('S', 3)}
+              >
+                Bán
+              </Button>
             </div>
           </div>
         </div>
