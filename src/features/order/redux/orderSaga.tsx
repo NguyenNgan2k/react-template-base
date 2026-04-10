@@ -1,6 +1,5 @@
-import { handleRequestError } from "@/utils";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import {
+  all,
   call,
   put,
   takeLatest,
@@ -8,27 +7,29 @@ import {
   type ForkEffect,
   type PutEffect,
 } from "redux-saga/effects";
-import { fetchOrdersApi } from "../../../api/placeOrder";
-import { orderFailure, orderRequest, orderSuccess } from "./orderSlice";
-import type { OrderPayload, OrderResponse } from "../orderType";
+import { fetchOrderDetailError, fetchOrderDetailRequest, fetchOrderDetailSuccess } from "./orderSlice";
+import type { OrderDetail } from "../orderType";
+import { apiFetchOrderDetail } from "../orderNetwork";
 
 type GeneratorYield = CallEffect | PutEffect | ForkEffect;
 
-function* orderSaga(action: PayloadAction<OrderPayload>): Generator<GeneratorYield, void, OrderResponse> {
+function* fetchOrderDetailSaga(
+  action: ReturnType<typeof fetchOrderDetailRequest>,
+): Generator<GeneratorYield, void, OrderDetail[]> {
   try {
-    const { side, params } = action.payload;
-    const response: OrderResponse = yield call(fetchOrdersApi, side, params);
-
-    if (response.rc === 1) {
-      yield put(orderSuccess(response.data));
-    } else {
-      yield put(orderFailure(response.msg || "Đặt lệnh thất bại"));
-    }
-  } catch (error: unknown) {
-    yield* handleRequestError(error, orderFailure, "", false);
+    const data = (yield call(
+      apiFetchOrderDetail,
+      action.payload,
+    )) as OrderDetail[];
+    yield put(fetchOrderDetailSuccess(data));
+  } catch (error) {
+    yield put(fetchOrderDetailError());
   }
 }
 
-export default function* orderSagaRoot(): Generator<GeneratorYield> {
-  yield takeLatest(orderRequest, orderSaga);
+export default function* orderSagaRoot() {
+  yield all([
+    takeLatest(fetchOrderDetailRequest.type, fetchOrderDetailSaga),
+  ]);
+
 }

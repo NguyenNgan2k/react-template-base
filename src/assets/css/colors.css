@@ -33,6 +33,8 @@ Overlay (tooltip, popover) */
   --color-text-subtitle: #ffffffa3;
   --color-text-disable: #ffffff52;
   --color-text-hyperlink: #00b7e8;
+  --color-text-buy: #0bdf39;
+  --color-text-sell: #ff0d0d;
 
   --color-primary-darker: #032317;
   --color-primary-dark: #0b4d86;

@@ -9,7 +9,7 @@ import type { OrderValue } from "@/features/order/orderType";
 
 const Footer = () => {
   const dispatch = useAppDispatch()
-  const [isOpenOrderPage, setIsOpenOrderPage] = React.useState(true);
+  const [isOpenOrderPage, setIsOpenOrderPage] = React.useState(false);
 
   const handleOnClickButtonBuySell = (side: "B" | "S") => {
     const order: OrderValue = {

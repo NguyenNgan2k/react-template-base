@@ -1,6 +1,7 @@
 import Descriptions, { type DescriptionsProps } from "@/components/desctiption/Descriptions";
 import ModalLayout from "@/components/layout/ModalLayout";
-import type { OrderValue } from "../orderType";
+import type { OrderValue } from "../../orderType";
+import Button from "@/components/common/Button";
 
 type OrderConfirmProps = {
   order: OrderValue,
@@ -41,13 +42,25 @@ const OrderConfirm = (props: OrderConfirmProps) => {
     <ModalLayout
       title="Xác nhận đặt lệnh"
       onClose={props.onClose}
-      onAccept={props.onAccept}
     >
-      <div>
-        <Descriptions
-          className="flex flex-col gap-4"
-          items={items}
-        />
+      <Descriptions
+        className="flex flex-col gap-4"
+        items={items}
+      />
+      <div className="flex gap-2 justify-center">
+        <Button
+          variant="close"
+          className="w-22"
+          onClick={props.onClose}
+        >
+          Hủy
+        </Button>
+        <Button
+          variant="success"
+          className="w-22"
+          onClick={props.onAccept}>
+          Xác nhận
+        </Button>
       </div>
     </ModalLayout>
   )

@@ -1,15 +1,42 @@
 import { usePerfectScrollbar } from "@/hooks/usePerfectScrollbar.ts";
 import type { Column } from "@/types";
+import clsx from "clsx";
+import { TbTooltip } from "react-icons/tb";
+import { Tooltip } from 'react-tooltip'
+import { Menu, Item, useContextMenu, type ItemParams } from 'react-contexify';
+
+type ContextMenuItem = {
+  id: string,
+  text: string,
+}
+
+export type MenuProps<T> = {
+  row: T
+}
+
+export type MenuParams<T> = ItemParams<MenuProps<T>>
 
 export type TableProps<T> = {
   columns: Column<T>[];
-  data: T[]|null;
+  data: T[] | null;
   classWrapper?: string;
   classTable?: string;
+  menu?: ContextMenuItem[]
+  onClickMenu?: (e: MenuParams<T>) => void
 }
 
-export default function Table<T>({ columns, data, classWrapper, classTable }: TableProps<T>) {
+export default function Table<T>({ columns, data, classWrapper, classTable, menu, onClickMenu }: TableProps<T>) {
   const { containerRef } = usePerfectScrollbar();
+  const { show } = useContextMenu({ id: 'table' });
+
+  function handleContextMenu(event: React.MouseEvent<HTMLElement>, row: T) {
+    event.preventDefault();
+    show({
+      event,
+      props: { row: row }
+    })
+  }
+
   return (
     <div ref={containerRef} className={classWrapper}>
       <table className={"table w-full " + classTable} >
@@ -17,7 +44,23 @@ export default function Table<T>({ columns, data, classWrapper, classTable }: Ta
           <tr>
             {columns.map((col) => (
               <th key={col.key} className={col.className}>
-                {col.title}
+                {!col.tooltip && col.title}
+                {col.tooltip && (
+                  <div className="flex gap-1 justify-center">
+                    {col.title}
+                    <TbTooltip className={clsx(
+                      "cursor-pointer",
+                      col.title
+                    )} />
+                    <Tooltip anchorSelect={`.${col.title}`}>
+                      <ul className="m-0 p-0" style={{ listStyle: 'none' }}>
+                        {col.tooltip.map((item) => (
+                          <li>{item}</li>
+                        ))}
+                      </ul>
+                    </Tooltip>
+                  </div>
+                )}
               </th>
             ))}
           </tr>
@@ -31,7 +74,7 @@ export default function Table<T>({ columns, data, classWrapper, classTable }: Ta
             </tr>
           ) : (
             data?.map((row, idx) => (
-              <tr key={idx}>
+              <tr key={idx} onContextMenu={(e) => handleContextMenu(e, row)}>
                 {columns.map(col => (
                   <td key={col.key} className={col.className}>
                     {col.render(row)}
@@ -42,6 +85,13 @@ export default function Table<T>({ columns, data, classWrapper, classTable }: Ta
           )}
         </tbody>
       </table>
+      <Menu id="table">
+        {
+          menu?.map((item) => (
+            <Item id={item.id} onClick={onClickMenu}>{item.text}</Item>
+          ))
+        }
+      </Menu>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { IoToggle } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
 import * as yup from "yup";
-import OrderConfirm from './OrderConfirm';
+import OrderConfirm from './modal/OrderConfirm';
 import { minusPrice, minusVolume, plusPrice, plusVolume, validatePrice, validateVolume } from '../orderBusiness';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { showToast } from "@/hooks/useToast";

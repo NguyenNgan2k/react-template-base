@@ -163,3 +163,7 @@ p {
 span {
   @apply h-6 flex items-center;
 }
+
+.react-contexify__menu {
+  border-top: none;
+}

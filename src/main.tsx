@@ -1,4 +1,6 @@
 import "driver.js/dist/driver.css";
+import 'react-tooltip/dist/react-tooltip.css'
+import 'react-contexify/ReactContexify.css';
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import Modal from "react-modal";

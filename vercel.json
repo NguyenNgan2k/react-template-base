@@ -1,6 +1,9 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://api.dtnd.vn/v1/$1" },
+    {
+      "source": "/api/(.*)",
+      "destination": "https://api.dtnd.vn/v1/broker/$1"
+    },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

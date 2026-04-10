@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://api.dtnd.vn/v1",
+        target: "https://api.dtnd.vn/v1/broker",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
@@ -24,6 +24,6 @@ export default defineConfig({
     format: "es",
   },
   build: {
-    outDir: "dist"
+    outDir: "dist",
   },
 });
