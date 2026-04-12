@@ -19,6 +19,15 @@ export type LoginResponse = {
   sessionId: string;
 };
 
+export type ChangePassRequest = {
+  oldPassWord: string;
+  password: string;
+};
+
+export type ChangePassResponse = {
+
+}
+
 export type UserData = {
   userId: string;
   b2: string;

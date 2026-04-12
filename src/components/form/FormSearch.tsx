@@ -1,4 +1,4 @@
-import Form, { type FormProps } from "./FormLayout";
+import Form, { type FormProps } from "./Form";
 
 const FormSearch = (props: FormProps) => {
   return (
@@ -13,7 +13,7 @@ const Body = (props: { children?: React.ReactNode }) => {
 };
 
 
-const FormField = (props: { label: string, children?: React.ReactNode }) => {
+const Field = (props: { label: string, children?: React.ReactNode }) => {
   return <div className="flex gap-1 items-center">
     <div>{props.label}</div>
     <div className="w-28">{props.children}</div>
@@ -21,6 +21,6 @@ const FormField = (props: { label: string, children?: React.ReactNode }) => {
 };
 
 FormSearch.Body = Body;
-FormSearch.FormField = FormField;
+FormSearch.Field = Field;
 
 export default FormSearch;

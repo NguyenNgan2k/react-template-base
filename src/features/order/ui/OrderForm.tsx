@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IoToggle } from 'react-icons/io5';
-import { useDispatch } from 'react-redux';
 import * as yup from "yup";
 import OrderConfirm from './modal/OrderConfirm';
 import { minusPrice, minusVolume, plusPrice, plusVolume, validatePrice, validateVolume } from '../orderBusiness';
@@ -16,7 +15,7 @@ import { fetchAccountBalanceRequest, fetchAccountInfoRequest, fetchAccountPortfo
 import type { AccountBalanceRequest, AccountPortfolioRequest } from '@/features/account/accountType';
 import { fetchStockInfoRequest, selectStockInfo } from '@/features/stock/redux/stockSlice';
 import type { Stock, StockInfoRequest } from '@/features/stock/stockType';
-import { useAppSelector } from '@/store/hook';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { getNameMarket } from '@/features/stock/stockBusiness';
 import { selectedSymbol, selectSelectedOrder } from '../redux/orderSlice';
 import { selectStockList } from '@/features/stock/redux/stockSelector';
@@ -48,7 +47,7 @@ const schema: yup.ObjectSchema<FormValues> = yup.object({
 })
 
 const OrderForm = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const orderValueRef = React.useRef<OrderValue | null>(null)
   const sideRef = React.useRef<string>('B')
 

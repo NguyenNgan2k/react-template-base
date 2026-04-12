@@ -1,27 +1,43 @@
 import clsx from "clsx";
 
-export type DescriptionsProps = {
-  items: Array<{
-    key: React.Key;
-    label: React.ReactNode;
-    children?: React.ReactNode;
-  }>,
+export type DescriptionItemProps = {
   className?: string;
+  label: React.ReactNode;
+  children: React.ReactNode;
 }
 
-const Descriptions: React.FC<DescriptionsProps> = (props) => {
+export type DescriptionsProps = {
+  items?: Array<DescriptionItemProps>,
+  className?: string;
+  children?: React.ReactNode;
+}
+
+const Descriptions = (props: DescriptionsProps) => {
   return (
     <div className={clsx(
       props.className
     )}>
-      {props.items.map((item) => (
-        <div key={item.key} className="grid grid-cols-[100px_auto]">
-          <span className="p-0.5">{item.label}</span>
-          <span className="p-0.5">{item.children}</span>
+      {props.items && props.items.map((item, index) => (
+        <div key={index}>
+          <Item {...item} />
         </div>
       ))}
+      {props.children}
     </div>
   );
 
 }
+
+const Item: React.FC<DescriptionItemProps> = (props) => {
+  return (
+    <div
+      className={clsx("flex", props.className)}
+    >
+      <span className="p-0.5 w-1/3" > {props.label}</span >
+      <span className="p-0.5 w-2/3 font-semibold">{props.children}</span>
+    </div >
+  )
+}
+
+Descriptions.Item = Item;
 export default Descriptions

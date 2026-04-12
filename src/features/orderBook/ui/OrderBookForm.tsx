@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button";
-import FormSearch from "@/components/form/FormSearchLayout";
+import FormSearch from "@/components/form/FormSearch";
 import SelectFormField from "@/components/inputs/select/standard/SelectFormField";
 import TextFormField from "@/components/inputs/text/TextFormField";
 import { useAppDispatch } from "@/store/hook";
@@ -59,28 +59,28 @@ const OrderBookForm = () => {
   return (
     <FormSearch form={form} onSubmit={onSubmit}>
       <FormSearch.Body>
-        <FormSearch.FormField label="Tài khoản">
+        <FormSearch.Field label="Tài khoản">
           <TextFormField
             name='account'
             maxLength={7}
           />
-        </FormSearch.FormField>
-        <FormSearch.FormField
+        </FormSearch.Field>
+        <FormSearch.Field
           label="Mã CK"
         >
           <TextFormField name="symbol" />
-        </FormSearch.FormField>
-        <FormSearch.FormField
+        </FormSearch.Field>
+        <FormSearch.Field
           label="Sổ hiệu lệnh"
         >
           <TextFormField name="no" />
-        </FormSearch.FormField>
-        <FormSearch.FormField
+        </FormSearch.Field>
+        <FormSearch.Field
           label="Kênh giao dịch"
         >
           <TextFormField name="channel" />
-        </FormSearch.FormField>
-        <FormSearch.FormField
+        </FormSearch.Field>
+        <FormSearch.Field
           label="Trạng thái lệnh"
         >
           <SelectFormField
@@ -88,8 +88,8 @@ const OrderBookForm = () => {
             options={orderStatusOptions}
             mode='label'
           />
-        </FormSearch.FormField>
-        <FormSearch.FormField
+        </FormSearch.Field>
+        <FormSearch.Field
           label="Loại lệnh"
         >
           <SelectFormField
@@ -97,7 +97,7 @@ const OrderBookForm = () => {
             options={orderTypeOptions}
             mode='label'
           />
-        </FormSearch.FormField>
+        </FormSearch.Field>
         <Button type="submit">Tìm kiếm</Button>
       </FormSearch.Body>
     </FormSearch >

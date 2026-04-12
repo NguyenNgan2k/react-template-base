@@ -5,7 +5,7 @@ import { useAppSelector } from '@/store/hook';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import ForceChangePassForm from './forms/ForceChangePassForm';
+import ChangePassForm from './forms/ChangePassForm';
 import { checkLoginRules } from '../loginBussiness';
 import { selectUserData } from '../redux/loginSlice';
 import LoginForm from './forms/LoginForm';
@@ -43,7 +43,7 @@ const LoginPage = () => {
             {
               activeForm === "login" && <LoginForm />}
             {
-              activeForm === "forceChangePass" && <ForceChangePassForm />
+              activeForm === "forceChangePass" && <ChangePassForm />
             }
           </div>
         </div>

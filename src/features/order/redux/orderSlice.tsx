@@ -1,17 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { OrderDetail, OrderDetailRequest, OrderValue } from "../orderType";
+import type { OrderHistory, OrderHistoryRequest, OrderValue } from "../orderType";
 import type { RootState } from "@/store";
 
 export interface OrderState {
   selectedSymbol: string;
   selectedOrder: OrderValue | null;
-  orderDetail: OrderDetail[] | null;
+  orderHistory: OrderHistory[] | null;
 }
 
 const initialState: OrderState = {
   selectedSymbol: '',
   selectedOrder: null,
-  orderDetail: null,
+  orderHistory: null,
 };
 
 const orderSlice = createSlice({
@@ -26,18 +26,18 @@ const orderSlice = createSlice({
       state.selectedOrder = action.payload
     },
 
-    fetchOrderDetailRequest: (state, action: PayloadAction<OrderDetailRequest>) => {
+    fetchOrderHistoryRequest: (state, action: PayloadAction<OrderHistoryRequest>) => {
     },
-    fetchOrderDetailSuccess: (state, action: PayloadAction<OrderDetail[]>) => {
-      state.orderDetail = action.payload
+    fetchOrderHistorySuccess: (state, action: PayloadAction<OrderHistory[]>) => {
+      state.orderHistory = action.payload
     },
-    fetchOrderDetailError: () => {
+    fetchOrderHistoryError: () => {
 
     }
   },
 });
 
-export const { selectedSymbol, selectedOrder, fetchOrderDetailRequest, fetchOrderDetailSuccess, fetchOrderDetailError } = orderSlice.actions;
+export const { selectedSymbol, selectedOrder, fetchOrderHistoryRequest, fetchOrderHistorySuccess, fetchOrderHistoryError } = orderSlice.actions;
 
 export default orderSlice.reducer;
 
@@ -47,5 +47,8 @@ export const selectSelectedSymbol = (state: RootState): string =>
 export const selectSelectedOrder = (state: RootState): OrderValue | null =>
   state.order.selectedOrder;
 
-export const selectOrderDetail = (state: RootState) =>
-  state.order.orderDetail;
+export const selectOrderHistory = (state: RootState) =>
+  state.order.orderHistory?.filter((o: OrderHistory) => o.type !== 'MATCHED') || [];
+
+export const selectOrderHistoryMatched = (state: RootState) =>
+  state.order.orderHistory?.filter((o: OrderHistory) => o.type === 'MATCHED') || [];

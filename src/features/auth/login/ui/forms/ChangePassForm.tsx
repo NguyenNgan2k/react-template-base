@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import * as yup from "yup";
+import { changePassRequest } from '../../redux/loginSlice';
 
 type FormValues = {
   oldPass: string;
@@ -26,7 +27,7 @@ const schema: yup.ObjectSchema<FormValues> = yup.object({
     .matches(/^.{6,}$/, "Mật khẩu xác nhận phải có ít nhất 6 ký tự"),
 })
 
-const ForceChangePassForm = () => {
+const ChangePassForm = () => {
   const dispatch = useDispatch()
   const form = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -34,7 +35,7 @@ const ForceChangePassForm = () => {
 
   const onSubmit = (data: FormValues) => {
     event?.preventDefault();
-
+    dispatch(changePassRequest({ oldPassWord: data.oldPass, password: data.newPass }))
   }
 
   return (
@@ -73,4 +74,4 @@ const ForceChangePassForm = () => {
   )
 }
 
-export default ForceChangePassForm;
+export default ChangePassForm;

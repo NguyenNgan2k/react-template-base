@@ -7,6 +7,8 @@ import { numberFormat, StringToDouble } from "@/utils";
 import { getStatusOrderName } from "../OrderBookBusiness";
 import { useRef, useState } from "react";
 import OrderDetail from "@/features/order/ui/modal/OrderDetail";
+import OrderEdit from "@/features/order/ui/modal/OrderEdit";
+import OrderCancel from "@/features/order/ui/modal/OrderCancel";
 
 const columns: Column<OrderBook>[] = [
   {
@@ -130,7 +132,8 @@ const OrderBookTable = () => {
   const orderBook = useAppSelector(selectOrderBook);
   const selectedOrderRef = useRef<OrderBook | null>(null)
   const [isOpenOrderDetail, setIsOpenOrderDetail] = useState<boolean>(false);
-
+  const [isOpenOrderEdit, setIsOpenOrderEdit] = useState<boolean>(false);
+  const [isOpenOrderCancel, setIsOpenOrderCancel] = useState<boolean>(false);
 
   const handleOnClickMenuItem = (menuParams: MenuParams<OrderBook>) => {
     switch (menuParams.id) {
@@ -139,8 +142,12 @@ const OrderBookTable = () => {
         setIsOpenOrderDetail(true)
         break;
       case "edit":
+        selectedOrderRef.current = menuParams.props?.row || null
+        setIsOpenOrderEdit(true)
         break;
-      case "delete":
+      case "cancel":
+        selectedOrderRef.current = menuParams.props?.row || null
+        setIsOpenOrderCancel(true)
         break;
     }
   }
@@ -154,7 +161,7 @@ const OrderBookTable = () => {
         menu={[
           { id: 'detail', text: "Chi tiết" },
           { id: 'edit', text: "Sửa lệnh" },
-          { id: 'delete', text: "Hủy lệnh" },
+          { id: 'cancel', text: "Hủy lệnh" },
         ]}
         onClickMenu={handleOnClickMenuItem}
       />
@@ -162,6 +169,20 @@ const OrderBookTable = () => {
         selectedOrderRef.current && isOpenOrderDetail &&
         <OrderDetail
           onClose={() => setIsOpenOrderDetail(false)}
+          selectedOrder={selectedOrderRef.current}
+        />
+      }
+      {
+        selectedOrderRef.current && isOpenOrderEdit &&
+        <OrderEdit
+          onClose={() => setIsOpenOrderEdit(false)}
+          selectedOrder={selectedOrderRef.current}
+        />
+      }
+      {
+        selectedOrderRef.current && isOpenOrderCancel &&
+        <OrderCancel
+          onClose={() => setIsOpenOrderCancel(false)}
           selectedOrder={selectedOrderRef.current}
         />
       }

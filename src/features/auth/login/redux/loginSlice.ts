@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { loadUserDataFromStorage } from "@/utils/userData";
 import { SESSION_ID_KEY, USER_DATA_KEY } from "@/configs/auth";
-import type { UserData, LoginRequest } from "../loginType";
+import type { UserData, LoginRequest, ChangePassRequest, ChangePassResponse } from "../loginType";
 
 type LoginState = {
   userData: UserData | null;
@@ -18,21 +18,30 @@ export const authSlice = createSlice({
     loginRequest: (
       state: LoginState,
       action: PayloadAction<LoginRequest>,
-    ) => {},
+    ) => { },
     loginSuccess: (state: LoginState, action: PayloadAction<UserData>) => {
       state.userData = action.payload;
     },
-    loginError: (state: LoginState) => {},
+    loginError: (state: LoginState) => { },
     logout: (state: LoginState) => {
       if (!state.userData) return;
       state.userData = null;
       localStorage.removeItem(USER_DATA_KEY);
       localStorage.removeItem(SESSION_ID_KEY);
     },
+
+    changePassRequest: (
+      state: LoginState,
+      action: PayloadAction<ChangePassRequest>,
+    ) => { },
+    changePassSuccess: (state: LoginState, action: PayloadAction<ChangePassResponse>) => {
+    },
+    changePassError: (state: LoginState) => { },
+
   },
 });
 
-export const { loginRequest, loginSuccess, loginError, logout } =
+export const { loginRequest, loginSuccess, loginError, logout, changePassRequest, changePassSuccess, changePassError } =
   authSlice.actions;
 export default authSlice.reducer;
 

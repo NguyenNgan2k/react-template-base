@@ -9,9 +9,9 @@ import {
   type ForkEffect,
   type PutEffect,
 } from "redux-saga/effects";
-import type { LoginResponse, UserData } from "../loginType";
-import { apiLogin } from "../loginNetwork";
-import { loginError, loginRequest, loginSuccess } from "./loginSlice";
+import type { ChangePassResponse, LoginResponse, UserData } from "../loginType";
+import { apiChangePass, apiLogin } from "../loginNetwork";
+import { changePassError, changePassRequest, changePassSuccess, loginError, loginRequest, loginSuccess } from "./loginSlice";
 
 type GeneratorYield = CallEffect | PutEffect | ForkEffect;
 
@@ -40,6 +40,22 @@ function* loginRequestSaga(
   }
 }
 
+function* changePassSaga(
+  action: ReturnType<typeof changePassRequest>,
+): Generator<GeneratorYield, void, LoginResponse> {
+  try {
+    const data = (yield call(apiChangePass, action.payload)) as ChangePassResponse;
+    // Dispatch success
+    yield put(changePassSuccess(data));
+  } catch (error) {
+    // Dispatch error
+    yield put(changePassError());
+  }
+}
+
 export default function* AuthWatcher() {
-  yield all([takeLatest(loginRequest.type, loginRequestSaga)]);
+  yield all([
+    takeLatest(loginRequest.type, loginRequestSaga),
+    takeLatest(changePassRequest.type, changePassSaga)
+  ]);
 }

@@ -1,11 +1,11 @@
 import { apiRequest } from "@/networks/apiRequest";
-import type { OrderDetailRequest } from "./orderType";
+import type { OrderHistoryRequest } from "./orderType";
 
-export const apiFetchOrderDetail = async (
-  params: OrderDetailRequest,
-): Promise<OrderDetailRequest> => {
-  const res = await apiRequest.get<OrderDetailRequest>(
-    `/orders/${params}/detail`,
+export const apiFetchOrderHistory = async (
+  params: OrderHistoryRequest,
+): Promise<OrderHistoryRequest> => {
+  const res = await apiRequest.get<OrderHistoryRequest>(
+    `/broker/orders/${params}/detail`,
   );
   return res.data;
 };

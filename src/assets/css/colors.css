@@ -7,7 +7,7 @@ Surface (card, table, input)
 Elevated (modal, dropdown)
 ↓
 Overlay (tooltip, popover) */
-  /* --color-{component}-{variant}-{property}-{state}:{value} */
+/* --color-{rose}-{state}:{value} */
 
   --color-bg-base: #1b1a26;
   --color-bg-surface: #323143;
@@ -77,21 +77,3 @@ Overlay (tooltip, popover) */
   --color-button-green: #20bf7b;
 }
 
-@layer utilities {
-  .bg-base {
-    background: var(--color-bg-base);
-  }
-  .bg-surface {
-    background: var(--color-bg-surface);
-  }
-  .bg-elevated {
-    background: var(--color-bg-elevated);
-  }
-
-  .text-primary {
-    color: var(--color-text-primary);
-  }
-  .border-default {
-    border-color: var(--color-border-default);
-  }
-}

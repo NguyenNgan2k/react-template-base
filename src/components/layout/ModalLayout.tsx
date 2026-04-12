@@ -14,7 +14,7 @@ const ModalLayout: React.FC<ModalProps> = (props) => {
   return ReactDOM.createPortal(
     <div className="modal-overlay">
       <div className={clsx("modal-content", classContent)}>
-        <div className="flex">
+        <div className="py-2 flex border-b border-bd-default">
           <div className='text-base font-semibold w-full'>{title}</div>
           <IoClose className="w-6 h-6 ml-auto cursor-pointer" onClick={() => onClose()} />
         </div>

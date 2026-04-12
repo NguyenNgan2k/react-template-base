@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button";
-import FormSearch from "@/components/form/FormSearchLayout";
+import FormSearch from "@/components/form/FormSearch";
 import { useAppDispatch } from "@/store/hook";
 import { useForm } from "react-hook-form";
 
@@ -14,10 +14,10 @@ const PutthroughForm = () => {
   return (
     <FormSearch form={form} onSubmit={onSubmit}>
       <FormSearch.Body>
-        <FormSearch.FormField lable="Tài khoản">
-        </FormSearch.FormField>
-        <FormSearch.FormField lable="Sổ hiệu lệnh">
-        </FormSearch.FormField>
+        <FormSearch.Field label="Tài khoản">
+        </FormSearch.Field>
+        <FormSearch.Field label="Sổ hiệu lệnh">
+        </FormSearch.Field>
         <Button type="submit">Tìm kiếm</Button>
       </FormSearch.Body>
     </FormSearch>

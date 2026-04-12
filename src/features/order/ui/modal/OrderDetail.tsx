@@ -1,19 +1,18 @@
 import ModalLayout from "@/components/layout/ModalLayout";
 import Table from "@/components/table/Table";
-import type { OrderBook } from "@/features/orderBook/orderBookType";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column } from "@/types";
 import { numberFormat } from "@/utils";
 import { useEffect } from "react";
-import { fetchOrderDetailRequest, selectOrderDetail } from "../../redux/orderSlice";
-import type { OrderDetail } from "@/features/order/orderType";
+import { fetchOrderHistoryRequest, selectOrderHistory, selectOrderHistoryMatched } from "../../redux/orderSlice";
+import type { OrderDetail, OrderHistory } from "@/features/order/orderType";
 
 type OrderDetailProps = {
-  selectedOrder: OrderBook
+  selectedOrder: OrderDetail
   onClose: () => void
 }
 
-const columns: Column<OrderBook>[] = [
+const columns: Column<OrderDetail>[] = [
   {
     key: "side",
     title: "Lệnh",
@@ -80,7 +79,7 @@ const columns: Column<OrderBook>[] = [
   },
 ]
 
-const columnsOrderInsert: Column<OrderDetail>[] = [
+const columnsOrderHis: Column<OrderHistory>[] = [
   {
     key: "ao",
     title: "A/O",
@@ -107,7 +106,7 @@ const columnsOrderInsert: Column<OrderDetail>[] = [
   },
 ]
 
-const columnsOrderMatched: Column<OrderDetail>[] = [
+const columnsOrderHisMatched: Column<OrderHistory>[] = [
   {
     key: "ao",
     title: "Thời gian",
@@ -131,23 +130,39 @@ const columnsOrderMatched: Column<OrderDetail>[] = [
     title: "GHí chú",
     render: (row) => <></>
   },
+];
+
+const columnsOrderHisMore: Column<unknown>[] = [
+  {
+    key: "time",
+    title: "Thời gian",
+    className: 'text-center',
+    render: (row) => <></>
+  },
+  {
+    key: "ao",
+    title: "NV đặt",
+    className: 'text-center',
+    render: (row) => <></>
+  },
+  {
+    key: "info",
+    title: "Thông tin",
+    className: 'text-center',
+    render: (row) => <></>
+  },
+
 ]
 
 const OrderDetailModal = (props: OrderDetailProps) => {
   const dispatch = useAppDispatch()
-  const orderDetail = useAppSelector(selectOrderDetail)
-  let orderInsert: OrderDetail[] | null = null
-  let orderMatched: OrderDetail[] | null = null
+  const orderHis = useAppSelector(selectOrderHistory)
+  const orderHisMatched = useAppSelector(selectOrderHistoryMatched)
 
   useEffect(() => {
     if (!props.selectedOrder) return;
-    dispatch(fetchOrderDetailRequest(props.selectedOrder.pkFrontOrder))
+    dispatch(fetchOrderHistoryRequest(props.selectedOrder.pkFrontOrder))
   }, [])
-
-  useEffect(() => {
-    orderInsert = orderDetail?.filter((o: OrderDetail) => o.type === 'INSERT') || null;
-    orderMatched = orderDetail?.filter((o: OrderDetail) => o.type === 'MATCHED') || null;
-  }, [orderDetail])
 
   return (
     <ModalLayout
@@ -160,20 +175,22 @@ const OrderDetailModal = (props: OrderDetailProps) => {
         columns={columns}
         data={[props.selectedOrder]}
       />
-      <div className="grid grid-cols-2 gap-1">
-        <div>
-          {/* table tt nhân viên đặt lệnh */}
-        </div>
-        <div>
+      <div className="grid grid-cols-2 gap-2">
+        <Table
+          classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
+          columns={columnsOrderHisMore}
+          data={[]}
+        />
+        <div className="flex flex-col gap-2">
           <Table
             classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
-            columns={columns}
-            data={orderInsert}
+            columns={columnsOrderHis}
+            data={orderHis}
           />
           <Table
             classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
-            columns={columns}
-            data={orderMatched}
+            columns={columnsOrderHisMatched}
+            data={orderHisMatched}
           />
         </div>
       </div>
