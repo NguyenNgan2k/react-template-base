@@ -24,7 +24,7 @@ const LoginPage = () => {
         setActiveForm("forceChangePass")
         return
       }
-      navigate("/price-board")
+      navigate("/order-book")
     }
   }, [userData, dispatch])
 
