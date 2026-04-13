@@ -3,36 +3,33 @@ import FormSearch from "@/components/form/FormSearch";
 import TextFormField from "@/components/inputs/text/TextFormField";
 import { useAppDispatch } from "@/store/hook";
 import { useForm } from "react-hook-form";
-import { fetchPutThroughRequest } from "../../redux/putthroughSlice";
-import type { PutThroughRequest } from "../../putthroughType";
+import type { AdvertisementRequest } from "../../putthroughType";
+import { fetchAdvertisementRequest } from "../../redux/putthroughSlice";
 
 type FormValues = {
-  account: '',
+  firm: '',
   orderNo: '',
 }
 
-const PutThroughForm = () => {
+const AdvertisementForm = () => {
   const dispatch = useAppDispatch()
   const form = useForm<FormValues>()
 
   const onSubmit = (data: FormValues) => {
-    const params: PutThroughRequest = {
-      account: data.account,
+    const params: AdvertisementRequest = {
+      firm: data.firm,
       orderNo: data.orderNo,
       page: 1,
       size: 1000,
     }
-    dispatch(fetchPutThroughRequest(params))
+    dispatch(fetchAdvertisementRequest(params))
   }
 
   return (
     <FormSearch form={form} onSubmit={onSubmit}>
       <FormSearch.Body>
-        <FormSearch.Field label="Tài khoản">
-          <TextFormField
-            name='account'
-            maxLength={7}
-          />
+        <FormSearch.Field label="Firm">
+          <TextFormField name='firm' />
         </FormSearch.Field>
         <FormSearch.Field label="Sổ hiệu lệnh">
           <TextFormField name="orderNo" />
@@ -42,4 +39,4 @@ const PutThroughForm = () => {
     </FormSearch>
   )
 };
-export default PutThroughForm;
+export default AdvertisementForm;

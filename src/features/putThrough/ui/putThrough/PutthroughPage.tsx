@@ -1,10 +1,12 @@
-import PutthroughForm from "./PutthroughForm";
+import PutThroughForm from "./PutthroughForm";
+import PutThroughTable from "./PutthroughTable";
 
-const PutthroughPage = () => {
+const PutThroughPage = () => {
   return (
     <div>
-      <PutthroughForm />
+      <PutThroughForm />
+      <PutThroughTable />
     </div>
   )
 };
-export default PutthroughPage;
+export default PutThroughPage;

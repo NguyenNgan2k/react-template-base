@@ -18,11 +18,11 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    selectedSymbol: (state, action: PayloadAction<string>) => {
+    setSelectedSymbol: (state, action: PayloadAction<string>) => {
       state.selectedSymbol = action.payload
     },
 
-    selectedOrder: (state, action: PayloadAction<OrderValue>) => {
+    setSelectedOrder: (state, action: PayloadAction<OrderValue>) => {
       state.selectedOrder = action.payload
     },
 
@@ -37,7 +37,7 @@ const orderSlice = createSlice({
   },
 });
 
-export const { selectedSymbol, selectedOrder, fetchOrderHistoryRequest, fetchOrderHistorySuccess, fetchOrderHistoryError } = orderSlice.actions;
+export const { setSelectedSymbol, setSelectedOrder, fetchOrderHistoryRequest, fetchOrderHistorySuccess, fetchOrderHistoryError } = orderSlice.actions;
 
 export default orderSlice.reducer;
 

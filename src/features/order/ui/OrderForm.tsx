@@ -17,7 +17,7 @@ import { fetchStockInfoRequest, selectStockInfo } from '@/features/stock/redux/s
 import type { Stock, StockInfoRequest } from '@/features/stock/stockType';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { getNameMarket } from '@/features/stock/stockBusiness';
-import { selectedSymbol, selectSelectedOrder } from '../redux/orderSlice';
+import { setSelectedSymbol, selectSelectedOrder } from '../redux/orderSlice';
 import { selectStockList } from '@/features/stock/redux/stockSelector';
 import type { OrderValue } from '../orderType';
 import clsx from 'clsx';
@@ -131,14 +131,9 @@ const OrderForm = () => {
     const symbol = form.getValues().symbol.toUpperCase();
     const account = form.getValues().account;
     if (!symbol) return;
-    const stock = stockList?.find((stock: Stock) => stock.shareCode === symbol)
-    if (!stock) {
-      showToast('Không tìm thấy thông tin mã chứng khoán', 'error')
-      return;
-    }
     handleFetchStockInfo(symbol);
     handleFetchAccountBalance(account);
-    dispatch(selectedSymbol(symbol))
+    handleSetSelectedSymbol(symbol)
   }
 
   const handleFetchAccountInfo = (account: string) => {
@@ -182,6 +177,15 @@ const OrderForm = () => {
       }
     }
     dispatch(fetchAccountBalanceRequest(params))
+  }
+
+  const handleSetSelectedSymbol = (symbol: string) => {
+    const stock = stockList?.find((stock: Stock) => stock.shareCode === symbol)
+    if (!stock) {
+      showToast('Không tìm thấy thông tin mã chứng khoán', 'error')
+      return;
+    }
+    dispatch(setSelectedSymbol(symbol))
   }
 
   const handleSetOrderForm = (selectedOrder: OrderValue) => {
@@ -240,7 +244,6 @@ const OrderForm = () => {
               <TextFormField
                 name='account'
                 maxLength={7}
-                showErrorMessage={false}
                 onBlur={handleOnBlurAccount}
               />
             </div>
@@ -248,7 +251,6 @@ const OrderForm = () => {
               <span>Mã CK</span>
               <TextFormField
                 name='symbol'
-                showErrorMessage={false}
                 onBlur={handleOnBlurSymbol}
               />
             </div>
@@ -256,7 +258,6 @@ const OrderForm = () => {
               <span>Giá</span>
               <TextFormField
                 name='price'
-                showErrorMessage={false}
                 prefixIcon={<FiPlus onClick={() => handleOnClickChangePrice('plus')} />}
                 suffixIcon={<FiMinus onClick={() => handleOnClickChangePrice('minus')} />}
               />
@@ -265,7 +266,6 @@ const OrderForm = () => {
               <span>Khối lượng</span>
               <MaskFormField
                 name='volume'
-                showErrorMessage={false}
                 prefixIcon={<FiPlus onClick={() => handleOnClickChangeVolume('plus')} />}
                 suffixIcon={<FiMinus onClick={() => handleOnClickChangeVolume('minus')} />}
               />

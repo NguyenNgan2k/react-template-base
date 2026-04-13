@@ -1,14 +1,19 @@
 import TabNav from "@/components/common/TabNav";
-import { sideBarPutthroughItems } from "@/configs/sidebar";
+import { sideBarPutThroughItems } from "@/configs/sidebar";
+import { Outlet } from "react-router-dom";
+import OrderPutthrough from "./order/OrderPutthrough";
 
-const PutthroughPage = () => {
+const PutThroughPage = () => {
   return (
     <div>
       <TabNav
-        items={sideBarPutthroughItems}
+        items={sideBarPutThroughItems}
       />
-
+      <div className="h-[calc(100vh-370px)]">
+        <Outlet />
+      </div>
+      <OrderPutthrough />
     </div>
   )
 };
-export default PutthroughPage;
+export default PutThroughPage;

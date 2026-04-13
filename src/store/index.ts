@@ -17,6 +17,9 @@ import orderSlice from "@/features/order/redux/orderSlice";
 import orderBookSaga from "@/features/orderBook/redux/orderBookSaga";
 import orderBookSlice from "@/features/orderBook/redux/orderBookSlice";
 
+import putThroughSaga from "@/features/putthrough/redux/putthroughSaga";
+import putThroughSlice from "@/features/putthrough/redux/putthroughSlice";
+
 import clientSaga from "./slices/client/saga";
 import clientSlice from "./slices/client/slice";
 
@@ -29,6 +32,7 @@ function* rootSaga() {
     stockSaga(),
     orderSaga(),
     orderBookSaga(),
+    putThroughSaga(),
     clientSaga(),
   ]);
 }
@@ -45,6 +49,7 @@ export const store = configureStore({
     stock: stockSlice,
     order: orderSlice,
     orderBook: orderBookSlice,
+    putThrough: putThroughSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

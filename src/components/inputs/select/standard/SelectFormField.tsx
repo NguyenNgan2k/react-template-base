@@ -10,6 +10,7 @@ type Props = {
   placeholder?: string;
   disabled?: boolean;
   mode?: 'full' | 'value' | 'label'
+  value?: string
 }
 
 const SelectFormField = ({ name, ...props }: Props) => {

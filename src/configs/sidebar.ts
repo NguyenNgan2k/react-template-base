@@ -43,7 +43,7 @@ export const sideBarItems: SidebarItem[] = [
   },
 ];
 
-export const sideBarPutthroughItems: SidebarItem[] = [
+export const sideBarPutThroughItems: SidebarItem[] = [
   {
     id: "putthrough",
     title: "Thỏa thuận",

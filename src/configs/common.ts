@@ -9,3 +9,6 @@ export const TIME_OTP = 300; // Giây
 
 export const EMAIL_COMPANY = "info@dtnd.com.vn";
 export const PHONE_COMPANY = "(+84) 0912 079 988";
+
+export const BrokerID = "030";
+export const TraderID = "00301";

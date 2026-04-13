@@ -15,7 +15,7 @@ type Props = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const Input = forwardRef<HTMLInputElement, Props>(
-  ({ className, iClassName, copyable, error, showErrorMessage = true, prefixIcon, suffixIcon, ...rest }, ref) => {
+  ({ className, iClassName, copyable, error, showErrorMessage = false, prefixIcon, suffixIcon, ...rest }, ref) => {
 
     const innerRef = useRef<HTMLInputElement>(null);
 

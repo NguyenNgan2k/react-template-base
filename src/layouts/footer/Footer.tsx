@@ -4,7 +4,7 @@ import Button from "@/components/common/Button";
 import OrderPage from "@/features/order/ui/OrderPage";
 import React from "react";
 import { useAppDispatch } from "@/store/hook";
-import { selectedOrder } from "@/features/order/redux/orderSlice";
+import { setSelectedOrder } from "@/features/order/redux/orderSlice";
 import type { OrderValue } from "@/features/order/orderType";
 
 const Footer = () => {
@@ -20,7 +20,7 @@ const Footer = () => {
       volume: '',
     }
 
-    dispatch(selectedOrder(order))
+    dispatch(setSelectedOrder(order))
     setIsOpenOrderPage(true)
   }
 

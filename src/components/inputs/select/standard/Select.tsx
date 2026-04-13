@@ -64,7 +64,7 @@ const Select = ({
   };
 
   return (
-    <div ref={showRef} className={clsx('relative', className)} >
+    <div ref={showRef} className={clsx('relative w-full', className)} >
       <div
         className={clsx(
           iClassName,

@@ -25,7 +25,7 @@ const IMask = ({
   className,
   iClassName,
   error,
-  showErrorMessage = true,
+  showErrorMessage = false,
   disabled,
   placeholder,
   onBlur,

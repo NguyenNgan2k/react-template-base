@@ -8,7 +8,7 @@ import _ from "lodash";
 import React from "react";
 import type { Stock } from "@/features/stock/stockType";
 import { getSymbolKey } from "@/features/stock/stockBusiness";
-import { selectedOrder, selectSelectedSymbol } from "../redux/orderSlice";
+import { setSelectedOrder, selectSelectedSymbol } from "../redux/orderSlice";
 import type { OrderValue } from "../orderType";
 
 type StockInfoProps = {
@@ -79,7 +79,7 @@ const StockInfo: React.FC<StockInfoProps> = () => {
       price: snapshot[`price${side === 'B' ? 'Buy' : 'Sell'}${level}`],
       volume: snapshot[`volume${side === 'B' ? 'Buy' : 'Sell'}${level}`],
     }
-    dispatch(selectedOrder(order))
+    dispatch(setSelectedOrder(order))
   }
 
 

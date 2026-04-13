@@ -88,7 +88,11 @@ export default function Table<T>({ columns, data, classWrapper, classTable, menu
       <Menu id="table">
         {
           menu?.map((item) => (
-            <Item id={item.id} onClick={onClickMenu}>{item.text}</Item>
+            <Item
+              id={item.id}
+              onClick={onClickMenu}
+            >
+              {item.text}</Item>
           ))
         }
       </Menu>
