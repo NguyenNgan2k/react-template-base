@@ -4,15 +4,22 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import MainLayout from "../layouts/DefaultLayout";
-import ProtectedRoute from "./ProtectedRoute";
 
 const NotFoundPage = lazy(() => import("../layouts/NotFound"));
 const LoginPage = lazy(() => import("@/features/auth/login/ui/LoginPage"));
-const OrderBookPage = lazy(() => import("@/features/orderBook/ui/OrderBookPage"));
-const PutthroughLayout = lazy(() => import("@/features/putthrough/ui/PutthroughLayout"));
-const PutthroughPage = lazy(() => import("@/features/putthrough/ui/putthrough/PutthroughPage"));
-const AdvertisementPage = lazy(() => import("@/features/putthrough/ui/advertisement/AdvertisementPage"));
-
+const OrderBookPage = lazy(
+  () => import("@/features/orderBook/ui/OrderBookPage"),
+);
+const PutthroughLayout = lazy(
+  () => import("@/features/putthrough/ui/PutthroughLayout"),
+);
+const PutthroughPage = lazy(
+  () => import("@/features/putthrough/ui/putthrough/PutthroughPage"),
+);
+const AdvertisementPage = lazy(
+  () => import("@/features/putthrough/ui/advertisement/AdvertisementPage"),
+);
+const PriceBoardPage = lazy(() => import("@/features/priceboard"));
 
 export default function AppRouter() {
   return (
@@ -24,14 +31,13 @@ export default function AppRouter() {
           <Route path="/login" element={<LoginPage />} />
 
           {/* Public routes */}
-          <Route element={<MainLayout />}>
-          </Route>
+          <Route element={<MainLayout />}></Route>
           {/* Protected routes  */}
           <Route element={<MainLayout />}>
             {/* <Route element={<ProtectedRoute />}> */}
-            <Route path="/price-board" element={<div>Priceboard</div>} />
+            <Route path="/price-board" element={<PriceBoardPage />} />
             <Route path="/order-book" element={<OrderBookPage />} />
-            <Route path="/putthrough" element={<PutthroughLayout />} >
+            <Route path="/putthrough" element={<PutthroughLayout />}>
               <Route index element={<Navigate to="putthrough" replace />} />
               <Route path="putthrough" element={<PutthroughPage />} />
               <Route path="advertisement" element={<AdvertisementPage />} />

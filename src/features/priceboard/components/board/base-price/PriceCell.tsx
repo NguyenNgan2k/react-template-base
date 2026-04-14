@@ -1,10 +1,8 @@
-import { useAppDispatch } from "@/store/hook";
-import { setDetailSymbol } from "@/store/slices/stock/slice";
+import { KEYS_COLOR_BASE } from "@/configs";
 import type { PriceCompare, SnapshotDataCompact } from "@/types";
 import { registerVisibleCell, unregisterVisibleCell } from "@/utils";
-import { getColumnValueCompact } from "@/utils/priceboard";
-import { memo, useEffect, useRef } from "react";
-import { BsPinAngleFill } from "react-icons/bs";
+import { getArr, getColumnValueCompact } from "@/utils/priceboard";
+import { memo, useEffect, useMemo, useRef } from "react";
 
 interface PriceCellProps {
   symbol: string;
@@ -22,11 +20,7 @@ const PriceCell = memo(function PriceCell({
   width,
   snapshot,
   disableFlash = false,
-  pinned = false,
-  handlePinSymbol,
 }: PriceCellProps) {
-  const dispatch = useAppDispatch();
-
   const cellRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,30 +35,21 @@ const PriceCell = memo(function PriceCell({
   }, [symbol, cellKey, disableFlash]);
 
   // === TÍNH MÀU ===
-  const colorClass = (() => {
-    if (cellKey === "ceil") return "c";
-    if (cellKey === "floor") return "f";
-    if (cellKey === "ref") return "r";
+  const colorClass = useMemo(() => {
+    let color = "";
+    if (cellKey === "ceil") color = "c";
+    if (cellKey === "floor") color = "f";
+    if (cellKey === "ref") color = "r";
 
     const tradeCmp = snapshot.trade?.[13] as PriceCompare | undefined;
     const orderBook = snapshot.orderBook;
-
-    const getArr = (value: string | string[] | undefined): string[] => {
-      if (typeof value === "string") return value.split("|");
-      if (Array.isArray(value)) {
-        return value.every((v): v is string => typeof v === "string")
-          ? value
-          : [];
-      }
-      return [];
-    };
 
     const bids = getArr(orderBook?.[22]);
     const asks = getArr(orderBook?.[23]);
 
     // SYMBOL: dùng màu trade
     if (cellKey === "symbol") {
-      return `${tradeCmp} cursor-pointer`;
+      color = `${tradeCmp ?? "x"} cursor-pointer`;
     }
 
     // CÁC CỘT GIAO DỊCH
@@ -73,29 +58,40 @@ const PriceCell = memo(function PriceCell({
         cellKey.includes(k),
       )
     ) {
-      return tradeCmp ?? "";
+      color = tradeCmp ?? "";
     }
 
     // ORDERBOOK
     if (orderBook) {
       if (cellKey.startsWith("priceBuy") || cellKey.startsWith("volumeBuy")) {
         const i = parseInt(cellKey.slice(-1), 10) - 1;
-        return (bids[i * 3 + 2] as PriceCompare) ?? "";
+        color = (bids[i * 3 + 2] as PriceCompare) ?? "";
       }
       if (cellKey.startsWith("priceSell") || cellKey.startsWith("volumeSell")) {
         const i = parseInt(cellKey.slice(-1), 10) - 1;
-        return (asks[i * 3 + 2] as PriceCompare) ?? "";
+        color = (asks[i * 3 + 2] as PriceCompare) ?? "";
       }
       if (cellKey === "high")
-        return (orderBook[24]?.split("|")[1] as PriceCompare) ?? "";
+        color = (orderBook[24]?.split("|")[1] as PriceCompare) ?? "";
       if (cellKey === "low")
-        return (orderBook[25]?.split("|")[1] as PriceCompare) ?? "";
+        color = (orderBook[25]?.split("|")[1] as PriceCompare) ?? "";
       if (cellKey === "avg")
-        return (orderBook[28]?.split("|")[1] as PriceCompare) ?? "";
+        color = (orderBook[28]?.split("|")[1] as PriceCompare) ?? "";
     }
 
-    return "";
-  })();
+    const colorBase = KEYS_COLOR_BASE.includes(cellKey) ? "x" : "";
+
+    const finalClass = [
+      "flex items-center justify-center text-xs font-medium h-7 cell",
+      "transition-colors duration-75",
+      color,
+      colorBase,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    return finalClass;
+  }, [snapshot, cellKey]);
 
   // === TÍNH GIÁ TRỊ ===
   const value = getColumnValueCompact(snapshot, cellKey);
@@ -116,32 +112,15 @@ const PriceCell = memo(function PriceCell({
       className={className}
       style={{ width: width }}
     >
-      {cellKey !== "mark" ? (
-        <span
-          onClick={() => {
-            if (cellKey === "symbol") {
-              dispatch(setDetailSymbol(symbol + ""));
-            }
-          }}
-        >
-          {value ?? ""}
-        </span>
-      ) : (
-        <BsPinAngleFill
-          className={`cursor-pointer ${pinned ? "text-yellow-400" : ""}`}
-          onDoubleClick={() => {
-            if (handlePinSymbol) handlePinSymbol(symbol);
-          }}
-          id="global-tooltip"
-          data-tooltip-id="global-tooltip"
-          data-tooltip-content={`${
-            pinned
-              ? "Click đúp để bỏ ghim"
-              : "Click đúp để ghim - Kéo & thả để sắp xếp dòng"
-          }`}
-          data-tooltip-place="top"
-        />
-      )}
+      <span
+      // onClick={() => {
+      //   if (cellKey === "symbol") {
+      //     dispatch(setDetailSymbol(symbol + ""));
+      //   }
+      // }}
+      >
+        {value ?? ""}
+      </span>
     </div>
   );
 });

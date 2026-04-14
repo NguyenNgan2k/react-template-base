@@ -128,7 +128,6 @@ export interface Favorite {
   label: string;
   id: string;
   symbols: string[];
-  pinned: string[];
 }
 
 export interface CachedBoardData {
