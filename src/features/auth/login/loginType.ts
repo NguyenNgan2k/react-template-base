@@ -2,6 +2,7 @@ export type LoginRequest = {
   user: string;
   password: string;
   device: "web";
+  channel: "H";
 };
 
 export type LoginResponse = {
@@ -24,9 +25,7 @@ export type ChangePassRequest = {
   password: string;
 };
 
-export type ChangePassResponse = {
-
-}
+export type ChangePassResponse = {};
 
 export type UserData = {
   userId: string;

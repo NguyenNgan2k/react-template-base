@@ -10,7 +10,7 @@ export type FormProps = {
 const Form = (props: FormProps) => {
   return (
     <FormProvider {...props.form}>
-      <form onSubmit={props.form.handleSubmit(props.onSubmit)}>
+      <form onSubmit={props.form.handleSubmit(props.onSubmit)} className="h-full">
         {props.children}
       </form>
     </FormProvider>
@@ -20,8 +20,8 @@ const Form = (props: FormProps) => {
 const Field = (props: { className?: string, label: string, children?: React.ReactNode }) => {
   return <div className={clsx("flex gap-1 items-center", props.className)}>
     <div className="w-28">{props.label}</div>
-    <div className="">{props.children}</div>
-  </div>;
+    <div className="w-40">{props.children}</div>
+  </div >;
 };
 
 Form.Field = Field;

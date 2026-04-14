@@ -1,6 +1,8 @@
 import Tab from "@/components/common/Tabs";
 import { useState } from "react";
-import OrderPutThroughForm from "./OrderPutthroughtForm";
+import OrderPutThroughForm from "./OrderPutthroughForm";
+import ConfirmPutThroughForm from "./ConfirmPutthroughForm";
+import OrderAdvertisementForm from "./OrderAdvertisementForm";
 
 const TabsOrderPutthrough = [
   { value: 'create', label: 'Tạo mới' },
@@ -26,9 +28,17 @@ const OrderPutThrough = () => {
           handleChangeTab={handleChangeTab}
         />
       </div>
-      {
-        tabActive === 'create' && <OrderPutThroughForm />
-      }
+      <div className="h-[calc(100%-40px)] p-2">
+        {
+          tabActive === 'create' && <OrderPutThroughForm />
+        }
+        {
+          tabActive === 'confirm' && <ConfirmPutThroughForm />
+        }
+        {
+          tabActive === 'adv' && <OrderAdvertisementForm />
+        }
+      </div>
     </div>
   )
 };

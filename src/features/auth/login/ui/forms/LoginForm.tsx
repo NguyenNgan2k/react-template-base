@@ -29,7 +29,7 @@ const LoginForm = () => {
 
   const onSubmit = (data: FormValues) => {
     event?.preventDefault();
-    dispatch(loginRequest({ user: data.user, password: data.pass, device: 'web' }))
+    dispatch(loginRequest({ user: data.user, password: data.pass, device: 'web', channel: 'H' }))
   }
 
   return (

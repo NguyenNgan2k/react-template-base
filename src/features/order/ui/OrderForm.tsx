@@ -62,8 +62,8 @@ const OrderForm = () => {
     resolver: yupResolver(schema),
   })
 
-  const price = form.watch().volume
-  const volume = form.watch().volume
+  const price = form.watch('price')
+  const volume = form.watch('volume')
   const orderValue: number = React.useMemo(() => (StringToDouble(price) * 1000) * StringToDouble(volume), [price, volume])
 
   React.useEffect(() => {
@@ -88,18 +88,18 @@ const OrderForm = () => {
       return;
     }
     orderValueRef.current = {
-      account: form.getValues().account,
-      symbol: form.getValues().symbol,
+      account: form.getValues('account'),
+      symbol: form.getValues('symbol'),
       side: sideRef.current,
-      price: form.getValues().price,
-      volume: form.getValues().volume,
+      price: form.getValues('price'),
+      volume: form.getValues('volume'),
     }
     setIsOpenOrderConfirm(true)
   }
 
   const handleOnClickChangePrice = (type: 'plus' | 'minus') => {
     if (!stockInfo) return
-    const currentPrice = StringToDouble(form.getValues().price);
+    const currentPrice = StringToDouble(form.getValues('price'));
     let newPrice;
     if (type === 'plus') {
       newPrice = plusPrice(currentPrice, stockInfo.c, stockInfo.f, stockInfo.r, stockInfo.step);
@@ -110,7 +110,7 @@ const OrderForm = () => {
   }
 
   const handleOnClickChangeVolume = (type: 'plus' | 'minus') => {
-    const currentVolume = StringToDouble(form.getValues().volume);
+    const currentVolume = StringToDouble(form.getValues('volume'));
     let newVolume;
     if (type === 'plus') {
       newVolume = plusVolume(currentVolume, 100);
@@ -121,15 +121,15 @@ const OrderForm = () => {
   }
 
   const handleOnBlurAccount = () => {
-    const account = form.getValues().account;
+    const account = form.getValues('account');
     handleFetchAccountInfo(account);
     handleFetchAccountBalance(account);
     handleFetchAccountPortfolio(account);
   }
 
   const handleOnBlurSymbol = () => {
-    const symbol = form.getValues().symbol.toUpperCase();
-    const account = form.getValues().account;
+    const symbol = form.getValues('symbol').toUpperCase();
+    const account = form.getValues('account');
     if (!symbol) return;
     handleFetchStockInfo(symbol);
     handleFetchAccountBalance(account);
@@ -158,8 +158,8 @@ const OrderForm = () => {
     const params: StockInfoRequest = {
       stock: symbol,
       data: {
-        account: form.getValues().account,
-        volume: form.getValues().volume,
+        account: form.getValues('account'),
+        volume: form.getValues('volume'),
         type: 'N'
       }
     }
@@ -171,8 +171,8 @@ const OrderForm = () => {
     const params: AccountBalanceRequest = {
       account: account,
       data: {
-        symbol: form.getValues().symbol,
-        price: form.getValues().price,
+        symbol: form.getValues('symbol'),
+        price: form.getValues('price'),
         side: 'B'
       }
     }
