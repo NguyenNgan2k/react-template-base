@@ -1,7 +1,5 @@
 import Table, { type MenuParams } from "@/components/table/Table";
-import { useAppSelector } from "@/store/hook";
 import type { Column } from "@/types";
-import { selectOrderBook } from "../redux/orderBookSlice";
 import type { OrderBook } from "../orderBookType";
 import { numberFormat, StringToDouble } from "@/utils";
 import { getStatusOrderName } from "../OrderBookBusiness";
@@ -128,8 +126,7 @@ const columns: Column<OrderBook>[] = [
   },
 ];
 
-const OrderBookTable = () => {
-  const orderBook = useAppSelector(selectOrderBook);
+const OrderBookTable = (props: { orderBooks: OrderBook[] | null }) => {
   const selectedOrderRef = useRef<OrderBook | null>(null)
   const [isOpenOrderDetail, setIsOpenOrderDetail] = useState<boolean>(false);
   const [isOpenOrderEdit, setIsOpenOrderEdit] = useState<boolean>(false);
@@ -154,10 +151,10 @@ const OrderBookTable = () => {
 
   return (
     <div>
-      <Table
-        classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
+      <Table<OrderBook>
+        classWrapper="h-[calc(100vh-140px)] overflow-auto"
         columns={columns}
-        data={orderBook}
+        data={props.orderBooks}
         menu={[
           { id: 'detail', text: "Chi tiết" },
           { id: 'edit', text: "Sửa lệnh" },

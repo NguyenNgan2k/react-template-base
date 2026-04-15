@@ -2,11 +2,9 @@ import Button from "@/components/common/Button";
 import FormSearch from "@/components/form/FormSearch";
 import SelectFormField from "@/components/inputs/select/standard/SelectFormField";
 import TextFormField from "@/components/inputs/text/TextFormField";
-import { useAppDispatch } from "@/store/hook";
 import { useForm } from "react-hook-form";
 import { orderStatusOptions, orderTypeOptions } from "../orderBookConfig";
-import type { OrderBookRequest } from "../orderBookType";
-import { fetchOrderBookRequest } from "../redux/orderBookSlice";
+import type { OrderBookParams } from "../orderBookType";
 import { useEffect } from "react";
 
 type FormValues = {
@@ -18,8 +16,7 @@ type FormValues = {
   channel: string
 }
 
-const OrderBookForm = () => {
-  const dispatch = useAppDispatch()
+const OrderBookSearch = (props: { handleSearch: (data: OrderBookParams) => void }) => {
   const form = useForm<FormValues>({
     defaultValues: {
       account: '',
@@ -29,31 +26,28 @@ const OrderBookForm = () => {
       status: 'ALL',
       channel: ''
     }
-  }
-  )
+  })
 
   useEffect(() => {
-    handleFetchOrderBook()
+    _handleSearch()
   }, [])
 
   const onSubmit = () => {
-    handleFetchOrderBook()
+    _handleSearch()
   }
 
-  const handleFetchOrderBook = () => {
+  const _handleSearch = () => {
     const data = form.getValues()
-    const params: OrderBookRequest = {
+    const params: OrderBookParams = {
       symbol: data?.symbol,
-      account: data.symbol,
+      account: data.account,
       orderStatus: data.status,
       channel: data.channel,
       side: data.side,
       enter: '',
       mktId: '',
-      page: 1,
-      size: 1000,
     }
-    dispatch(fetchOrderBookRequest(params))
+    props.handleSearch(params)
   }
 
   return (
@@ -103,4 +97,4 @@ const OrderBookForm = () => {
     </FormSearch >
   );
 }
-export default OrderBookForm;
+export default OrderBookSearch;

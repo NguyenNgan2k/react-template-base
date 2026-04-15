@@ -1,8 +1,10 @@
+import clsx from "clsx";
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "close" | "success" | "normal" | "buy" | "sell";
   fullWidth?: boolean;
+  isActive?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -11,6 +13,7 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   className = "",
   disabled,
+  isActive = false,
   ...props
 }) => {
   const baseStyle =
@@ -18,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
 
   const variants = {
     primary:
-      "bg-btn-primary-bg-default text-text-title disabled:bg-gray-300 disabled:text-text-title",
+      "bg-btn-bg-default text-text-title disabled:bg-btn-bg-disable disabled:text-text-title",
     secondary:
       "bg-gray-600 text-text-title hover:bg-gray-500 disabled:bg-gray-300 disabled:text-text-title",
     danger:
@@ -27,8 +30,10 @@ const Button: React.FC<ButtonProps> = ({
       "bg-button-gray text-text-title hover:bg-neutral-white-900 disabled:bg-gray-300 disabled:text-text-title",
     success:
       "bg-green-400 text-text-title hover:bg-green-300 disabled:bg-gray-300 disabled:text-text-title",
-    normal:
-      "text-text-title border border-yellow-500 disabled:bg-gray-300 disabled:text-text-title disabled:border-gray-400",
+    normal: clsx(
+      'text-text-title border border-yellow-500 disabled:text-text-title disabled:border-btn-bd-disable',
+      isActive ? 'bg-btn-bg-active' : ''
+    ),
     buy:
       "bg-btn-buy-bg-default text-text-title disabled:bg-gray-300 disabled:text-text-title",
     sell:

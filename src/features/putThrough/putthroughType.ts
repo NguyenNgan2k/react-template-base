@@ -1,18 +1,24 @@
-export type PutThroughRequest = {
+import type { PaginationParams } from "@/types";
+
+export type PutThroughParams = {
   account?: string;
   orderNo?: string;
-  page: number;
-  size: number;
 };
 
-export type PutThrough = {};
+export type PutThroughRequest = PutThroughParams & PaginationParams;
 
-export type AdvertisementRequest = {
+export type PutThrough = {
+  totalRow: string;
+};
+
+export type AdvertisementParams = {
   account?: string;
   orderNo?: string;
   firm?: string;
-  page: number;
-  size: number;
 };
 
-export type Advertisement = {};
+export type AdvertisementRequest = AdvertisementParams & PaginationParams;
+
+export type Advertisement = {
+  totalRow: string;
+};

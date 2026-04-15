@@ -1,28 +1,33 @@
 import Button from "@/components/common/Button";
 import FormSearch from "@/components/form/FormSearch";
 import TextFormField from "@/components/inputs/text/TextFormField";
-import { useAppDispatch } from "@/store/hook";
 import { useForm } from "react-hook-form";
-import { fetchPutThroughRequest } from "../../redux/putthroughSlice";
-import type { PutThroughRequest } from "../../putthroughType";
+import { useEffect } from "react";
+import type { PutThroughParams } from "../../putthroughType";
 
 type FormValues = {
   account: '',
   orderNo: '',
 }
 
-const PutThroughForm = () => {
-  const dispatch = useAppDispatch()
+const PutThroughForm = (props: { handleSearch: (data: PutThroughParams) => void }) => {
   const form = useForm<FormValues>()
 
-  const onSubmit = (data: FormValues) => {
-    const params: PutThroughRequest = {
+  useEffect(() => {
+    _handleSearch()
+  }, [])
+
+  const onSubmit = () => {
+    _handleSearch()
+  }
+
+  const _handleSearch = () => {
+    const data = form.getValues()
+    const params: PutThroughParams = {
       account: data.account,
       orderNo: data.orderNo,
-      page: 1,
-      size: 1000,
     }
-    dispatch(fetchPutThroughRequest(params))
+    props.handleSearch(params)
   }
 
   return (

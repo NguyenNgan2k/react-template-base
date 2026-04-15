@@ -1,4 +1,6 @@
-export type OrderBookRequest = {
+import type { PaginationParams } from "@/types";
+
+export type OrderBookParams = {
   symbol: string;
   account: string;
   mktId: string;
@@ -6,9 +8,9 @@ export type OrderBookRequest = {
   channel: string;
   side: string;
   enter: string;
-  page: number;
-  size: number;
 };
+
+export type OrderBookRequest = OrderBookParams & PaginationParams;
 
 export type OrderBookItem = {
   price: string;

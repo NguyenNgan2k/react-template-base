@@ -1,128 +1,120 @@
 import Table, { type MenuParams } from "@/components/table/Table";
-import type { OrderBook } from "@/features/orderBook/orderBookType";
-import { useAppSelector } from "@/store/hook";
 import type { Column } from "@/types";
-import { numberFormat } from "@/utils";
 import { useRef } from "react";
-import { selectPutThrough } from "../../redux/putthroughSlice";
+import type { PutThrough } from "../../putthroughType";
 
-const columns: Column<OrderBook>[] = [
+const columns: Column<PutThrough>[] = [
   {
     key: "g",
     title: "G",
     className: "text-center",
-    render: (row) => row.group || "-",
+    render: row => <></>
   },
   {
     key: "orderNo",
     title: "SHL",
     className: "text-center",
-    render: (row) => row.orderNo || "-",
+    render: row => <></>
   },
   {
     key: "orderTime",
     title: "Thời gian đặt",
     className: "text-center",
-    render: (row) => row.orderTime || "-",
+    render: row => <></>
   },
   {
     key: "confirmTime",
     title: "Thời gian xác nhận",
     className: "text-center",
-    render: (row) => row.orderTime || "-",
+    render: row => <></>
   },
   {
     key: "bs",
     title: "BS",
     className: 'text-center',
-    render: (row) =>
-      <div
-        className={row.side === "B" ? 'text-text-buy' : "text-text-sell"}>
-        {row.side === "B" ? 'Mua' : row.side === "S" ? "Bán" : "-"}
-      </div>,
+    render: row => <></>
   },
   {
     key: "symbol",
     title: "Mã CK",
     className: "text-center",
-    render: (row) => row.shareCode || "-",
+    render: row => <></>
   },
   {
     key: "price",
     title: "Giá đặt",
     className: "text-right",
-    render: (row) => row.orderShowPrice || "-",
+    render: row => <></>
   },
   {
     key: "matchedVolume",
     title: "KL khớp",
     className: "text-right",
-    render: (row) => <>{numberFormat(row.matchedVolume, 0, "-")}</>,
+    render: row => <></>
   },
   {
     key: "unmatchVolume",
     title: "KL chưa khớp",
     className: "text-right",
-    render: (row) => <>{numberFormat(row.unmatchVolume, 0, "-")}</>,
+    render: row => <></>
   },
   {
     key: "matchedValue",
     title: "Giá trị khớp",
     className: "text-right",
-    render: (row) => <>{numberFormat(row.matchedValue, 0, "-")}</>,
+    render: row => <></>
   },
-  // {
-  //   key: "account",
-  //   title: "Tài khoản",
-  //   className: "text-right",
-  //   render: (row) => row.account,
-  // },
-  // {
-  //   key: "os",
-  //   title: "OS",
-  //   className: "text-right",
-  //    tooltip: ['P: Chờ xác nhận', 'PM: Đã khớp', 'PX,PXX: Từ chối/Hủy'],
-  //   render: (row) => row.account,
-  // },
+  {
+    key: "account",
+    title: "Tài khoản",
+    className: "text-right",
+    render: row => <></>
+  },
+  {
+    key: "os",
+    title: "OS",
+    className: "text-right",
+    tooltip: ['P: Chờ xác nhận', 'PM: Đã khớp', 'PX,PXX: Từ chối/Hủy'],
+    render: row => <></>
+  },
   {
     key: "q",
     title: "Q",
     className: "text-center",
     tooltip: ['C: Trong core', 'G: Gateway', 'Y: Đã lên sở'],
-    render: (row) => row.quoteStatus || "-",
+    render: row => <></>
   },
   {
     key: "c",
     title: "C",
     className: "text-center",
     tooltip: ['D: Broker', 'I: Internet', 'M: Mobile'],
-    render: (row) => row.chanel || "-",
+    render: row => <></>
   },
   {
     key: "marketingId",
     title: "MKT.Order#",
     className: "text-center",
-    render: (row) => row.marketingId,
+    render: row => <></>
   },
   {
     key: "centerNo",
     title: "centerNo",
     className: "text-center",
-    render: (row) => row.marketingId,
+    render: row => <></>
   },
   {
     key: "info",
     title: "Info",
     className: 'min-w-[120px]',
-    render: (row) => row.rejectText,
+    render: row => <></>
   },
 ];
 
-const PutThroughTable = () => {
-  const putThrough = useAppSelector(selectPutThrough);
-  const selectedOrderRef = useRef<OrderBook | null>(null)
+const PutThroughTable = (props: { putThroughs: PutThrough[] | null }) => {
+  const selectedOrderRef = useRef<PutThrough | null>(null)
 
-  const handleOnClickMenuItem = (menuParams: MenuParams<OrderBook>) => {
+  const handleOnClickMenuItem = (menuParams: MenuParams<PutThrough>) => {
     switch (menuParams.id) {
       case "detail":
         selectedOrderRef.current = menuParams.props?.row || null
@@ -135,7 +127,7 @@ const PutThroughTable = () => {
       <Table
         classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
         columns={columns}
-        data={[]}
+        data={props.putThroughs}
         menu={[
           { id: 'detail', text: "Chi tiết lệnh" },
           { id: 'cancel', text: "Hủy lệnh" },

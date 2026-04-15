@@ -48,17 +48,15 @@ const Input = forwardRef<HTMLInputElement, Props>(
           )}
           autoComplete="off"
         />
-        <div>
-          {prefixIcon &&
-            <span className='p-1 h-6 w-6 absolute left-0 top-0.5 border-r border-bd-default cursor-pointer'>
-              {prefixIcon}
-            </span>}
-          {suffixIcon &&
-            <span className='p-1 h-6 w-6 absolute right-0 top-0.5 border-l border-bd-default cursor-pointer'>
-              {suffixIcon}
-            </span>
-          }
-        </div>
+        {prefixIcon &&
+          <span className='p-1 h-6 w-6 absolute left-0 top-0.5 border-r border-bd-default cursor-pointer'>
+            {prefixIcon}
+          </span>}
+        {suffixIcon &&
+          <span className='p-1 h-6 w-6 absolute right-0 top-0.5 border-l border-bd-default cursor-pointer'>
+            {suffixIcon}
+          </span>
+        }
         {
           copyable && <FaRegCopy className="absolute right-3 top-1/2 -translate-y-1/2 cursor-copy" onClick={handleCopy} />
         }

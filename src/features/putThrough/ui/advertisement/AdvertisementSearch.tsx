@@ -1,29 +1,35 @@
 import Button from "@/components/common/Button";
 import FormSearch from "@/components/form/FormSearch";
 import TextFormField from "@/components/inputs/text/TextFormField";
-import { useAppDispatch } from "@/store/hook";
 import { useForm } from "react-hook-form";
-import type { AdvertisementRequest } from "../../putthroughType";
-import { fetchAdvertisementRequest } from "../../redux/putthroughSlice";
+import type { AdvertisementParams } from "../../putthroughType";
+import { useEffect } from "react";
 
 type FormValues = {
   firm: '',
   orderNo: '',
 }
 
-const AdvertisementForm = () => {
-  const dispatch = useAppDispatch()
+const AdvertisementForm = (props: { handleSearch: (data: AdvertisementParams) => void }) => {
   const form = useForm<FormValues>()
 
-  const onSubmit = (data: FormValues) => {
-    const params: AdvertisementRequest = {
+  useEffect(() => {
+    _handleSearch()
+  }, [])
+
+  const onSubmit = () => {
+    _handleSearch()
+  }
+
+  const _handleSearch = () => {
+    const data = form.getValues()
+    const params: AdvertisementParams = {
       firm: data.firm,
       orderNo: data.orderNo,
-      page: 1,
-      size: 1000,
     }
-    dispatch(fetchAdvertisementRequest(params))
+    props.handleSearch(params)
   }
+
 
   return (
     <FormSearch form={form} onSubmit={onSubmit}>
