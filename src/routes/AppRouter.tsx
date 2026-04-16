@@ -11,13 +11,13 @@ const OrderBookPage = lazy(
   () => import("@/features/orderBook/ui/OrderBookPage"),
 );
 const PutthroughLayout = lazy(
-  () => import("@/features/putthrough/ui/PutthroughLayout"),
+  () => import("@/features/putThrough/ui/PutthroughLayout"),
 );
 const PutthroughPage = lazy(
-  () => import("@/features/putthrough/ui/putthrough/PutthroughPage"),
+  () => import("@/features/putThrough/ui/putThrough/PutthroughPage"),
 );
 const AdvertisementPage = lazy(
-  () => import("@/features/putthrough/ui/advertisement/AdvertisementPage"),
+  () => import("@/features/putThrough/ui/advertisement/AdvertisementPage"),
 );
 const PriceBoardPage = lazy(() => import("@/features/priceboard"));
 
