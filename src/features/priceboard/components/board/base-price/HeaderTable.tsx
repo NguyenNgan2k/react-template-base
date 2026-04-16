@@ -1,18 +1,18 @@
-import { ALL_COLUMNS_CW } from "@/configs";
+import { ALL_COLUMNS_FAVORITE } from "@/configs/headerPriceBoard";
 import type { TableColumn } from "@/types";
 import { useState } from "react";
 
-export default function HeaderColumnsCW() {
+export default function HeaderColumnsFavorite() {
   const [columns] = useState<TableColumn[]>(() => {
     const saved = localStorage.getItem("clientConfig");
     if (saved) {
       try {
         return JSON.parse(saved);
       } catch {
-        return ALL_COLUMNS_CW;
+        return ALL_COLUMNS_FAVORITE;
       }
     }
-    return ALL_COLUMNS_CW;
+    return ALL_COLUMNS_FAVORITE;
   });
 
   return (
@@ -31,11 +31,26 @@ export default function HeaderColumnsCW() {
               <div className="flex flex-col w-full">
                 {/* Dòng 1: cột cha */}
                 <div
-                  className={`flex items-center justify-center ${col.children ? "border-b border-border h-7" : "h-14"
-                    }`}
+                  className={`flex items-center justify-center ${
+                    col.children ? "border-b border-border" : ""
+                  } ${col.children ? "h-7" : "h-14"}`}
                 >
                   {col.label}
                 </div>
+                {/* Dòng 2: cột con */}
+                {col.children && (
+                  <div className="flex divide-x divide-border">
+                    {col.children.map((child) => (
+                      <div
+                        key={child.key}
+                        className={`flex-1 text-center h-7 grid place-items-center bg-gray-300/50`}
+                        style={{ minWidth: child.width }}
+                      >
+                        {child.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -49,8 +64,9 @@ export default function HeaderColumnsCW() {
           >
             {/* --- Dòng 1: cha draggable riêng --- */}
             <div
-              className={`flex items-center justify-center text-text-base text-xs font-medium select-none bg-gray-300/50 ${hasChildren ? "border-b border-border h-7" : "h-14"
-                }`}
+              className={`flex items-center justify-center text-text-base text-xs font-medium select-none bg-gray-300/50 ${
+                hasChildren ? "border-b border-border h-7" : "h-14"
+              }`}
               key={`${col.key}-parent`}
             >
               {col.label}
@@ -62,7 +78,7 @@ export default function HeaderColumnsCW() {
                 {col.children?.map((child: TableColumn) => (
                   <div
                     key={child.key}
-                    className="text-center h-7 grid place-items-center bg-gray-300/50"
+                    className={`text-center h-7 grid place-items-center bg-gray-300/50`}
                     style={{
                       width: `${100 / (col.children?.length || 1)}%`,
                     }}

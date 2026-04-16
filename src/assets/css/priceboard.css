@@ -31,6 +31,7 @@
 .cell {
   transition: none !important;
   will-change: background-color, color;
+  color: #014737 !important;
 }
 .UP,
 .u {
@@ -58,25 +59,29 @@
   color: var(--color-stock-text-yellow) !important;
 }
 
+.x {
+  color: var(--color-text-base) !important;
+}
+
 .cell[data-flash="u"] {
   background-color: #00bf52 !important;
-  color: var(--color-text-base) !important;
+  color: #014737 !important;
 }
 .cell[data-flash="d"] {
   background-color: #f23645 !important;
-  color: var(--color-text-base) !important;
+  color: #014737 !important;
 }
 .cell[data-flash="c"] {
   background-color: #ff25ff !important;
-  color: var(--color-text-base) !important;
+  color: #014737 !important;
 }
 .cell[data-flash="f"] {
   background-color: #00b2ff !important;
-  color: var(--color-text-base) !important;
+  color: #014737 !important;
 }
 .cell[data-flash="r"] {
   background-color: #ffa300 !important;
-  color: var(--color-text-base) !important;
+  color: #014737 !important;
 }
 .cell[data-flash="g"] {
   background-color: #696969 !important;

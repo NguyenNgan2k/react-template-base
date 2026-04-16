@@ -19,6 +19,10 @@ Overlay (tooltip, popover) */
   --color-bg-buy: #0bdf39;
   --color-bg-sell: #ff0d0d;
 
+  --color-gray-300: #3b3b3c;
+
+  --color-border: #2a2e3b;
+
   --color-bd-default: #2c2935;
   --color-bd-active: #ffebea;
 
@@ -79,4 +83,6 @@ Overlay (tooltip, popover) */
 
   --color-button-gray: #2a2e3c;
   --color-button-green: #20bf7b;
+
+  --color-surface: #151516;
 }

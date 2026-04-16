@@ -9,11 +9,10 @@ import type {
 import { getColumnValueCompact } from "../utils/priceboard";
 
 const BATCH_LIMIT = 800; // Giới hạn xử lý mỗi frame
-const MAX_MS_PER_FRAME = 14; // ~60fps, để lại margin
+const MAX_MS_PER_FRAME = 14;
 
-// Lưu latest snapshot đang chờ xử lý cho mỗi symbol
+// Lưu latest snapshot
 const pendingLatest = new Map<string, SnapshotDataCompact>();
-// Snapshot trước đó (đã xử lý) để so sánh flash – chỉ giữ cho visible symbols
 const prevSnapshots = new Map<string, SnapshotDataCompact>();
 
 // Queue các symbol cần xử lý (FIFO)
@@ -112,7 +111,7 @@ const processBatch = () => {
           if (tradeFlash && isTabActive) {
             const flashClass = tradeFlash;
 
-            // Danh sách các key cần flash cùng flashClass (nếu thuộc KEYS_COLOR)
+            // Danh sách các key cần flash cùng flashClass
             const keysToFlash: ColorKey[] = [
               "lastVolume",
               "change",

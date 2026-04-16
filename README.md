@@ -1,10 +1,10 @@
-# 🚀 DTND_WEBTRADE
+# DTND_BROKER
 
-**DTND_WEBTRADE** là ứng dụng Web Trading dành cho khách hàng của [DTND], được xây dựng bằng **React 19**, **TypeScript**, và **Vite** nhằm mang lại hiệu năng cao, trải nghiệm mượt mà và dễ bảo trì.
+**DTND_BROKER** là ứng dụng Web Trading dành cho Nhân viên và mô giới của [DTND], được xây dựng bằng **React 19**, **TypeScript**, và **Vite** nhằm mang lại hiệu năng cao, trải nghiệm mượt mà và dễ bảo trì.
 
 ---
 
-## 🗂️ Mục lục
+## Mục lục
 
 - [Giới thiệu](#-giới-thiệu)
 - [Công nghệ sử dụng](#-công-nghệ-sử-dụng)
@@ -18,21 +18,21 @@
 
 ---
 
-## 📖 Giới thiệu
+## Giới thiệu
 
-DTND_WEBTRADE là nền tảng giao dịch chứng khoán trực tuyến:
+DTND_BROKER là nền tảng giao dịch chứng khoán trực tuyến:
 
-- 🔑 Đăng nhập/Quản lý tài khoản
-- 📈 Bảng giá realtime
-- 💹 Đặt lệnh mua/bán
-- 🔔 Thông báo realtime
-- 📊 Biểu đồ và báo cáo giao dịch
+- Đăng nhập/Quản lý tài khoản
+- Bảng giá realtime
+- Đặt lệnh mua/bán
+- Thông báo realtime
+- Biểu đồ và báo cáo giao dịch
 
 Ứng dụng được tối ưu cho desktop và mobile.
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 - [React 19](https://react.dev/) – UI library
 - [TypeScript](https://www.typescriptlang.org/) – Static typing
@@ -45,10 +45,10 @@ DTND_WEBTRADE là nền tảng giao dịch chứng khoán trực tuyến:
 
 ---
 
-## 📂 Cấu trúc dự án
+## Cấu trúc dự án
 
 ```bash
-DTND_WEBTRADE/
+DTND_BROKER/
 ├─ public/                # File tĩnh: favicon, manifest...
 ├─ src/
 │  ├─ api/                # Gọi API

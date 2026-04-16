@@ -1,4 +1,4 @@
-import { ALL_COLUMNS_CW } from "@/configs";
+import { ALL_COLUMNS_FAVORITE } from "@/configs/headerPriceBoard";
 import type { SnapshotDataCompact, TableColumn } from "@/types";
 import { unregisterVisibleCell } from "@/utils";
 import type {
@@ -6,29 +6,30 @@ import type {
   DraggableSyntheticListeners,
 } from "@dnd-kit/core";
 import { memo, useEffect } from "react";
+import { IoClose } from "react-icons/io5";
 import PriceCell from "./PriceCell";
 
 interface BodyTableProps {
   symbol: string;
   snapshot: SnapshotDataCompact;
-  underlyingSnapshot: SnapshotDataCompact | undefined;
   dragListeners?: DraggableSyntheticListeners;
   dragAttributes?: DraggableAttributes;
+  active?: string; // id của danh mục
+  pinned?: boolean;
+  handleRemoveSymbol: (symbol: string) => void;
 }
 
-function BodyTableCw({
+function BodyTableFavorite({
   symbol,
   snapshot,
-  underlyingSnapshot,
-  dragListeners,
-  dragAttributes,
+  handleRemoveSymbol,
 }: BodyTableProps) {
   const columns: TableColumn[] = (() => {
     const saved = localStorage.getItem("clientConfig");
     try {
-      return saved ? JSON.parse(saved) : ALL_COLUMNS_CW;
+      return saved ? JSON.parse(saved) : ALL_COLUMNS_FAVORITE;
     } catch {
-      return ALL_COLUMNS_CW;
+      return ALL_COLUMNS_FAVORITE;
     }
   })();
 
@@ -42,7 +43,6 @@ function BodyTableCw({
     <div className="flex border-x border-b border-border divide-x divide-border w-full">
       {columns.map((col) => {
         const hasChildren = !!col.children?.length;
-
         if (col.key === "symbol") {
           return (
             <div
@@ -50,17 +50,16 @@ function BodyTableCw({
               className="h-7 grid place-items-center"
               style={{ width: col.width }}
             >
-              <div
-                className="flex items-center justify-center h-7 cursor-grab active:cursor-grabbing"
-                {...dragListeners}
-                {...dragAttributes}
-              >
+              <div className="relative w-full flex items-center justify-center h-7 group">
                 <PriceCell
                   symbol={symbol}
                   cellKey={col.key}
                   snapshot={snapshot}
-                  underlyingSnapshot={underlyingSnapshot}
-                  disableFlash={true} // TẮT FLASH CHO SYMBOL
+                  disableFlash={true}
+                />
+                <IoClose
+                  className="absolute top-1.5 right-0 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  onClick={() => handleRemoveSymbol(symbol)}
                 />
               </div>
             </div>
@@ -70,7 +69,7 @@ function BodyTableCw({
         return (
           <div
             key={col.key}
-            className="flex flex-col"
+            className="flex flex-col w-full"
             style={{ width: col.width }} // parent width
           >
             {!hasChildren ? (
@@ -79,7 +78,6 @@ function BodyTableCw({
                 cellKey={col.key}
                 width={"100%"}
                 snapshot={snapshot}
-                underlyingSnapshot={underlyingSnapshot}
               />
             ) : (
               <div className="flex divide-x divide-border text-xs font-medium">
@@ -89,7 +87,6 @@ function BodyTableCw({
                     cellKey={child.key}
                     symbol={symbol}
                     snapshot={snapshot}
-                    underlyingSnapshot={underlyingSnapshot}
                     width={`${100 / (col.children?.length || 1)}%`}
                   />
                 ))}
@@ -102,4 +99,4 @@ function BodyTableCw({
   );
 }
 
-export default memo(BodyTableCw);
+export default memo(BodyTableFavorite);

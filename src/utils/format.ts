@@ -6,7 +6,7 @@ export function numberFormat(
   decimals: number = 0,
   fallback: string = "",
   decimalSeparator?: string,
-  thousandSeparator?: string
+  thousandSeparator?: string,
 ): string {
   if (
     input === null ||
@@ -78,7 +78,7 @@ export function mapIdToNameIndex(id: string) {
 export function FormatCurrency(
   num: number | string,
   delimiter: string = ",", // dấu phân cách nghìn
-  separate: string = "." // dấu phân cách thập phân
+  separate: string = ".", // dấu phân cách thập phân
 ): string {
   if (num === null || num === undefined || num === "") return "0";
 
@@ -140,16 +140,16 @@ export function formatVolPrice(vol: number) {
   return vol >= 1e6
     ? numberFormat(vol / 1e6, 0, "") + " M"
     : vol === 0
-    ? ""
-    : numberFormat(vol, 0, "");
+      ? ""
+      : numberFormat(vol, 0, "");
 }
 
 export function formatVolPriceToChart(vol: number) {
   return vol >= 1e6
     ? numberFormat(vol / 1e6, 2, "") + " M"
     : vol === 0
-    ? ""
-    : numberFormat(vol, 0, "");
+      ? ""
+      : numberFormat(vol, 0, "");
 }
 
 export function StringToDouble(pString: string | number): number {
@@ -209,7 +209,7 @@ export const hideMiddleDigits = (number: string) => {
   const hiddenDigitsCount = number.length - visibleDigits * 2;
   const hiddenDigits = "*".repeat(hiddenDigitsCount);
   return `${number.slice(0, visibleDigits)}${hiddenDigits}${number.slice(
-    -visibleDigits
+    -visibleDigits,
   )}`;
 };
 
