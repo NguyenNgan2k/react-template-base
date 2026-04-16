@@ -21,7 +21,6 @@ import { List, type ListRowProps } from "react-virtualized";
 import NoData from "@/components/common/NoData.tsx";
 import { HEADER_HEIGHT, ROW_HEIGHT } from "@/configs/headerPriceBoard.ts";
 import { selectSnapshotsBySymbols } from "@/features/stock/redux/stockSelector.ts";
-import { usePerfectScrollbar } from "@/hooks/usePerfectScrollbar.ts.ts";
 import { useToast } from "@/hooks/useToast.ts";
 import { socketClient } from "@/networks/socket";
 import { useAppDispatch, useAppSelector } from "@/store/hook.ts";
@@ -111,7 +110,7 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
 
   const listRef = useRef<List>(null);
 
-  const { containerRef } = usePerfectScrollbar();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(1200);
   const [listHeight, setListHeight] = useState(500);
   const [highlightSymbol, setHighlightSymbol] = useState<string | null>(null);
@@ -259,39 +258,52 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
   };
 
   return (
-    <div className="overflow-hidden relative flex-1" ref={containerRef}>
-      <div className="min-w-7xl flex flex-col w-full h-full">
-        <div style={{ height: HEADER_HEIGHT }}>
-          <HeaderColumnsFavorite />
-        </div>
-        <div className="w-full h-full">
-          {!baseSymbols || baseSymbols.length === 0 ? (
-            <div className="w-full h-full grid place-items-center">
-              <NoData message="Không có mã nào trong danh mục!" />
-            </div>
-          ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={[...symbols]}
-                strategy={verticalListSortingStrategy}
+    <div className="flex flex-col">
+      <div
+        className="overflow-hidden h-[calc(var(--app-height)-300px)]"
+        ref={containerRef}
+      >
+        <div className="min-w-7xl flex flex-col w-full h-full">
+          <div style={{ height: HEADER_HEIGHT }}>
+            <HeaderColumnsFavorite />
+          </div>
+          <div className="w-full h-full">
+            {!baseSymbols || baseSymbols.length === 0 ? (
+              <div className="w-full h-full grid place-items-center">
+                <NoData message="Không có mã nào trong danh mục!" />
+              </div>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
               >
-                <List
-                  ref={listRef}
-                  height={listHeight}
-                  rowCount={symbols.length} // TỔNG SỐ DÒNG
-                  rowHeight={ROW_HEIGHT}
-                  rowRenderer={rowRenderer} // DÙNG CHUNG 1 HÀM
-                  width={Math.max(containerWidth, 1280)}
-                  className="hide-scrollbar"
-                />
-              </SortableContext>
-            </DndContext>
-          )}
-        </div>
+                <SortableContext
+                  items={[...symbols]}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <List
+                    ref={listRef}
+                    height={listHeight}
+                    rowCount={symbols.length} // TỔNG SỐ DÒNG
+                    rowHeight={ROW_HEIGHT}
+                    rowRenderer={rowRenderer} // DÙNG CHUNG 1 HÀM
+                    width={Math.max(containerWidth, 1280)}
+                    className="hide-scrollbar"
+                  />
+                </SortableContext>
+              </DndContext>
+            )}
+          </div>
+        </div>{" "}
+      </div>{" "}
+      <div className="text-[10px] h-auto flex items-center justify-center gap-1">
+        Giá x 1,000 VNĐ. Khối lượng x 1. Giá trị x 1,000,000 VNĐ.
+        <span className="text-text-subtitle">
+          {" "}
+          Bản quyền thuộc về Công ty TNHH Giải pháp Phần mềm Tài chính Công nghệ
+          DTND © 2025.
+        </span>
       </div>
     </div>
   );
