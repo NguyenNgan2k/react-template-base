@@ -1,10 +1,13 @@
+import clsx from "clsx";
+
 type ListPageProps = {
   children: React.ReactNode;
+  className?: string
 };
 
-const ListPage = ({ children }: ListPageProps) => {
+const ListPage = ({ children, className }: ListPageProps) => {
   return (
-    <div className="flex flex-col h-full">
+    <div className={clsx("flex flex-col h-full", className)}>
       {children}
     </div>
   );
@@ -16,10 +19,10 @@ ListPage.Search = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-ListPage.Table = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex-1">
+ListPage.Table = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+  <div className={clsx("flex-1", className)}>
     {children}
-  </div>
+  </div >
 );
 
 ListPage.Paging = ({ children }: { children?: React.ReactNode }) => (

@@ -4,9 +4,12 @@ import type { OrderBook } from "../orderBookType";
 import { numberFormat, StringToDouble } from "@/utils";
 import { getStatusOrderName } from "../OrderBookBusiness";
 import { useRef, useState } from "react";
-import OrderDetail from "@/features/order/ui/modal/OrderDetail";
-import OrderEdit from "@/features/order/ui/modal/OrderEdit";
-import OrderCancel from "@/features/order/ui/modal/OrderCancel";
+import OrderDetailModal from "@/features/order/ui/modal/OrderDetail";
+import OrderEditModal from "@/features/order/ui/modal/OrderEdit";
+import OrderCancelModal from "@/features/order/ui/modal/OrderCancel";
+import type { OrderDetail } from "@/features/order/orderType";
+import { mapOrderDetail } from "@/utils/mapOrderDetail";
+
 
 const columns: Column<OrderBook>[] = [
   {
@@ -127,23 +130,25 @@ const columns: Column<OrderBook>[] = [
 ];
 
 const OrderBookTable = (props: { orderBooks: OrderBook[] | null }) => {
-  const selectedOrderRef = useRef<OrderBook | null>(null)
+  const selectedOrderRef = useRef<OrderDetail | null>(null)
   const [isOpenOrderDetail, setIsOpenOrderDetail] = useState<boolean>(false);
   const [isOpenOrderEdit, setIsOpenOrderEdit] = useState<boolean>(false);
   const [isOpenOrderCancel, setIsOpenOrderCancel] = useState<boolean>(false);
 
   const handleOnClickMenuItem = (menuParams: MenuParams<OrderBook>) => {
+    if (!menuParams?.props || !menuParams?.props.row) return
+
     switch (menuParams.id) {
       case "detail":
-        selectedOrderRef.current = menuParams.props?.row || null
+        selectedOrderRef.current = mapOrderDetail(menuParams.props.row)
         setIsOpenOrderDetail(true)
         break;
       case "edit":
-        selectedOrderRef.current = menuParams.props?.row || null
+        selectedOrderRef.current = mapOrderDetail(menuParams.props.row)
         setIsOpenOrderEdit(true)
         break;
       case "cancel":
-        selectedOrderRef.current = menuParams.props?.row || null
+        selectedOrderRef.current = mapOrderDetail(menuParams.props.row)
         setIsOpenOrderCancel(true)
         break;
     }
@@ -164,21 +169,21 @@ const OrderBookTable = (props: { orderBooks: OrderBook[] | null }) => {
       />
       {
         selectedOrderRef.current && isOpenOrderDetail &&
-        <OrderDetail
+        <OrderDetailModal
           onClose={() => setIsOpenOrderDetail(false)}
           selectedOrder={selectedOrderRef.current}
         />
       }
       {
         selectedOrderRef.current && isOpenOrderEdit &&
-        <OrderEdit
+        <OrderEditModal
           onClose={() => setIsOpenOrderEdit(false)}
           selectedOrder={selectedOrderRef.current}
         />
       }
       {
         selectedOrderRef.current && isOpenOrderCancel &&
-        <OrderCancel
+        <OrderCancelModal
           onClose={() => setIsOpenOrderCancel(false)}
           selectedOrder={selectedOrderRef.current}
         />

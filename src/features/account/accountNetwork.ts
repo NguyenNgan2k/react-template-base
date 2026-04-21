@@ -2,10 +2,30 @@ import { apiRequest } from "@/networks/apiRequest";
 import type {
   AccountInfoRequest,
   AccountInfo,
+  AccountStatusRequest,
+  AccountStatus,
   AccountBalanceRequest,
   AccountBalance,
   AccountPortfolioRequest,
   AccountPortfolio,
+  AccountListRequest,
+  AccountList,
+  AccountOrderBook,
+  AccountOrderBookRequest,
+  AccountMatchedByStepPrice,
+  AccountMatchedByStepPriceRequest,
+  AccountMatchedByStock,
+  AccountMatchedByStockRequest,
+  AccountProfitLoss,
+  AccountProfitLossRequest,
+  AccountLMV,
+  AccountLMVRequest,
+  AccountLMVEE,
+  AccountLMVEERequest,
+  AccountLMVUB,
+  AccountLMVUBRequest,
+  AccountDebt,
+  AccountDebtRequest,
 } from "./accountType";
 
 export const apiFetchAccountInfo = async (
@@ -13,6 +33,15 @@ export const apiFetchAccountInfo = async (
 ): Promise<AccountInfo> => {
   const res = await apiRequest.get<AccountInfo>(
     `/broker/accounts/${params?.account}/info`,
+  );
+  return res.data;
+};
+
+export const apiFetchAccountStatus = async (
+  params?: AccountStatusRequest,
+): Promise<AccountStatus> => {
+  const res = await apiRequest.get<AccountStatus>(
+    `/broker/accounts/${params?.account}/status`,
   );
   return res.data;
 };
@@ -29,11 +58,97 @@ export const apiFetchAccountBalance = async (
 
 export const apiFetchAccountPortfolio = async (
   params?: AccountPortfolioRequest,
-): Promise<AccountPortfolio> => {
-  console.log("apiFetchAccountPortfolio called with params: ", params);
-  const res = await apiRequest.get<AccountPortfolio>(
+): Promise<AccountPortfolio[]> => {
+  const res = await apiRequest.get<AccountPortfolio[]>(
     `/broker/accounts/${params?.account}/portfolio`,
     { params: params?.data },
+  );
+  return res.data;
+};
+
+export const apiFetchAccountList = async (
+  params?: AccountListRequest,
+): Promise<AccountList> => {
+  const res = await apiRequest.get<AccountList>("/broker/orders/accounts", {
+    params,
+  });
+  return res.data;
+};
+
+export const apiFetchAccountOrderBook = async (
+  params?: AccountOrderBookRequest,
+): Promise<AccountOrderBook[]> => {
+  const res = await apiRequest.get<AccountOrderBook[]>(
+    `/broker/accounts/${params?.account}/orders`,
+    { params: params?.data },
+  );
+  return res.data;
+};
+
+export const apiFetchAccountMatchedByStepPrice = async (
+  params?: AccountMatchedByStepPriceRequest,
+): Promise<AccountMatchedByStepPrice[]> => {
+  const res = await apiRequest.get<AccountMatchedByStepPrice[]>(
+    `/broker/accounts/${params?.account}/orders/by-price`,
+    { params: params?.data },
+  );
+  return res.data;
+};
+
+export const apiFetchAccountMatchedByStock = async (
+  params?: AccountMatchedByStockRequest,
+): Promise<AccountMatchedByStock[]> => {
+  const res = await apiRequest.get<AccountMatchedByStock[]>(
+    `/broker/accounts/${params?.account}/orders/by-stock`,
+    { params: params?.data },
+  );
+  return res.data;
+};
+
+export const apiFetchAccountProfitLoss = async (
+  params?: AccountProfitLossRequest,
+): Promise<AccountProfitLoss[]> => {
+  const res = await apiRequest.get<AccountProfitLoss[]>(
+    "/broker/orders/account/profit-loss",
+    {
+      params,
+    },
+  );
+  return res.data;
+};
+
+export const apiFetchAccountLMV = async (
+  params?: AccountLMVRequest,
+): Promise<AccountLMV> => {
+  const res = await apiRequest.get<AccountLMV>(
+    `/broker/accounts/${params?.account}/lmv`,
+  );
+  return res.data;
+};
+
+export const apiFetchAccountLMVEE = async (
+  params?: AccountLMVEERequest,
+): Promise<AccountLMVEE> => {
+  const res = await apiRequest.get<AccountLMVEE>(
+    `/broker/accounts/${params?.account}/lmv/ee`,
+  );
+  return res.data;
+};
+
+export const apiFetchAccountLMVUB = async (
+  params?: AccountLMVUBRequest,
+): Promise<AccountLMVUB> => {
+  const res = await apiRequest.get<AccountLMVUB>(
+    `/broker/accounts/${params?.account}/lmv/ub`,
+  );
+  return res.data;
+};
+
+export const apiFetchAccountDebt = async (
+  params?: AccountDebtRequest,
+): Promise<AccountDebt> => {
+  const res = await apiRequest.get<AccountDebt>(
+    `/broker/accounts/${params?.account}/debt`,
   );
   return res.data;
 };

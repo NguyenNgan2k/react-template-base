@@ -7,27 +7,35 @@ import { useEffect, useState } from "react";
 import type { PutThroughParams } from "../../putthroughType";
 import Paging from "@/components/common/Paging";
 import { StringToInt } from "@/utils";
+import type { PaginationParams } from "@/types";
 
 const PutThroughPage = () => {
   const dispatch = useAppDispatch()
   const putThrough = useAppSelector(selectPutThrough);
   const [params, setParams] = useState<PutThroughParams>()
-  const [page, setPage] = useState<number>(1)
-  const [size, setSize] = useState<number>(50)
+  const [pagination, setPagination] = useState<PaginationParams>({
+    page: 1,
+    size: 50
+  })
 
   useEffect(() => {
     if (!params) return;
-    dispatch(fetchPutThroughRequest({ ...params, page, size }));
-  }, [params, page, size]);
+    dispatch(fetchPutThroughRequest({ ...params, ...pagination }));
+  }, [params, pagination]);
 
-  function _handleNextPage(step: number): void {
-    if (step < 1) return;
-    setPage(step);
+  const handleNextPage = (page: number) => {
+    if (page < 1) return
+    setPagination(prev => ({ ...prev, page }))
   }
 
-  function _handleChangeSize(step: number): void {
-    setSize(step);
+  const handleSetSize = (size: number) => {
+    setPagination(prev => ({
+      ...prev,
+      size,
+      page: 1
+    }))
   }
+
 
   return (
     <ListPage>
@@ -40,16 +48,14 @@ const PutThroughPage = () => {
       <ListPage.Paging>
         <Paging
           isElement={true}
-          page={page}
-          nextPage={(e: number) => _handleNextPage(e)}
-          size={size}
-          setSize={_handleChangeSize}
-          total={
-            putThrough?.length ? StringToInt(putThrough[0].totalRow) : 0
-          }
+          page={pagination.page}
+          size={pagination.size}
+          nextPage={handleNextPage}
+          setSize={handleSetSize}
+          totalRow={putThrough?.length ? StringToInt(putThrough[0].totalRow) : 0}
         />
       </ListPage.Paging>
-    </ListPage>
+    </ListPage >
   )
 };
 export default PutThroughPage;

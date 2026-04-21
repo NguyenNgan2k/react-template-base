@@ -7,28 +7,34 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { StringToInt } from "@/utils";
 import Paging from "@/components/common/Paging";
 import type { AdvertisementParams } from "../../putthroughType";
+import type { PaginationParams } from "@/types";
 
 const AdvertisementPage = () => {
   const dispatch = useAppDispatch()
   const advertisements = useAppSelector(selectAdvertisement);
   const [params, setParams] = useState<AdvertisementParams>()
-  const [page, setPage] = useState<number>(1)
-  const [size, setSize] = useState<number>(50)
+  const [pagination, setPagination] = useState<PaginationParams>({
+    page: 1,
+    size: 50
+  })
 
   useEffect(() => {
     if (!params) return;
-    dispatch(fetchAdvertisementRequest({ ...params, page, size }));
-  }, [params, page, size]);
+    dispatch(fetchAdvertisementRequest({ ...params, ...pagination }));
+  }, [params, pagination]);
 
-  function _handleNextPage(step: number): void {
-    if (step < 1) return;
-    setPage(step);
+  const handleNextPage = (page: number) => {
+    if (page < 1) return
+    setPagination(prev => ({ ...prev, page }))
   }
 
-  function _handleChangeSize(step: number): void {
-    setSize(step);
+  const handleSetSize = (size: number) => {
+    setPagination(prev => ({
+      ...prev,
+      size,
+      page: 1
+    }))
   }
-
 
   return (
     <ListPage>
@@ -41,13 +47,11 @@ const AdvertisementPage = () => {
       <ListPage.Paging>
         <Paging
           isElement={true}
-          page={page}
-          nextPage={(e: number) => _handleNextPage(e)}
-          size={size}
-          setSize={_handleChangeSize}
-          total={
-            advertisements?.length ? StringToInt(advertisements[0].totalRow) : 0
-          }
+          page={pagination.page}
+          size={pagination.size}
+          nextPage={handleNextPage}
+          setSize={handleSetSize}
+          totalRow={advertisements?.length ? StringToInt(advertisements[0].totalRow) : 0}
         />
       </ListPage.Paging>
     </ListPage>

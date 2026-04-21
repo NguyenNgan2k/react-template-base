@@ -6,7 +6,6 @@ import Button from "@/components/common/Button";
 type OrderConfirmProps = {
   order: OrderValue,
   onClose: () => void
-  onAccept: () => void
 }
 
 const OrderConfirm = (props: OrderConfirmProps) => {
@@ -53,7 +52,7 @@ const OrderConfirm = (props: OrderConfirmProps) => {
         <Button
           variant="success"
           className="w-22"
-          onClick={props.onAccept}>
+          onClick={() => { }}>
           Xác nhận
         </Button>
       </div>

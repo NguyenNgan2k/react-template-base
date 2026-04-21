@@ -279,7 +279,6 @@ const OrderForm = () => {
       {
         isOpenOrderConfirm && orderValueRef.current &&
         <OrderConfirm
-          onAccept={() => { }}
           order={orderValueRef.current}
           onClose={() => setIsOpenOrderConfirm(false)}
         />

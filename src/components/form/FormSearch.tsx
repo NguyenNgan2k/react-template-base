@@ -7,7 +7,7 @@ const FormSearch = (props: FormProps) => {
 };
 
 FormSearch.Body = (props: { children?: React.ReactNode }) => {
-  return <div className="h-full flex gap-2 items-center">
+  return <div className="h-full flex gap-2 items-center py-1">
     {props.children}
   </div>;
 };
@@ -15,9 +15,9 @@ FormSearch.Body = (props: { children?: React.ReactNode }) => {
 
 FormSearch.Field = (props: { label: string, children?: React.ReactNode }) => {
   return <div className="flex gap-1 items-center">
-    <div>{props.label}</div>
+    <div > {props.label}</div >
     <div className="w-28">{props.children}</div>
-  </div>;
+  </div >;
 };
 
 

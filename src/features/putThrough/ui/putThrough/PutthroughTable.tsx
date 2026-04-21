@@ -111,8 +111,8 @@ const columns: Column<PutThrough>[] = [
   },
 ];
 
-const PutThroughTable = (props: { putThroughs: PutThrough[] | null }) => {
-  const selectedOrderRef = useRef<PutThrough | null>(null)
+const PutThroughTable = (props: { putThroughs: PutThrough[] }) => {
+  const selectedOrderRef = useRef<PutThrough>(null)
 
   const handleOnClickMenuItem = (menuParams: MenuParams<PutThrough>) => {
     switch (menuParams.id) {

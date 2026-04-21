@@ -1,32 +1,23 @@
 import Button from "@/components/common/Button";
 import FormSearch from "@/components/form/FormSearch";
 import TextFormField from "@/components/inputs/text/TextFormField";
-import { useAppDispatch } from "@/store/hook";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import type { AccountListParams } from "../accountType";
 
 type FormValues = {
-  account: string;
-  symbol: string;
-  no: string;
-  side: string;
-  status: string;
-  channel: string
+  account?: string;
+  accountName?: string;
+  marketingId?: string;
+  cardId?: string;
 }
 
-const AccountSearch = () => {
-  const dispatch = useAppDispatch()
-  const form = useForm<FormValues>({
-    defaultValues: {
-      account: '',
-      symbol: '',
-      no: '',
-      side: 'ALL',
-      status: 'ALL',
-      channel: ''
-    }
-  }
-  )
+interface AccountSearchProps {
+  handleSearch: (params: AccountListParams) => void;
+}
+
+const AccountSearch = ({ handleSearch }: AccountSearchProps) => {
+  const form = useForm<FormValues>()
 
   useEffect(() => {
     handleFetchAccount()
@@ -38,11 +29,10 @@ const AccountSearch = () => {
 
   const handleFetchAccount = () => {
     const data = form.getValues()
-    const params: unknown = {
-      page: 1,
-      size: 1000,
+    const params: AccountListParams = {
+      account: data.account,
     }
-    // dispatch(fetchOrderBookRequest(params))
+    handleSearch(params)
   }
 
   return (
@@ -53,11 +43,21 @@ const AccountSearch = () => {
             name='account'
             maxLength={7}
           />
-          <FormSearch.Field label="Marketing ID">
-            <TextFormField
-              name='marketingId'
-            />
-          </FormSearch.Field>
+        </FormSearch.Field>
+        <FormSearch.Field label="Tên khách hàng">
+          <TextFormField
+            name='accountName'
+          />
+        </FormSearch.Field>
+        <FormSearch.Field label="Marketing ID">
+          <TextFormField
+            name='marketingId'
+          />
+        </FormSearch.Field>
+        <FormSearch.Field label="Số ĐKSH">
+          <TextFormField
+            name='cardId'
+          />
         </FormSearch.Field>
         <Button type="submit">Tìm kiếm</Button>
       </FormSearch.Body>

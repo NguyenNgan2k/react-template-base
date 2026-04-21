@@ -5,11 +5,11 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { BsThreeDots } from 'react-icons/bs';
 
 interface Props {
-  nextPage: Function;
   page: number;
   size: number;
-  setSize: any;
-  total: number;
+  nextPage: (page: number) => void
+  setSize: (size: number) => void
+  totalRow: number;
   isElement: boolean
 }
 
@@ -20,19 +20,19 @@ function Paging(props: Props) {
     page,
     size,
     setSize,
-    total = 0,
+    totalRow = 0,
     isElement
   } = props
 
   const _page = page < 1 ? 1 : page;
-  const pagesCount = Math.ceil(total / size);
+  const pagesCount = Math.ceil(totalRow / size);
   const isPaginationShown = pagesCount > 0;
   const isCurrentPageFirst = _page === 1;
   const isCurrentPageLast = _page === pagesCount;
 
-  const changePage = (number: number) => {
-    if (_page === number) return;
-    nextPage(number);
+  const changePage = (page: number) => {
+    if (_page === page) return;
+    nextPage(page);
   };
 
   const onPageNumberClick = (pageNumber: number) => {

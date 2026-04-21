@@ -47,8 +47,8 @@ export const selectSelectedSymbol = (state: RootState): string =>
 export const selectSelectedOrder = (state: RootState): OrderValue | null =>
   state.order.selectedOrder;
 
-export const selectOrderHistory = (state: RootState) =>
-  state.order.orderHistory?.filter((o: OrderHistory) => o.type !== 'MATCHED') || [];
+export const selectOrderHistory = (state: RootState) => []
+// state.order.orderHistory?.filter((o: OrderHistory) => o.type !== 'MATCHED') || [];
 
-export const selectOrderHistoryMatched = (state: RootState) =>
-  state.order.orderHistory?.filter((o: OrderHistory) => o.type === 'MATCHED') || [];
+export const selectOrderHistoryMatched = (state: RootState) => []
+// state.order.orderHistory?.filter((o: OrderHistory) => o.type === 'MATCHED') || [];

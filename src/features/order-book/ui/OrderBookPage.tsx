@@ -7,26 +7,33 @@ import { fetchOrderBookRequest, selectOrderBook } from "../redux/orderBookSlice"
 import { StringToInt } from "@/utils";
 import type { OrderBookParams } from "../orderBookType";
 import ListPage from "@/components/page/ListPage";
+import type { PaginationParams } from "@/types";
 
 const OrderBookPage = () => {
   const dispatch = useAppDispatch()
   const orderBooks = useAppSelector(selectOrderBook)
   const [params, setParams] = useState<OrderBookParams>()
-  const [page, setPage] = useState<number>(1)
-  const [size, setSize] = useState<number>(50)
+  const [pagination, setPagination] = useState<PaginationParams>({
+    page: 1,
+    size: 50
+  })
 
   useEffect(() => {
     if (!params) return;
-    dispatch(fetchOrderBookRequest({ ...params, page, size }));
-  }, [params, page, size]);
+    dispatch(fetchOrderBookRequest({ ...params, ...pagination }));
+  }, [params, pagination]);
 
-  function _handleNextPage(step: number): void {
-    if (step < 1) return;
-    setPage(step);
+  const handleNextPage = (page: number) => {
+    if (page < 1) return
+    setPagination(prev => ({ ...prev, page }))
   }
 
-  function _handleChangeSize(step: number): void {
-    setSize(step);
+  const handleSetSize = (size: number) => {
+    setPagination(prev => ({
+      ...prev,
+      size,
+      page: 1
+    }))
   }
 
   return (
@@ -40,13 +47,11 @@ const OrderBookPage = () => {
       <ListPage.Paging>
         <Paging
           isElement={true}
-          page={page}
-          nextPage={(e: number) => _handleNextPage(e)}
-          size={size}
-          setSize={_handleChangeSize}
-          total={
-            orderBooks?.length ? StringToInt(orderBooks[0].totalRow) : 0
-          }
+          page={pagination.page}
+          size={pagination.size}
+          nextPage={handleNextPage}
+          setSize={handleSetSize}
+          totalRow={orderBooks?.length ? StringToInt(orderBooks[0].totalRow) : 0}
         />
       </ListPage.Paging>
     </ListPage>

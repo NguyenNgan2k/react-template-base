@@ -4,16 +4,18 @@ interface Props<T extends string> {
   tabs: ReadonlyArray<{ value: T; label: string }>
   tabActive: T
   handleChangeTab: (tab: T) => void
+  className?: string
 }
 
 function Tab<T extends string>({
   tabs,
   tabActive,
   handleChangeTab,
+  className
 }: Props<T>) {
 
   return (
-    <div className="h-10 px-1 flex items-center gap-4" >
+    <div className={clsx("h-10 px-1 flex items-center gap-4 bg-bg-surface", className)} >
       {
         tabs && !!tabs.length && tabs.map((item, index) => (
           <div

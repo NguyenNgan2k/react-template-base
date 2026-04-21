@@ -4,8 +4,9 @@ import { vi } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
-import { DATE_DD_MM_YYYY_REGEX } from "@/features/category/cash/constant";
 import type { ErrorInput } from "@/types";
+
+const DATE_DD_MM_YYYY_REGEX = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
 
 type Props = {

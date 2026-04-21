@@ -30,7 +30,6 @@ const AdvertisementForm = (props: { handleSearch: (data: AdvertisementParams) =>
     props.handleSearch(params)
   }
 
-
   return (
     <FormSearch form={form} onSubmit={onSubmit}>
       <FormSearch.Body>

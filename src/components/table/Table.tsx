@@ -39,7 +39,7 @@ export default function Table<T>({ columns, data, classWrapper, classTable, menu
 
   return (
     <div ref={containerRef} className={classWrapper}>
-      <table className={"table w-full " + classTable} >
+      <table className={classTable} >
         <thead>
           <tr>
             {columns.map((col) => (
@@ -85,17 +85,21 @@ export default function Table<T>({ columns, data, classWrapper, classTable, menu
           )}
         </tbody>
       </table>
-      <Menu id="table">
-        {
-          menu?.map((item) => (
-            <Item
-              id={item.id}
-              onClick={onClickMenu}
-            >
-              {item.text}</Item>
-          ))
-        }
-      </Menu>
+      {
+        menu && (
+          <Menu id="table">
+            {
+              menu?.map((item) => (
+                <Item
+                  id={item.id}
+                  onClick={onClickMenu}
+                >
+                  {item.text}</Item>
+              ))
+            }
+          </Menu>
+        )
+      }
     </div>
   );
 }

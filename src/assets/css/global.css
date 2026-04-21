@@ -38,21 +38,25 @@ body {
   @apply bg-bg-elevated;
 }
 
-.table thead,
+table {
+  @apply w-full;
+}
+
+table thead,
 th {
   @apply sticky top-0 z-1;
 }
 
-.table th,
+table th,
 td {
   @apply h-6 py-0.5 px-1 bg-bg-surface-strong;
 }
 
-.table th {
+table th {
   @apply text-text-base font-medium border border-bd-default;
 }
 
-.table td {
+table td {
   @apply border border-bd-default;
 }
 
@@ -60,12 +64,17 @@ td {
   @apply bg-transparent;
 }
 
+.table-borderless th,
+td {
+  @apply border  border-bd-default;
+}
+
 .table-borderless th {
-  @apply border-b border-bd-default text-xs;
+  @apply font-normal;
 }
 
 .table-borderless td {
-  @apply border-none! text-xs;
+  @apply font-semibold;
 }
 
 button {

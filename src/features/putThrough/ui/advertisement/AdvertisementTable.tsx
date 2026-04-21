@@ -1,6 +1,5 @@
-import Table, { type MenuParams } from "@/components/table/Table";
+import Table from "@/components/table/Table";
 import type { Column } from "@/types";
-import { useRef } from "react";
 import type { Advertisement } from "../../putthroughType";
 
 const columns: Column<Advertisement>[] = [
@@ -105,28 +104,13 @@ const columns: Column<Advertisement>[] = [
   },
 ];
 
-const AdvertisementTable = (props: { advertisements: Advertisement[] | null }) => {
-  const selectedOrderRef = useRef<Advertisement | null>(null)
-  const handleOnClickMenuItem = (menuParams: MenuParams<Advertisement>) => {
-    switch (menuParams.id) {
-      case "detail":
-        selectedOrderRef.current = menuParams.props?.row || null
-        break;
-    }
-  }
-
+const AdvertisementTable = (props: { advertisements: Advertisement[] }) => {
   return (
     <div>
       <Table
         classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
         columns={columns}
         data={props.advertisements}
-        menu={[
-          { id: 'detail', text: "Chi tiết lệnh" },
-          { id: 'convert', text: "Covert to order" },
-          { id: 'cancel', text: "Hủy lệnh" },
-        ]}
-        onClickMenu={handleOnClickMenuItem}
       />
     </div>
   );

@@ -20,9 +20,7 @@ export const apiFetchAdvertisement = async (
 ): Promise<Advertisement> => {
   const res = await apiRequest.get<Advertisement>(
     "/broker/orders/advertisement",
-    {
-      params,
-    },
+    { params },
   );
   return res.data;
 };

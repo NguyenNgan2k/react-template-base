@@ -1,31 +1,26 @@
-import Tab from "@/components/common/Tabs";
+import Tabs from "@/components/common/Tabs";
 import { useState } from "react";
 import OrderPutThroughForm from "./OrderPutthroughForm";
 import ConfirmPutThroughForm from "./ConfirmPutthroughForm";
 import OrderAdvertisementForm from "./OrderAdvertisementForm";
 
-const TabsOrderPutthrough = [
+const OrderPutthroughTabs = [
   { value: 'create', label: 'Tạo mới' },
   { value: 'confirm', label: 'Xác nhận/ Hủy' },
   { value: 'adv', label: 'Quảng cáo' },
 ] as const
 
-type TabValue = typeof TabsOrderPutthrough[number]['value']
+type TabValue = typeof OrderPutthroughTabs[number]['value']
 
 const OrderPutThrough = () => {
   const [tabActive, setTabActive] = useState<TabValue>('create')
-
-  const handleChangeTab = (type: TabValue) => {
-    setTabActive(type);
-  }
-
   return (
     <div className="bg-bg-elevated h-64">
       <div className="px-2 bg-bg-surface border-b border-bd-default">
-        <Tab
-          tabs={TabsOrderPutthrough}
+        <Tabs
+          tabs={OrderPutthroughTabs}
           tabActive={tabActive}
-          handleChangeTab={handleChangeTab}
+          handleChangeTab={(tab) => setTabActive(tab)}
         />
       </div>
       <div className="h-[calc(100%-40px)] p-2">

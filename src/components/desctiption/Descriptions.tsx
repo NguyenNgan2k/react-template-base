@@ -7,7 +7,7 @@ export type DescriptionItemProps = {
 }
 
 export type DescriptionsProps = {
-  items?: Array<DescriptionItemProps>,
+  items?: DescriptionItemProps[],
   className?: string;
   children?: React.ReactNode;
 }

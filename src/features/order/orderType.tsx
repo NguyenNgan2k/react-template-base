@@ -14,31 +14,15 @@ export type OrderHistory = {
 }
 
 export type OrderDetail = {
-  accountBranchCode: string;
-  accountBusinessCode: string;
-  accountCode: string;
-  accountType: string;
-  boardId: string;
-  cancelTime: string | null;
-  chanel: string;
-  changePrice: number;
-  group: string;
-  marketingId: string;
-  matchedValue: number;
-  matchedVolume: number;
-  orderCenterNo: string | null;
-  orderNo: number;
-  orderShowPrice: string;
-  orderStatus: string;
-  orderTime: number;
-  orderVolume: number;
   pkFrontOrder: number;
-  quoteStatus: string;
-  rejectText: string | null;
-  rowNo: number;
-  setOrderType: string;
+  side: "B" | "S" | string;
+  orderNo: number;
   shareCode: string;
-  side: "B" | "S";
-  totalRow: number;
-  unmatchVolume: number;
-};
+  orderShowPrice: string;
+  orderVolume: number;
+  accountCode: string;
+  orderTime: number;
+  marketingId: string;
+  chanel: string;
+  rejectText: string | null;
+}

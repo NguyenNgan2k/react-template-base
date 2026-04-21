@@ -7,13 +7,13 @@ import type {
 } from "../putthroughType";
 
 type PutThroughState = {
-  putThrough: PutThrough[] | null;
-  advertisement: Advertisement[] | null;
+  putThrough: PutThrough[];
+  advertisement: Advertisement[];
 };
 
 const initialState: PutThroughState = {
-  putThrough: null,
-  advertisement: null,
+  putThrough: [],
+  advertisement: [],
 };
 
 export const putThroughSlice = createSlice({
