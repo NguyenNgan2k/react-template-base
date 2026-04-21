@@ -1,9 +1,4 @@
 import { MAX_RECONNECT } from "@/configs";
-import { store } from "../store";
-import {
-  setListStockByIdFromCache,
-  setStatusSocket,
-} from "../store/slices/priceboard/slice";
 import {
   clearSnapshot,
   clearSnapshotAll,
@@ -14,6 +9,11 @@ import {
   updateIndex,
   updateSnapshots,
 } from "@/features/stock/redux/stockSlice";
+import { store } from "../store";
+import {
+  setListStockByIdFromCache,
+  setStatusSocket,
+} from "../store/slices/priceboard/slice";
 import type {
   FullSnapshotMessage,
   SnapshotDataCompact,
@@ -28,8 +28,10 @@ import { queueFlash } from "../worker/flashManager";
 
 // ==================== WORKER ====================
 const worker = new Worker(
-  new URL("../../worker/priceboard.worker.ts", import.meta.url),
-  { type: "module" },
+  new URL("../worker/priceboard.worker.ts", import.meta.url),
+  {
+    type: "module",
+  },
 );
 
 worker.onmessage = (e: MessageEvent<WorkerOutputMessage>) => {
@@ -54,6 +56,9 @@ let offlineQueue: {
   action: "subscribe" | "unsubscribe" | "getSymbolList";
   options: SubscribeOptions;
 }[] = [];
+
+let isConnecting = false;
+let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
 // ==================== BATCH UPDATE ====================
 let lastFlushTime = 0;
@@ -285,32 +290,63 @@ const parseMessage = (raw: string): void => {
   }
 };
 // ==================== SOCKET LIFECYCLE ====================
+const startHeartbeat = () => {
+  stopHeartbeat();
+  // heartbeatInterval = setInterval(() => {
+  //   if (socket?.readyState === WebSocket.OPEN) {
+  //     try {
+  //       socket.send(JSON.stringify({ type: "ping" }));
+  //     } catch (e) {}
+  //   }
+  // }, HEARTBEAT_INTERVAL);
+};
+
+const stopHeartbeat = () => {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
+  }
+};
+
 const connect = () => {
+  if (isConnecting || socket?.readyState === WebSocket.OPEN) {
+    return;
+  }
+
   closeSocket();
-  store.dispatch(setStatusSocket({ status: "connecting" }));
+
+  isConnecting = true;
 
   const url = `${BASE_URL}?sessionId=${getOrCreateSessionId()}`;
 
   socket = new WebSocket(url);
 
   socket.onopen = () => {
+    isConnecting = false;
     reconnectAttempts = 0;
 
-    store.dispatch(
-      setStatusSocket({
-        status: "open",
-        reconnectAttempts: 0,
-      }),
-    );
+    store.dispatch(setStatusSocket({ status: "open", reconnectAttempts: 0 }));
 
+    startHeartbeat();
     processOfflineQueue();
     reSubscribe();
   };
 
   socket.onmessage = (e) => parseMessage(e.data);
 
-  socket.onclose = socket.onerror = () => {
-    attemptReconnect();
+  socket.onclose = (event) => {
+    isConnecting = false;
+    stopHeartbeat();
+
+    // Chỉ reconnect nếu không phải close chủ động (1000)
+    if (event.code !== 1000 && reconnectAttempts < MAX_RECONNECT) {
+      attemptReconnect();
+    } else {
+      store.dispatch(setStatusSocket({ status: "closed" }));
+    }
+  };
+
+  socket.onerror = () => {
     store.dispatch(
       setStatusSocket({
         status: "error",
@@ -323,33 +359,37 @@ const connect = () => {
 const attemptReconnect = () => {
   if (reconnectAttempts >= MAX_RECONNECT) {
     console.error("Max reconnect attempts reached");
-    store.dispatch(
-      setStatusSocket({
-        status: "error",
-        error: "Maximum reconnect attempts reached",
-      }),
-    );
     return;
   }
-  const delay = BASE_DELAY * Math.pow(1.5, reconnectAttempts++);
+
+  const delay =
+    BASE_DELAY * Math.pow(1.5, reconnectAttempts) + Math.random() * 300; // jitter tránh gọi cùng lúc
 
   store.dispatch(
     setStatusSocket({
       status: "reconnecting",
-      reconnectAttempts,
+      reconnectAttempts: reconnectAttempts + 1,
     }),
   );
 
-  reconnectTimer = setTimeout(connect, delay);
+  reconnectTimer = setTimeout(() => {
+    reconnectAttempts++;
+    connect();
+  }, delay);
 };
 
 const closeSocket = () => {
-  if (reconnectTimer) clearTimeout(reconnectTimer);
-  if (socket) socket.close();
-  socket = null;
-  reconnectAttempts = 0;
-
-  store.dispatch(setStatusSocket({ status: "closed" }));
+  stopHeartbeat();
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  if (socket) {
+    socket.onclose = null;
+    socket.close(1000, "Client closed");
+    socket = null;
+  }
+  isConnecting = false;
 };
 
 // ==================== SUBSCRIPTION ====================
@@ -605,10 +645,10 @@ export const socketClient = {
     } satisfies WorkerInputMessage);
     closeSocket();
   },
+
+  connect,
 };
 
 export { subscribedGroups };
-
-connect();
 
 store.dispatch(setStatusSocket({ status: "connecting" }));

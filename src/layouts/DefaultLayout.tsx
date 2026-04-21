@@ -1,8 +1,10 @@
 import { ModePriceBoardProvider } from "@/context/ModePriceBoardContext";
+import { selectUserData } from "@/features/auth/login/redux/loginSlice";
+import { fetchStockListRequest } from "@/features/stock/redux/stockSlice";
+import { socketClient } from "@/networks/socket";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import SessionExpiredModal from "./notification/SessionExpired";
 import { WindowContextProvider } from "../context/WindowContext";
 import QuickOrder from "../features/priceboard/components/quick-order";
 import { useAnimationDelay } from "../hooks/useAnimationDelay";
@@ -11,10 +13,9 @@ import { usePrevious } from "../hooks/usePrevious";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { logout } from "../store/slices/auth/slice";
 import { selectQuickOrderSymbol } from "../store/slices/priceboard/selector";
-import Header from "./header/Header";
 import Footer from "./footer/Footer";
-import { selectUserData } from "@/features/auth/login/redux/loginSlice";
-import { fetchStockListRequest } from "@/features/stock/redux/stockSlice";
+import Header from "./header/Header";
+import SessionExpiredModal from "./notification/SessionExpired";
 
 export default function DefaultLayout() {
   const dispatch = useAppDispatch();
@@ -23,6 +24,8 @@ export default function DefaultLayout() {
   const { isVisible, isAnimating, open, close } = useAnimationDelay();
   const preQuickOrderSymbol = usePrevious(quickOrderSymbol);
   const userData = useAppSelector(selectUserData);
+
+  const preUserData = usePrevious(userData);
 
   //auto logout sau 60 phút
   useIdleLogout(() => {
@@ -40,11 +43,15 @@ export default function DefaultLayout() {
     open();
   }, [userData, quickOrderSymbol, preQuickOrderSymbol]);
 
+  //TODO: connect socket
+  useEffect(() => {
+    if (!userData || userData === preUserData) return;
+    socketClient.connect();
+  }, [userData]);
+
   return (
     <WindowContextProvider>
-      <div
-        className="h-[calc(var(--app-height))] overflow-hidden bg-background-primary text-text-base"
-      >
+      <div className="h-[calc(var(--app-height))] overflow-hidden bg-background-primary text-text-base">
         <Header />
         <ModePriceBoardProvider>
           <motion.div

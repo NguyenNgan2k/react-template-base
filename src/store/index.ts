@@ -17,8 +17,8 @@ import orderSlice from "@/features/order/redux/orderSlice";
 import orderBookSaga from "@/features/order-book/redux/orderBookSaga";
 import orderBookSlice from "@/features/order-book/redux/orderBookSlice";
 
-import putThroughSaga from "@/features/putthrough/redux/putthroughSaga";
-import putThroughSlice from "@/features/putthrough/redux/putthroughSlice";
+import putThroughSaga from "@/features/putThrough/redux/putthroughSaga";
+import putThroughSlice from "@/features/putThrough/redux/putthroughSlice";
 
 import msgSessionSaga from "@/features/msg-session/redux/msgSessionSaga";
 import msgSessionSlice from "@/features/msg-session/redux/msgSessionSlice";

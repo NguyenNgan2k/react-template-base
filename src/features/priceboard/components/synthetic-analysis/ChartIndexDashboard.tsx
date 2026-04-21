@@ -1,11 +1,11 @@
+import { ID_HNX, ID_HOSE, ID_UPCOM, ID_VN30 } from "@/configs";
+import { selectMajorIndices } from "@/features/stock/redux/stockSelector";
+import { useAppSelector } from "@/store/hook";
 import { useEffect, useRef, useState } from "react";
 import { CiCircleChevRight } from "react-icons/ci";
 import type { Swiper as SwiperType } from "swiper";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { ID_HNX, ID_HOSE, ID_UPCOM, ID_VN30 } from "../../../../configs";
-import { useAppSelector } from "../../../../store/hook";
-import { selectMajorIndices } from "../../../../store/slices/stock/selector";
 import ChartIndexDashboardSkeleton from "./ChartIndexDashboardSkeleton";
 import ChartIndexInfo from "./ChartIndexInfo";
 import ChartRender from "./ChartRender";
@@ -102,7 +102,7 @@ export default function ChartIndexDashboard() {
             ))
           : indicesList.map(({ key, symbol, data }) => (
               <SwiperSlide key={key}>
-                <div className="flex flex-row gap-3 items-center w-full h-full bg-surface rounded">
+                <div className="flex flex-row gap-3 items-center w-full h-[148px] bg-surface rounded">
                   <ChartIndexInfo dataIndex={data} />
                   <div className="w-3/5 h-full rounded">
                     <ChartRender

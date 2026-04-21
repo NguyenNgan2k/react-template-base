@@ -15,14 +15,14 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { List, type ListRowProps } from "react-virtualized";
-import type { RenderedRows } from "react-virtualized/dist/es/List";
 
+import NoData from "@/components/common/NoData.tsx";
 import { HEADER_HEIGHT, ROW_HEIGHT } from "@/configs/headerPriceBoard.ts";
-import { usePerfectScrollbar } from "@/hooks/usePerfectScrollbar.ts.ts";
+import { selectSnapshotsBySymbols } from "@/features/stock/redux/stockSelector.ts";
 import { useToast } from "@/hooks/useToast.ts";
-import { socketClient } from "@/services/socket/index.ts";
+import { socketClient } from "@/networks/socket";
 import { useAppDispatch, useAppSelector } from "@/store/hook.ts";
 import {
   selectFavorites,
@@ -33,9 +33,9 @@ import {
   setListStockByIdFromCache,
   setScrollToSymbol,
 } from "@/store/slices/priceboard/slice.ts";
-import { selectSnapshotsBySymbols } from "@/store/slices/stock/selector.ts";
 import type { Favorite } from "@/types/priceBoard.ts";
 import type { SnapshotDataCompact } from "@/types/socketCient.ts";
+import { getFavoritePriceboard } from "@/utils/priceboard.ts";
 import BodyTableFavorite from "./BodyTable.tsx";
 import HeaderColumnsFavorite from "./HeaderTable.tsx";
 
@@ -45,9 +45,7 @@ interface SortableRowProps {
   snapshot: SnapshotDataCompact;
   index: number;
   boardId: string;
-  pinned?: boolean;
   highlight: boolean;
-  handlePinSymbol: (symbol: string) => void;
   handleRemoveSymbol: (symbol: string) => void;
 }
 
@@ -56,9 +54,7 @@ function SortableRow({
   snapshot,
   index,
   boardId,
-  pinned,
   highlight,
-  handlePinSymbol,
   handleRemoveSymbol,
 }: SortableRowProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging, isOver } =
@@ -99,8 +95,6 @@ function SortableRow({
         dragListeners={listeners}
         dragAttributes={attributes}
         active={boardId}
-        pinned={pinned}
-        handlePinSymbol={handlePinSymbol}
         handleRemoveSymbol={handleRemoveSymbol}
       />
     </div>
@@ -116,7 +110,7 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
 
   const listRef = useRef<List>(null);
 
-  const { containerRef } = usePerfectScrollbar();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(1200);
   const [listHeight, setListHeight] = useState(500);
   const [highlightSymbol, setHighlightSymbol] = useState<string | null>(null);
@@ -132,17 +126,12 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
   const scrollTarget = useAppSelector(selectScrollToSymbol);
 
   const [symbols, setSymbols] = useState<string[]>([]);
-  const [pinned, setPinned] = useState<string[]>([]);
 
   // Lấy list mã pinned
   useEffect(() => {
-    const stored = localStorage.getItem("favorites");
-    if (!stored) return;
-
-    const favorites: Favorite[] = JSON.parse(stored);
+    const favorites: Favorite[] = getFavoritePriceboard();
     const favorite = favorites.find((f) => f.id === boardId);
 
-    setPinned(favorite?.pinned ?? []);
     setSymbols(favorite?.symbols ?? []);
   }, [boardId, baseSymbols, listFavorites]);
 
@@ -158,27 +147,11 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
     return () => ro.disconnect();
   }, [containerRef]);
 
-  // === VISIBLE SYMBOLS ===
-  const updateVisibleSymbols = useCallback(
-    ({ startIndex, stopIndex }: RenderedRows) => {
-      const visible = new Set<string>(pinned); // pinned luôn visible
-
-      for (let i = startIndex; i <= stopIndex; i++) {
-        const symbol =
-          i < pinned.length ? pinned[i] : symbols[i - pinned.length];
-        if (symbol) visible.add(symbol);
-      }
-
-      socketClient.setVisibleSymbols(Array.from(visible));
-    },
-    [pinned, symbols],
-  );
-
   // === SCROLL SYMBOL ===
   useEffect(() => {
     if (!scrollTarget) return;
 
-    const allSymbols = [...pinned, ...symbols];
+    const allSymbols = [...symbols];
     const fullSymbol = allSymbols.find((s) => s.startsWith(scrollTarget));
     if (!fullSymbol) {
       dispatch(setScrollToSymbol(null));
@@ -186,13 +159,10 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
     }
 
     let targetIndex = -1;
-    if (pinned.includes(fullSymbol)) {
-      targetIndex = pinned.indexOf(fullSymbol);
-    } else {
-      const normalIndex = symbols.indexOf(fullSymbol);
-      if (normalIndex !== -1) {
-        targetIndex = pinned.length + normalIndex;
-      }
+
+    const normalIndex = symbols.indexOf(fullSymbol);
+    if (normalIndex !== -1) {
+      targetIndex = normalIndex;
     }
 
     if (targetIndex !== -1) {
@@ -202,7 +172,7 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
     }
 
     dispatch(setScrollToSymbol(null));
-  }, [scrollTarget, pinned, symbols, dispatch]);
+  }, [scrollTarget, symbols, dispatch]);
 
   // === DnD SENSORS ===
   const sensors = useSensors(
@@ -216,23 +186,17 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
 
-    const displaySymbols = [...pinned, ...symbols];
+    const displaySymbols = [...symbols];
 
     const oldIndex = displaySymbols.indexOf(active.id as string);
     const newIndex = displaySymbols.indexOf(over.id as string);
 
     const newOrder = arrayMove(displaySymbols, oldIndex, newIndex);
 
-    // Tách lại pinned và normal
-    const newPinned: string[] = [];
     const newNormal: string[] = [];
 
     newOrder.forEach((sym) => {
-      if (pinned.includes(sym)) {
-        newPinned.push(sym);
-      } else {
-        newNormal.push(sym);
-      }
+      newNormal.push(sym);
     });
 
     // Lưu localStorage
@@ -241,59 +205,28 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
       const favorites: Favorite[] = JSON.parse(stored);
       const favorite = favorites.find((f) => f.id === boardId);
       if (favorite) {
-        favorite.pinned = newPinned;
         favorite.symbols = newNormal;
         localStorage.setItem("favorites", JSON.stringify(favorites));
       }
     }
 
-    setPinned(newPinned);
     setSymbols(newNormal);
   };
 
-  const handlePinSymbol = (symbolToPin: string) => {
-    const stored = localStorage.getItem("favorites");
-    if (!stored || !boardId) return;
-
-    const favorites: Favorite[] = JSON.parse(stored);
-    const favorite = favorites.find((f) => f.id === boardId);
-    if (!favorite) return;
-
-    const isPinned = favorite.pinned.includes(symbolToPin);
-
-    if (isPinned) {
-      // Unpin: chuyển từ pinned -> normal
-      favorite.pinned = favorite.pinned.filter((s) => s !== symbolToPin);
-      favorite.symbols = [...favorite.symbols, symbolToPin];
-    } else {
-      // Pin: chuyển từ normal -> pinned
-      favorite.pinned = [...favorite.pinned, symbolToPin];
-      favorite.symbols = favorite.symbols.filter((s) => s !== symbolToPin);
-    }
-
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-
-    // Cập nhật state
-    setPinned(favorite.pinned);
-    setSymbols(favorite.symbols);
-  };
-
   const handleRemoveSymbol = (symbolToRemove: string) => {
-    const stored = localStorage.getItem("favorites");
-    if (!stored || !boardId) return;
+    const stored = getFavoritePriceboard();
+    if (!stored || !boardId || boardId !== "fav_default") return;
 
-    const favorites: Favorite[] = JSON.parse(stored);
+    const favorites: Favorite[] = stored;
     const favorite = favorites.find((f) => f.id === boardId);
     if (!favorite) return;
 
-    // XÓA KHỎI CẢ PINNED VÀ NORMAL
-    favorite.pinned = favorite.pinned.filter((s) => s !== symbolToRemove);
     favorite.symbols = favorite.symbols.filter((s) => s !== symbolToRemove);
 
     // Lưu lại
     localStorage.setItem("favorites", JSON.stringify(favorites));
 
-    const updatedSymbols = [...favorite.pinned, ...favorite.symbols];
+    const updatedSymbols = [...favorite.symbols];
     dispatch(setListStockByIdFromCache(boardId, updatedSymbols));
 
     socketClient.unsubscribe({ symbols: [symbolToRemove] });
@@ -304,13 +237,11 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
   // === ROW RENDERER ===
   const rowRenderer = ({ index, key, style }: ListRowProps) => {
     // Tính symbol theo index tổng
-    const symbol =
-      index < pinned.length ? pinned[index] : symbols[index - pinned.length];
+    const symbol = symbols[index];
 
     if (!symbol) return null;
 
     const snapshot = snapshots[symbol] ?? { symbol };
-    const isPinned = index < pinned.length; // đơn giản vậy thôi!
 
     return (
       <div key={key} style={style}>
@@ -319,9 +250,7 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
           snapshot={snapshot}
           index={index}
           boardId={boardId}
-          pinned={isPinned}
           highlight={highlightSymbol === symbol}
-          handlePinSymbol={handlePinSymbol}
           handleRemoveSymbol={handleRemoveSymbol}
         />
       </div>
@@ -329,44 +258,52 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
   };
 
   return (
-    <div
-      className="h-[calc(var(--app-height)-289px)] overflow-hidden relative"
-      ref={containerRef}
-    >
-      <div className="min-w-7xl flex flex-col w-full h-full">
-        <div style={{ height: HEADER_HEIGHT }}>
-          <HeaderColumnsFavorite />
-        </div>
-        <div className="w-full h-full">
-          {!baseSymbols || baseSymbols.length === 0 ? (
-            <div className="w-full h-full grid place-items-center">
-              <div className="loader-bar"></div>
-            </div>
-          ) : (
-            // <NoData message="Không có mã nào trong danh mục!" />
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={[...pinned, ...symbols]}
-                strategy={verticalListSortingStrategy}
+    <div className="flex flex-col">
+      <div
+        className="overflow-hidden h-[calc(var(--app-height)-300px)]"
+        ref={containerRef}
+      >
+        <div className="min-w-7xl flex flex-col w-full h-full">
+          <div style={{ height: HEADER_HEIGHT }}>
+            <HeaderColumnsFavorite />
+          </div>
+          <div className="w-full h-full">
+            {!baseSymbols || baseSymbols.length === 0 ? (
+              <div className="w-full h-full grid place-items-center">
+                <NoData message="Không có mã nào trong danh mục!" />
+              </div>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
               >
-                <List
-                  ref={listRef}
-                  height={listHeight}
-                  rowCount={pinned.length + symbols.length} // TỔNG SỐ DÒNG
-                  rowHeight={ROW_HEIGHT}
-                  rowRenderer={rowRenderer} // DÙNG CHUNG 1 HÀM
-                  width={Math.max(containerWidth, 1280)}
-                  onRowsRendered={updateVisibleSymbols}
-                  className="hide-scrollbar"
-                />
-              </SortableContext>
-            </DndContext>
-          )}
-        </div>
+                <SortableContext
+                  items={[...symbols]}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <List
+                    ref={listRef}
+                    height={listHeight}
+                    rowCount={symbols.length} // TỔNG SỐ DÒNG
+                    rowHeight={ROW_HEIGHT}
+                    rowRenderer={rowRenderer} // DÙNG CHUNG 1 HÀM
+                    width={Math.max(containerWidth, 1280)}
+                    className="hide-scrollbar"
+                  />
+                </SortableContext>
+              </DndContext>
+            )}
+          </div>
+        </div>{" "}
+      </div>{" "}
+      <div className="text-[10px] h-auto flex items-center justify-center gap-1">
+        Giá x 1,000 VNĐ. Khối lượng x 1. Giá trị x 1,000,000 VNĐ.
+        <span className="text-text-subtitle">
+          {" "}
+          Bản quyền thuộc về Công ty TNHH Giải pháp Phần mềm Tài chính Công nghệ
+          DTND © 2025.
+        </span>
       </div>
     </div>
   );

@@ -1,14 +1,11 @@
 import { useWindowActive } from "@/hooks/useWindowActive";
-import { socketClient, subscribedGroups } from "@/networks/socket";
+import { socketClient } from "@/networks/socket";
 import { useAppDispatch } from "@/store/hook";
 import { setListStockByIdFromCache } from "@/store/slices/priceboard/slice";
 import type { Favorite } from "@/types";
+import { getFavoritePriceboard } from "@/utils";
 import { memo, useEffect, useRef } from "react";
-import PriceBoardBase from "./base-price/base";
-import PriceBoardCW from "./base-price/cw";
-import PriceBoardDeal from "./base-price/deal";
-import PriceBoardFavorite from "./base-price/favorite";
-import PriceBoardDerivative from "./derivatives-price/base";
+import PriceBoardFavorite from "./base-price";
 
 interface BoardProps {
   id: string;
@@ -44,14 +41,12 @@ function Board({ id }: BoardProps) {
       socketClient.unsubscribeAll();
 
       if (groupIdRef.current?.startsWith("fav_")) {
-        const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+        const favorites = getFavoritePriceboard();
         const fav = favorites.find((f: Favorite) => f.id === id);
 
-        if (fav && Array.isArray(fav.symbols) && Array.isArray(fav.pinned)) {
+        if (fav && Array.isArray(fav.symbols)) {
           // Gửi symbols từ danh mục yêu thích lên redux
-          const arrSymbol = Array.from(
-            new Set([...fav.pinned, ...fav.symbols]),
-          );
+          const arrSymbol = Array.from(new Set([...fav.symbols]));
 
           dispatch(setListStockByIdFromCache(id, arrSymbol));
 
@@ -68,27 +63,6 @@ function Board({ id }: BoardProps) {
           );
           return;
         }
-      } else if (
-        ["hsx_tt", "hnx_tt", "upcom_tt"].includes(groupIdRef.current)
-      ) {
-        groupIdRef.current = id;
-        let marketId = "";
-
-        switch (id) {
-          case "hsx_tt":
-            marketId = "STO";
-            break;
-          case "hnx_tt":
-            marketId = "STX";
-            break;
-          case "upcom_tt":
-            marketId = "UPCOM";
-            break;
-        }
-
-        socketClient.requestNego(marketId);
-      } else {
-        socketClient.subscribe({ groupId: groupIdRef.current });
       }
 
       clearInactiveState();
@@ -107,11 +81,11 @@ function Board({ id }: BoardProps) {
 
     //TODO: Danh mục yêu thích
     if (id.startsWith("fav_")) {
-      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      const favorites = getFavoritePriceboard();
       const fav = favorites.find((f: Favorite) => f.id === id);
-      if (fav && Array.isArray(fav.symbols) && Array.isArray(fav.pinned)) {
+      if (fav && Array.isArray(fav.symbols)) {
         // Gửi symbols từ danh mục yêu thích lên redux
-        const arrSymbol = Array.from(new Set([...fav.pinned, ...fav.symbols]));
+        const arrSymbol = Array.from(new Set([...fav.symbols]));
 
         dispatch(setListStockByIdFromCache(id, arrSymbol));
 
@@ -130,51 +104,6 @@ function Board({ id }: BoardProps) {
       }
     }
 
-    // Nếu id là các thị trường thỏa thuận
-    if (["hsx_tt", "hnx_tt", "upcom_tt"].includes(id)) {
-      groupIdRef.current = id;
-      let marketId = "";
-
-      switch (id) {
-        case "hsx_tt":
-          marketId = "STO";
-          break;
-        case "hnx_tt":
-          marketId = "STX";
-          break;
-        case "upcom_tt":
-          marketId = "UPCOM";
-          break;
-      }
-
-      socketClient.requestNego(marketId);
-    } else {
-      // const cacheKey = `stocks_${id}`;
-      // const cachedData = localStorage.getItem(cacheKey);
-      // if (cachedData) {
-      //   try {
-      //     const parsed = JSON.parse(cachedData);
-      //     const symbols = parsed.symbols;
-
-      //     if (Array.isArray(symbols) && symbols.length > 0) {
-      //       dispatch(setListStockByIdFromCache(id, symbols));
-      //       socketClient.subscribe({ groupId: id });
-      //       groupIdRef.current = id;
-      //       return;
-      //     } else {
-      //       localStorage.removeItem(cacheKey);
-      //     }
-      //   } catch (e) {
-      //     console.warn("Cache invalid or corrupted:", e);
-      //     localStorage.removeItem(cacheKey);
-      //   }
-      // }
-
-      subscribedGroups.add(id);
-      socketClient.getSymbolList({ groupId: id });
-      groupIdRef.current = id;
-    }
-
     // Cleanup khi unmount hoặc id thay đổi
     return () => {
       if (groupIdRef.current) {
@@ -185,29 +114,7 @@ function Board({ id }: BoardProps) {
     };
   }, [id]);
 
-  return (
-    <>
-      {id === "hose" && <PriceBoardBase boardId={id} />}
-      {id === "vn30" && <PriceBoardBase boardId={id} />}
-      {id === "hnx30" && <PriceBoardBase boardId={id} />}
-      {id === "hnx" && <PriceBoardBase boardId={id} />}
-      {id === "upcom" && <PriceBoardBase boardId={id} />}
-      {id === "hsx_ll" && <PriceBoardBase boardId={id} />}
-      {id === "hnx_ll" && <PriceBoardBase boardId={id} />}
-      {id === "upcom_ll" && <PriceBoardBase boardId={id} />}
-      {id === "cw" && <PriceBoardCW boardId={id} />}
-
-      {(id === "hsx_tt" || id === "hnx_tt" || id === "upcom_tt") && (
-        <PriceBoardDeal />
-      )}
-
-      {id?.startsWith("fav_") && <PriceBoardFavorite boardId={id} />}
-
-      {id === "derivative" && <PriceBoardDerivative boardId={id} />}
-
-      {/* <DebugPanel /> */}
-    </>
-  );
+  return <>{id?.startsWith("fav_") && <PriceBoardFavorite boardId={id} />}</>;
 }
 
 export default memo(Board);

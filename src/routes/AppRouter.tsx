@@ -30,6 +30,7 @@ const RegularAccountPage = lazy(() => import("@/features/account-mgmt/ui/regular
 const ResourceManagementPage = lazy(() => import("@/features/account-mgmt/ui/resource-management/ResourceManagementPage"));
 const StockOwnershipPage = lazy(() => import("@/features/account-mgmt/ui/stock-ownership/StockOwnershipPage"));
 const UbViolationPage = lazy(() => import("@/features/account-mgmt/ui/ub-violation/UbViolationPage"));
+const PriceBoardPage = lazy(() => import("@/features/priceboard"));
 
 export default function AppRouter() {
   return (
@@ -41,14 +42,13 @@ export default function AppRouter() {
           <Route path="/login" element={<LoginPage />} />
 
           {/* Public routes */}
-          <Route element={<MainLayout />}>
-          </Route>
+          <Route element={<MainLayout />}></Route>
           {/* Protected routes  */}
           <Route element={<MainLayout />}>
             {/* <Route element={<ProtectedRoute />}> */}
-            <Route path="/price-board" element={<div>Priceboard</div>} />
+            <Route path="/price-board" element={<PriceBoardPage />} />
             <Route path="/order-book" element={<OrderBookPage />} />
-            <Route path="/putthrough" element={<PutthroughLayout />} >
+            <Route path="/putthrough" element={<PutthroughLayout />}>
               <Route index element={<Navigate to="putthrough" replace />} />
               <Route path="putthrough" element={<PutthroughPage />} />
               <Route path="advertisement" element={<AdvertisementPage />} />

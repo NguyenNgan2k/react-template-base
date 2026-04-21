@@ -1,4 +1,3 @@
-import { PRICE_BOARD_MENU } from "@/configs/priceBoardMenu";
 import useDropdownAnimation from "@/hooks/useDropdownAnimation";
 import { useToast } from "@/hooks/useToast";
 import type { Favorite } from "@/types";
@@ -28,32 +27,6 @@ export default function MenuBoard({
         active={active}
         onChange={onChange}
       />
-
-      {PRICE_BOARD_MENU.map((group) => {
-        const { key, items } = group;
-        if (items.length === 1) {
-          const item = items[0];
-          return (
-            <button
-              key={item.id}
-              className={`px-2 py-1 rounded-lg text-text-title text-sm flex items-center ${
-                active === item.id ? "bg-DTND-500" : ""
-              }`}
-              onClick={() => onChange(item.id)}
-            >
-              {item.name}
-            </button>
-          );
-        }
-        return (
-          <DropdownGroup
-            key={key}
-            group={group}
-            active={active}
-            onChange={onChange}
-          />
-        );
-      })}
     </div>
   );
 }
@@ -132,7 +105,6 @@ function DropdownFavorites({
       label: name,
       id: newId,
       symbols: [],
-      pinned: [],
     };
     setFavorites((prev) => {
       const newFavs = [...prev, newFav];
@@ -152,7 +124,7 @@ function DropdownFavorites({
     });
 
     handleMouseLeave();
-    onChange("vn30");
+    onChange("fav_default");
   };
 
   const activeItem = favorites.find((item) => item.id === active);
@@ -165,27 +137,39 @@ function DropdownFavorites({
     >
       <button
         className={`px-3 py-1 text-sm flex items-center gap-1 rounded-lg ${
-          activeItem ? "bg-DTND-500" : ""
+          activeItem ? "bg-gray-700" : ""
         }`}
       >
-        {activeItem ? activeItem.label : "Danh mục yêu thích"}
+        {activeItem ? activeItem.label : "Danh mục mặc định"}
         <IoIosArrowDown />
       </button>
 
       {isHovered && (
         <div
-          className={`absolute top-full left-0 px-2 pb-2 bg-dark-blue rounded-xl shadow-lg z-50 min-w-[200px] w-full ${
+          className={`absolute top-full left-0 px-2 pb-2 bg-bg-elevated rounded-xl shadow-lg z-50 min-w-[200px] w-full ${
             isAnimatingOut ? "animate-fadeOutUp" : "animate-fadeInDown"
           }`}
         >
+          <div
+            className={`flex justify-between items-center cursor-pointer rounded-lg mt-2 p-1 text-sm hover:bg-gray-700 w-full ${
+              active === "fav_default" ? "bg-gray-700" : ""
+            }`}
+            onMouseEnter={() => setHoveredId("fav_default")}
+            onMouseLeave={() => setHoveredId(null)}
+            onClick={() => onChange("fav_default")}
+          >
+            <span className="text-sm">Danh mục mặc định</span>
+          </div>
           {favorites.map((fav) => (
             <div
               key={fav.key}
-              className="flex justify-between items-center cursor-pointer rounded-lg mt-2 text-sm hover:bg-DTND-500"
+              className={`flex justify-between items-center cursor-pointer rounded-lg mt-2 p-1 text-sm hover:bg-gray-700 w-full ${
+                active === fav.id ? "bg-gray-700" : ""
+              }`}
               onMouseEnter={() => setHoveredId(fav.key)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              {editingId === fav.key ? (
+              {fav.id !== "fav_default" && editingId === fav.key ? (
                 <input
                   type="text"
                   value={editingName}
@@ -196,14 +180,12 @@ function DropdownFavorites({
                     if (e.key === "Enter") handleEditSubmit(fav.key);
                     if (e.key === "Escape") setEditingId(null);
                   }}
-                  className="rounded-lg px-2 py-0.5 w-full h-9"
+                  className="rounded-lg px-2 py-0.5 w-full h-8"
                   placeholder="Nhập tên danh mục"
                 />
               ) : (
                 <span
-                  className={`p-2 w-full h-full rounded-lg ${
-                    active === fav.id ? "bg-DTND-500 px-1" : ""
-                  }`}
+                  className={`w-full h-full rounded-lg `}
                   onClick={() => onChange(fav.id)}
                 >
                   {fav.label}
@@ -248,7 +230,7 @@ function DropdownFavorites({
             />
           ) : (
             <div
-              className="p-2 mt-2 text-sm text-DTND-500 cursor-pointer hover:bg-DTND-600 hover:text-background-primary rounded-lg"
+              className="p-2 mt-2 text-sm text-DTND-500 cursor-pointer hover:bg-gray-700 hover:text-background-primary rounded-lg"
               onClick={() => {
                 setAddingNew(true);
                 setEditingName("");
@@ -257,72 +239,6 @@ function DropdownFavorites({
               + Thêm danh mục
             </div>
           )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function DropdownGroup({
-  group,
-  active,
-  onChange,
-}: {
-  group: { key: string; label: string; items: { id: string; name: string }[] };
-  active: string;
-  onChange: (id: string) => void;
-}) {
-  const {
-    isHovered,
-    isAnimatingOut,
-    handleMouseEnter,
-    handleMouseLeave,
-    setIsHovered,
-  } = useDropdownAnimation();
-
-  const { key, label, items } = group;
-
-  const activeItem = items.find((item) => item.id === active);
-  const displayName = activeItem ? activeItem.name : label;
-
-  return (
-    <div
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      key={key}
-    >
-      <button
-        className={`px-3 py-1 rounded-lg text-sm flex items-center gap-1 ${
-          activeItem ? "bg-DTND-500" : ""
-        }`}
-      >
-        {displayName}
-        <IoIosArrowDown />
-      </button>
-
-      {isHovered && (
-        <div
-          className={`absolute top-full left-0 px-2 pb-2 bg-dark-blue rounded-xl shadow-lg z-50 min-w-[180px] ${
-            isAnimatingOut ? "animate-fadeOutUp" : "animate-fadeInDown"
-          }`}
-        >
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className={`p-2 cursor-pointer rounded-lg mt-2 text-sm ${
-                active === item.id
-                  ? "bg-DTND-500"
-                  : "hover:bg-DTND-500 hover:translate-x-0.5"
-              }`}
-              onClick={() => {
-                onChange(item.id);
-                setIsHovered(false);
-              }}
-            >
-              {item.name}
-            </div>
-          ))}
         </div>
       )}
     </div>

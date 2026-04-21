@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { MdOutlineArrowLeft, MdOutlineArrowRight } from "react-icons/md";
-import { getScrollbarSize, List, type RowComponentProps } from "react-window";
-import { useAppSelector } from "../../../../store/hook";
 import {
   selectTopFVData,
   selectTopVData,
-} from "../../../../store/slices/stock/selector";
-import type { ModeTableSynThetic } from "../../../../types";
-import { formatPrice, formatVolPrice, numberFormat } from "../../../../utils";
+} from "@/features/stock/redux/stockSelector";
+import { useAppSelector } from "@/store/hook";
+import type { ModeTableSynThetic } from "@/types";
+import { formatPrice, formatVolPrice, numberFormat } from "@/utils";
+import { useState } from "react";
+import { MdOutlineArrowLeft, MdOutlineArrowRight } from "react-icons/md";
+import { getScrollbarSize, List, type RowComponentProps } from "react-window";
 import { SynTheticTableSkeleton } from "./SynTheticTableSkeleton";
 
 function RowComponentInday({
@@ -20,8 +20,9 @@ function RowComponentInday({
   const data = topStockTraded[index];
   return (
     <div
-      className={`flex flex-row items-center gap-2 px-2 text-xs font-medium text-text-base rounded ${index % 2 === 0 && "bg-input"
-        }`}
+      className={`flex flex-row items-center gap-2 px-2 text-xs font-medium text-text-base rounded ${
+        index % 2 === 0 && "bg-input"
+      }`}
       style={style}
     >
       <div className={`w-[15%] ${data?.split("|")?.[2]}`}>
@@ -56,8 +57,9 @@ function RowComponentForeign({
   const data = topForeignTraded[index];
   return (
     <div
-      className={`flex flex-row items-center gap-2 px-2 text-xs font-medium text-text-base rounded ${index % 2 === 0 && "bg-input"
-        }`}
+      className={`flex flex-row items-center gap-2 px-2 text-xs font-medium text-text-base rounded ${
+        index % 2 === 0 && "bg-input"
+      }`}
       style={style}
     >
       <div className={`w-[15%] ${data?.split("|")?.[2]}`}>

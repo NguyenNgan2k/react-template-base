@@ -1,3 +1,4 @@
+import { FAVORITE_DEFAULT } from "@/configs";
 import type { SnapshotDataCompact } from "../types";
 import {
   formatPrice,
@@ -163,4 +164,24 @@ export function getChartColorDetail(
   } else {
     return !type ? " #00BF52" : "rgba(0, 191, 82, 0.1)"; // Giá trên tham chiếu
   }
+}
+
+export const getArr = (value: string | string[] | undefined): string[] => {
+  if (typeof value === "string") return value.split("|");
+  if (Array.isArray(value)) {
+    return value.every((v): v is string => typeof v === "string") ? value : [];
+  }
+  return [];
+};
+
+export function getFavoritePriceboard() {
+  const stored = localStorage.getItem("favorites");
+
+  if (stored) {
+    const arrCache = JSON.parse(stored);
+
+    return [...new Set([...FAVORITE_DEFAULT, ...arrCache])];
+  }
+
+  return [...FAVORITE_DEFAULT];
 }

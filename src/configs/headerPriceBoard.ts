@@ -179,7 +179,6 @@ export const ALL_COLUMNS_CW = [
 
 //TODO: Bảng giá danh mục yêu thích
 export const ALL_COLUMNS_FAVORITE = [
-  { key: "mark", label: "", default: true, width: "2%" },
   { key: "symbol", label: "CK", default: true, width: "4.5%" },
   { key: "ceil", label: "Trần", default: true, width: "3.5%" },
   { key: "floor", label: "Sàn", default: true, width: "3.5%" },
@@ -303,4 +302,11 @@ export const ALL_COLUMNS_DERIVATIVE = [
       { key: "foreignSell", label: "Bán", default: true },
     ],
   },
+];
+
+export const KEYS_COLOR_BASE = [
+  "totalVol",
+  "foreignRoom",
+  "foreignSell",
+  "foreignBuy",
 ];

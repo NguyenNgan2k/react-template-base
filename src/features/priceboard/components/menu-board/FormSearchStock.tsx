@@ -54,7 +54,7 @@ const FormSearchStock = ({ active }: { active: string }) => {
       }
 
       // Kiểm tra trùng (cả pinned + normal)
-      const allSymbols = new Set([...favorite.pinned, ...favorite.symbols]);
+      const allSymbols = new Set([...favorite.symbols]);
       if (allSymbols.has(fullSymbol)) {
         toast(`${stock.value} đã có trong ${favorite.label}`, "error");
         setValue("stock", null);
@@ -68,7 +68,7 @@ const FormSearchStock = ({ active }: { active: string }) => {
       localStorage.setItem("favorites", JSON.stringify(favorites));
 
       // Cập nhật Redux
-      const updatedAllSymbols = [...favorite.pinned, ...favorite.symbols];
+      const updatedAllSymbols = [...favorite.symbols];
       dispatch(setListStockByIdFromCache(active, updatedAllSymbols));
 
       // Subscribe socket
