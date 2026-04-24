@@ -5,12 +5,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt, numberFormat } from "@/utils";
 import { useEffect, useRef, useState } from "react";
-import type { AccountOrderBook } from "../../../accountType";
+import type { AccountOrderBook } from "../../../../accountType";
 import {
   fetchAccountOrderBookRequest,
   selectAccountOrderBook,
   selectAccountSelected,
-} from "../../../redux/accountSlice";
+} from "../../../../redux/accountSlice";
 import { getStatusOrderName } from "@/features/order-book/OrderBookBusiness";
 import OrderDetailModal from "@/features/order/ui/modal/OrderDetail";
 import OrderEditModal from "@/features/order/ui/modal/OrderEdit";

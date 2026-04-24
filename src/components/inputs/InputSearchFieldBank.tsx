@@ -40,7 +40,7 @@ export default function InputSearchFieldBank({
 
   useEffect(() => {
     dispatch(fetchListBankRequest());
-  }, [dispatch]);
+  }, []);
 
   // Convert bank list -> OptionTypeBank
   const convertBankList = (data: BankDetail[]): OptionTypeBank[] =>
@@ -88,14 +88,14 @@ export default function InputSearchFieldBank({
 
     return parts
       ? parts.map((part, index) =>
-          regex.test(part) ? (
-            <span key={index} className="bg-yellow-400 text-black">
-              {part}
-            </span>
-          ) : (
-            part
-          )
+        regex.test(part) ? (
+          <span key={index} className="bg-yellow-400 text-black">
+            {part}
+          </span>
+        ) : (
+          part
         )
+      )
       : "";
   };
 
@@ -152,20 +152,18 @@ export default function InputSearchFieldBank({
       }}
       classNames={{
         control: ({ isFocused }) =>
-          `!bg-input !rounded-xl !min-h-9 !h-9 !text-xs ${
-            isFocused
-              ? "!border !border-yellow-400 !shadow-[0_0_0_2px_rgba(250,204,21,0.3)]"
-              : "!border !border-transparent"
+          `!bg-input !rounded-xl !min-h-9 !h-9 !text-xs ${isFocused
+            ? "!border !border-yellow-400 !shadow-[0_0_0_2px_rgba(250,204,21,0.3)]"
+            : "!border !border-transparent"
           } ${className ?? ""}`,
         placeholder: () => "!text-text-subtitle !text-sm px-2!",
         singleValue: () => "!text-text-title !text-sm",
         menu: () =>
           "!z-[9999] !bg-surface !rounded-md !mt-1 transition-all duration-200 ease-out animate-fadeInDown",
         option: ({ isFocused, isSelected }) =>
-          `!cursor-pointer !text-xs !flex !items-center !px-3 !py-2.5 ${
-            isSelected
-              ? "!bg-DTND-500 !text-white"
-              : isFocused
+          `!cursor-pointer !text-xs !flex !items-center !px-3 !py-2.5 ${isSelected
+            ? "!bg-DTND-500 !text-white"
+            : isFocused
               ? "!bg-DTND-500/80 !text-white"
               : "!bg-surface !text-text-title hover:!bg-DTND-500 hover:!text-white"
           }`,

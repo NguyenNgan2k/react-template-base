@@ -17,7 +17,7 @@ const AccountStatusRegular = () => {
   useEffect(() => {
     if (!accountSelected) return;
     dispatch(fetchAccountStatusRequest({ account: accountSelected }));
-  }, [accountSelected, dispatch]);
+  }, [accountSelected]);
 
   const generalInfoItems = [
     { label: "Sản phẩm", children: "NORMAL" },
@@ -41,16 +41,16 @@ const AccountStatusRegular = () => {
     <div className="grid grid-cols-4 gap-2">
       <div className="col-span-1 gap-2 flex flex-col">
         <div>
-          <p className="text-sm font-bold">Thông tin chung</p>
+          <p className="font-bold">Thông tin chung</p>
           <Descriptions items={generalInfoItems} />
         </div>
         <div>
-          <p className="text-sm font-bold">Tiền</p>
+          <p className="font-bold">Tiền</p>
           <Descriptions items={moneyItems} />
         </div>
       </div>
       <div className="col-span-3">
-        <p className="text-sm font-bold">Giá trị thanh toán Mua/Bán CK</p>
+        <p className="font-bold">Giá trị thanh toán Mua/Bán CK</p>
         {accountStatus && <PaymentValue accountStatus={accountStatus} />}
       </div>
     </div>

@@ -5,12 +5,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt, numberFormat } from "@/utils";
 import { useEffect, useRef, useState } from "react";
-import type { AccountProfitLoss } from "../../../accountType";
+import type { AccountProfitLoss } from "../../../../accountType";
 import {
   fetchAccountProfitLossRequest,
   selectAccountProfitLoss,
   selectAccountSelected,
-} from "../../../redux/accountSlice";
+} from "../../../../redux/accountSlice";
 import ProfitLossSearch, { type ProfitLossSearchParams } from "./ProfitLossSearch";
 
 const columns: Column<AccountProfitLoss>[] = [

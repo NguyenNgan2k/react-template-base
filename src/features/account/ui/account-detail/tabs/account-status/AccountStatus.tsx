@@ -6,7 +6,7 @@ import AccountStatusRegular from "./account-regular/AccountStatusRegular";
 const AccountStatus = () => {
   const accountInfo = useAppSelector(selectAccountInfo);
   return (
-    <div className="mt-2">
+    <div>
       {
         accountInfo?.accountType === 'N' && <AccountStatusRegular />
       }
@@ -14,7 +14,7 @@ const AccountStatus = () => {
         accountInfo?.accountType === 'M' && <AccountStatusMargin />
       }
 
-    </div>
+    </div >
   );
 }
 export default AccountStatus;

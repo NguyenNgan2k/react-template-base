@@ -5,13 +5,13 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column, PaginationParams } from "@/types";
 import { StringToDouble, StringToInt, numberFormat } from "@/utils";
 import { useEffect, useRef, useState } from "react";
-import type { AccountPortfolio } from "../../../accountType";
+import type { AccountPortfolio } from "../../../../accountType";
 import {
   fetchAccountPortfolioRequest,
   selectAccountPortfolio,
   selectAccountPortfolioTotal,
   selectAccountSelected,
-} from "../../../redux/accountSlice";
+} from "../../../../redux/accountSlice";
 import Button from "@/components/common/Button";
 import type { OrderValue } from "@/features/order/orderType";
 import OrderSell from "@/features/order/ui/modal/OrderSell";

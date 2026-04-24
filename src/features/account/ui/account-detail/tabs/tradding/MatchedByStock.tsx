@@ -5,12 +5,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt, numberFormat } from "@/utils";
 import { useEffect, useRef, useState } from "react";
-import type { AccountMatchedByStock } from "../../../accountType";
+import type { AccountMatchedByStock } from "../../../../accountType";
 import {
   fetchAccountMatchedByStockRequest,
   selectAccountMatchedByStock,
   selectAccountSelected,
-} from "../../../redux/accountSlice";
+} from "../../../../redux/accountSlice";
 
 const columns: Column<AccountMatchedByStock>[] = [
   {

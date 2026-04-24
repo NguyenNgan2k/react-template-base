@@ -15,7 +15,7 @@ export default function ProtectedRoute() {
       dispatch(openLoginModal());
       localStorage.setItem("direct", location.pathname);
     }
-  }, [isAuthenticated, dispatch]);
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return <Navigate to="/price-board" state={{ from: location }} replace />;

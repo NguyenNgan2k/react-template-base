@@ -79,9 +79,8 @@ function SortableRow({
     <div
       ref={setNodeRef}
       style={style}
-      className={`${
-        index % 2 === 1 ? "bg-gray-300/30" : ""
-      } hover:bg-gray-300 ${flashStyle}`}
+      className={`${index % 2 === 1 ? "bg-gray-300/30" : ""
+        } hover:bg-gray-300 ${flashStyle}`}
     >
       {isOver && !isDragging && (
         <div
@@ -172,7 +171,7 @@ function PriceBoardFavorite({ boardId }: { boardId: string }) {
     }
 
     dispatch(setScrollToSymbol(null));
-  }, [scrollTarget, symbols, dispatch]);
+  }, [scrollTarget, symbols]);
 
   // === DnD SENSORS ===
   const sensors = useSensors(

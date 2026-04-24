@@ -42,7 +42,7 @@ const StockInfo: React.FC<StockInfoProps> = () => {
 
   React.useEffect(() => {
     handleGetStock(selectedSymbol)
-  }, [selectedSymbol, dispatch]);
+  }, [selectedSymbol]);
 
   React.useEffect(() => {
     if (!stock) return;

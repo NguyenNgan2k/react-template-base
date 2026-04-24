@@ -4,6 +4,10 @@ export type AccountInfoRequest = {
   account: string;
 };
 
+export type CustomerInfoRequest = {
+  account: string;
+};
+
 export type AccountInfo = {
   accountCode: string;
   accountType: string;
@@ -14,6 +18,10 @@ export type AccountInfo = {
   id: string;
   cc: string;
   accountName: string;
+};
+
+export type CustomerInfo = {
+  [key: string]: string | number | boolean | null;
 };
 
 export type AccountStatusRequest = {
@@ -88,6 +96,8 @@ export type AccountStatus = {
   a3?: string;
   a4?: string;
   a5?: string;
+  a6?: string;
+  debtExpire?: string;
 };
 
 export type AccountBalanceRequest = {
@@ -348,4 +358,11 @@ export type AccountDebt = {
   limit: number;
   loan: number;
   source: string;
+};
+
+export type AccountDebtExpire = {
+  source: string;
+  expiredDate: string;
+  loan: number;
+  fee: number;
 };

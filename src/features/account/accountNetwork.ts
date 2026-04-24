@@ -2,6 +2,8 @@ import { apiRequest } from "@/networks/apiRequest";
 import type {
   AccountInfoRequest,
   AccountInfo,
+  CustomerInfoRequest,
+  CustomerInfo,
   AccountStatusRequest,
   AccountStatus,
   AccountBalanceRequest,
@@ -33,6 +35,15 @@ export const apiFetchAccountInfo = async (
 ): Promise<AccountInfo> => {
   const res = await apiRequest.get<AccountInfo>(
     `/broker/accounts/${params?.account}/info`,
+  );
+  return res.data;
+};
+
+export const apiFetchCustomerInfo = async (
+  params?: CustomerInfoRequest,
+): Promise<CustomerInfo> => {
+  const res = await apiRequest.get<CustomerInfo>(
+    `/broker/accounts/${params?.account}/customer-info`,
   );
   return res.data;
 };

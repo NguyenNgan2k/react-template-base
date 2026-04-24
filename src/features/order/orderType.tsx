@@ -26,3 +26,12 @@ export type OrderDetail = {
   chanel: string;
   rejectText: string | null;
 }
+
+export type BidAskQuotes = {
+  priceBuy: string;
+  volumeBuy: string;
+  valueBuy: number;
+  priceSell: string;
+  volumeSell: string;
+  valueSell: number;
+}

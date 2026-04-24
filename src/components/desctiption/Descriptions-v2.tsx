@@ -35,7 +35,6 @@ const buildRows = (items: DescriptionItemProps[] = [], column: number = 1): Desc
 
 const Descriptions = (props: DescriptionsProps) => {
   const rows: DescriptionItemProps[][] = buildRows(props.items, props.column);
-  console.log(rows, "rows=============")
   return (
     <table className={clsx(
       "table-borderless",
@@ -45,12 +44,15 @@ const Descriptions = (props: DescriptionsProps) => {
         {
           rows.map(row => (
             <tr>
-              {row.map(col => (
-                <>
-                  <th className="text-left">{col.label}</th>
-                  <td colSpan={col.span}>{col.children}</td>
-                </>
-              ))}
+              {row.map(col => {
+                const span = col.span ? col.span * 2 - 1 : 1
+                return (
+                  <>
+                    <th className="text-left">{col.label}</th>
+                    <td colSpan={span}>{col.children}</td>
+                  </>
+                )
+              })}
             </tr>
           ))
         }

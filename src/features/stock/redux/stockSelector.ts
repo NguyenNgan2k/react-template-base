@@ -4,6 +4,7 @@ import type { IndexData, SnapshotDataCompact } from "@/types";
 import { createSelector } from "@reduxjs/toolkit";
 import { mapDataSnapshot } from "../stockBusiness";
 import type { SnapShot, Stock } from "../stockType";
+import { StringToDouble } from "@/utils/format";
 
 // === STOCK SELECTORS ===
 export const selectSnapshots = (state: RootState) => state.stock.snapshots;

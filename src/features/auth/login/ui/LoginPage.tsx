@@ -24,9 +24,9 @@ const LoginPage = () => {
         setActiveForm("forceChangePass");
         return;
       }
-      navigate("/order-book");
+      navigate("/price-board");
     }
-  }, [userData, dispatch]);
+  }, [userData]);
 
   return (
     <div

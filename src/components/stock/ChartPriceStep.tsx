@@ -22,8 +22,8 @@ const BASE_OPTION = {
       return `
         <div>
           <div>Giá: <b>${echarts.format.encodeHTML(
-            formatPrice(price)
-          )}</b></div>
+        formatPrice(price)
+      )}</b></div>
           <div>Khối lượng: <b>${vol?.toLocaleString()}</b></div>
         </div>
       `;
@@ -74,7 +74,7 @@ export default function ChartPriceStep({ symbol }: { symbol: string }) {
     if (symbol) {
       dispatch(fetchVolumeByPrice(symbol));
     }
-  }, [symbol, dispatch]);
+  }, [symbol]);
 
   const option = useMemo(() => {
     const currentLevels: VolumeByPriceData[] =

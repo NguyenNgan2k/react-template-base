@@ -9,6 +9,7 @@ import {
 } from "redux-saga/effects";
 import {
   apiFetchAccountInfo,
+  apiFetchCustomerInfo,
   apiFetchAccountStatus,
   apiFetchAccountBalance,
   apiFetchAccountPortfolio,
@@ -24,6 +25,7 @@ import {
 } from "../accountNetwork";
 import type {
   AccountInfo,
+  CustomerInfo,
   AccountStatus,
   AccountBalance,
   AccountPortfolio,
@@ -36,11 +38,15 @@ import type {
   AccountLMVEE,
   AccountLMVUB,
   AccountDebt,
+  AccountDebtExpire,
 } from "../accountType";
 import {
   fetchAccountInfoError,
   fetchAccountInfoRequest,
   fetchAccountInfoSuccess,
+  fetchCustomerInfoError,
+  fetchCustomerInfoRequest,
+  fetchCustomerInfoSuccess,
   fetchAccountStatusError,
   fetchAccountStatusRequest,
   fetchAccountStatusSuccess,
@@ -77,6 +83,9 @@ import {
   fetchAccountDebtRequest,
   fetchAccountDebtSuccess,
   fetchAccountDebtError,
+  fetchAccountDebtExpireRequest,
+  fetchAccountDebtExpireSuccess,
+  fetchAccountDebtExpireError,
 } from "./accountSlice";
 
 type GeneratorYield = CallEffect | PutEffect | ForkEffect;
@@ -92,6 +101,20 @@ function* fetchAccountInfoSaga(
     yield put(fetchAccountInfoSuccess(data));
   } catch (error) {
     yield put(fetchAccountInfoError());
+  }
+}
+
+function* fetchCustomerInfoSaga(
+  action: ReturnType<typeof fetchCustomerInfoRequest>,
+): Generator<GeneratorYield, void, CustomerInfo> {
+  try {
+    const data = (yield call(
+      apiFetchCustomerInfo,
+      action.payload,
+    )) as CustomerInfo;
+    yield put(fetchCustomerInfoSuccess(data));
+  } catch (error) {
+    yield put(fetchCustomerInfoError());
   }
 }
 
@@ -263,9 +286,24 @@ function* fetchAccountDebtSaga(
   }
 }
 
+function* fetchAccountDebtExpireSaga(
+  action: ReturnType<typeof fetchAccountDebtExpireRequest>,
+): Generator<GeneratorYield, void, AccountDebtExpire[]> {
+  try {
+    const data = (yield call(
+      apiFetchAccountDebt,
+      action.payload,
+    )) as AccountDebtExpire[];
+    yield put(fetchAccountDebtExpireSuccess(data));
+  } catch (error) {
+    yield put(fetchAccountDebtExpireError());
+  }
+}
+
 export default function* AccountWatcher() {
   yield all([
     takeLatest(fetchAccountInfoRequest.type, fetchAccountInfoSaga),
+    takeLatest(fetchCustomerInfoRequest.type, fetchCustomerInfoSaga),
     takeLatest(fetchAccountStatusRequest.type, fetchAccountStatusSaga),
     takeLatest(fetchAccountBalanceRequest.type, fetchAccountBalanceSaga),
     takeLatest(fetchAccountPortfolioRequest.type, fetchAccountPortfolioSaga),
@@ -284,5 +322,6 @@ export default function* AccountWatcher() {
     takeLatest(fetchAccountLMVEERequest.type, fetchAccountLMVEESaga),
     takeLatest(fetchAccountLMVUBRequest.type, fetchAccountLMVUBSaga),
     takeLatest(fetchAccountDebtRequest.type, fetchAccountDebtSaga),
+    takeLatest(fetchAccountDebtExpireRequest.type, fetchAccountDebtExpireSaga),
   ]);
 }

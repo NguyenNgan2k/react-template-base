@@ -2,6 +2,8 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
   AccountInfo,
   AccountInfoRequest,
+  CustomerInfo,
+  CustomerInfoRequest,
   AccountStatus,
   AccountStatusRequest,
   AccountBalance,
@@ -25,11 +27,13 @@ import type {
   AccountLMVUB,
   AccountLMVUBRequest,
   AccountDebt,
+  AccountDebtExpire,
   AccountDebtRequest,
 } from "../accountType";
 
 type AccountState = {
   accountInfo: AccountInfo | null;
+  customerInfo: CustomerInfo | null;
   accountStatus: AccountStatus | null;
   accountBalance: AccountBalance | null;
   accountPortfolio: AccountPortfolio[];
@@ -42,11 +46,13 @@ type AccountState = {
   accountLMVEE: AccountLMVEE[];
   accountLMVUB: AccountLMVUB;
   accountDebt: AccountDebt[];
+  accountDebtExpire: AccountDebtExpire[];
   accountSelected: string | null;
 };
 
 const initialState: AccountState = {
   accountInfo: null,
+  customerInfo: null,
   accountStatus: null,
   accountBalance: null,
   accountPortfolio: [],
@@ -62,6 +68,7 @@ const initialState: AccountState = {
     items: [],
   },
   accountDebt: [],
+  accountDebtExpire: [],
   accountSelected: "0004156",
 };
 
@@ -92,6 +99,18 @@ export const accountSlice = createSlice({
       state.accountInfo = action.payload;
     },
     fetchAccountInfoError: () => {},
+
+    fetchCustomerInfoRequest: (
+      _state: AccountState,
+      _action: PayloadAction<CustomerInfoRequest>,
+    ) => {},
+    fetchCustomerInfoSuccess: (
+      state: AccountState,
+      action: PayloadAction<CustomerInfo>,
+    ) => {
+      state.customerInfo = action.payload;
+    },
+    fetchCustomerInfoError: () => {},
 
     fetchAccountStatusRequest: (
       _state: AccountState,
@@ -225,6 +244,18 @@ export const accountSlice = createSlice({
     },
     fetchAccountDebtError: () => {},
 
+    fetchAccountDebtExpireRequest: (
+      _state: AccountState,
+      _action: PayloadAction<AccountDebtRequest>,
+    ) => {},
+    fetchAccountDebtExpireSuccess: (
+      state: AccountState,
+      action: PayloadAction<AccountDebtExpire[]>,
+    ) => {
+      state.accountDebtExpire = action.payload;
+    },
+    fetchAccountDebtExpireError: () => {},
+
     setAccountSelected: (
       state: AccountState,
       action: PayloadAction<string>,
@@ -241,6 +272,9 @@ export const {
   fetchAccountInfoRequest,
   fetchAccountInfoSuccess,
   fetchAccountInfoError,
+  fetchCustomerInfoRequest,
+  fetchCustomerInfoSuccess,
+  fetchCustomerInfoError,
   fetchAccountStatusRequest,
   fetchAccountStatusSuccess,
   fetchAccountStatusError,
@@ -274,6 +308,9 @@ export const {
   fetchAccountDebtRequest,
   fetchAccountDebtSuccess,
   fetchAccountDebtError,
+  fetchAccountDebtExpireRequest,
+  fetchAccountDebtExpireSuccess,
+  fetchAccountDebtExpireError,
   setAccountSelected,
 } = accountSlice.actions;
 export default accountSlice.reducer;
@@ -283,6 +320,9 @@ export const selectAccountList = (state: { account: AccountState }) =>
 
 export const selectAccountInfo = (state: { account: AccountState }) =>
   state.account.accountInfo;
+
+export const selectCustomerInfo = (state: { account: AccountState }) =>
+  state.account.customerInfo;
 
 export const selectAccountStatus = (state: { account: AccountState }) =>
   state.account.accountStatus;
@@ -320,6 +360,10 @@ export const selectAccountLMVUB = (state: { account: AccountState }) =>
 
 export const selectAccountDebt = (state: { account: AccountState }) =>
   state.account.accountDebt;
+
+export const selectAccountDebtExpire = (state: {
+  account: AccountState;
+}): AccountDebtExpire[] => state.account.accountDebtExpire;
 
 export const selectAccountSelected = (state: { account: AccountState }) =>
   state.account.accountSelected;

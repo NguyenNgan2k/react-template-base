@@ -193,7 +193,7 @@ export default function QuickOrderForm() {
         volume: StringToInt(debouncedOrderVolume) || 0,
       })
     );
-  }, [debouncedOrderSymbol, debouncedOrderVolume, dispatch]);
+  }, [debouncedOrderSymbol, debouncedOrderVolume]);
 
   useEffect(() => {
     if (!orderSymbol?.value || !orderSymbol?.post_to) return;
@@ -233,7 +233,7 @@ export default function QuickOrderForm() {
         side: orderSide,
       })
     );
-  }, [accountCode, debouncedOrderPrice, orderSymbolValue, orderSide, dispatch]);
+  }, [accountCode, debouncedOrderPrice, orderSymbolValue, orderSide]);
 
   //Clear sms error validate
   useEffect(() => {
@@ -252,7 +252,7 @@ export default function QuickOrderForm() {
     if (!orderSymbol || _.isEqual(preOrderSymbol, orderSymbol)) return;
 
     dispatch(setSymbolOrder(orderSymbol));
-  }, [orderSymbol, preOrderSymbol, dispatch]);
+  }, [orderSymbol, preOrderSymbol]);
 
   const handleSubmitOrder = async () => {
     if (!dataSubmitOrder || !token) return;

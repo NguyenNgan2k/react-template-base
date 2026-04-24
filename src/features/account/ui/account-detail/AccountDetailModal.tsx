@@ -3,12 +3,19 @@ import AccountDetailSearch from "./AccoutDetailSearch";
 import Tabs from "@/components/common/Tabs";
 import { useEffect, useState } from "react";
 import type { Option } from "@/types";
-import Trading from "./tradding/Trading";
-import ProfitLoss from "./profit-loss/ProfitLoss";
-import Portfolio from "./portfolio/Portfolio";
-import { fetchAccountInfoRequest, selectAccountSelected } from "../../redux/accountSlice";
+import Trading from "./tabs/tradding/Trading";
+import ProfitLoss from "./tabs/profit-loss/ProfitLoss";
+import Portfolio from "./tabs/portfolio/Portfolio";
+import {
+  fetchAccountInfoRequest,
+  fetchCustomerInfoRequest,
+  selectAccountSelected,
+} from "../../redux/accountSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import AccountStatus from "./accout-status/AccountStatus";
+import AccountStatus from "./tabs/account-status/AccountStatus";
+import AccountInfo from "./tabs/account-info/AccountInfo";
+import Risk from "./tabs/risk/Risk";
+import Right from "./tabs/right/RightsIssue";
 
 const accountDetailTabs: Option[] = [
   {
@@ -51,7 +58,8 @@ const AccountDetailModal: React.FC = () => {
   useEffect(() => {
     if (!accountSelected) return;
     dispatch(fetchAccountInfoRequest({ account: accountSelected }));
-  }, [accountSelected])
+    dispatch(fetchCustomerInfoRequest({ account: accountSelected }));
+  }, [accountSelected, dispatch])
 
   return (
     <ModalLayout
@@ -66,14 +74,17 @@ const AccountDetailModal: React.FC = () => {
           tabActive={tabActive}
           handleChangeTab={(tab) => setTabActive(tab)}
         />
-        {
-          tabActive === 'trading' && <Trading />
-        }
-        {tabActive === 'portfolio' && <Portfolio />}
-        {tabActive === 'account-status' && <AccountStatus />}
-        {
-          tabActive === 'profit-loss' && <ProfitLoss />
-        }
+        <div className="mt-2">
+          {
+            tabActive === 'trading' && <Trading />
+          }
+          {tabActive === 'portfolio' && <Portfolio />}
+          {tabActive === 'account-status' && <AccountStatus />}
+          {tabActive === 'account-info' && <AccountInfo />}
+          {tabActive === 'risk-info' && <Risk />}
+          {tabActive === 'profit-loss' && <ProfitLoss />}
+          {tabActive === 'right-info' && <Right />}
+        </div>
       </div>
     </ModalLayout >
   )

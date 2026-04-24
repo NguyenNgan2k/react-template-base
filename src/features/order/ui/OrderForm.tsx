@@ -3,7 +3,7 @@ import MaskFormField from '@/components/inputs/mask/MaskFormField';
 import TextFormField from '@/components/inputs/text/TextFormField';
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { IoToggle } from 'react-icons/io5';
 import * as yup from "yup";
 import OrderConfirm from './modal/OrderConfirm';
@@ -21,6 +21,7 @@ import { setSelectedSymbol, selectSelectedOrder } from '../redux/orderSlice';
 import { selectStockList } from '@/features/stock/redux/stockSelector';
 import type { OrderValue } from '../orderType';
 import clsx from 'clsx';
+import Form from "@/components/form/Form";
 
 type FormValues = {
   account: string;
@@ -69,7 +70,7 @@ const OrderForm = () => {
   React.useEffect(() => {
     if (!selectedOrder) return;
     handleSetOrderForm(selectedOrder)
-  }, [selectedOrder, dispatch])
+  }, [selectedOrder])
 
   const onSubmit = (data: FormValues) => {
     event?.preventDefault();
@@ -227,55 +228,53 @@ const OrderForm = () => {
         </div>
         <div></div>
       </div>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className='grid grid-cols-6 gap-1'>
-            <div className='flex flex-col items-center'>
-              <span>Loại</span>
-              <div className={clsx(
-                'py-1 h-7 w-full text-center',
-                sideRef.current === 'B' ? 'bg-bg-buy' : "bg-bg-sell"
-              )}>
-                {sideRef.current === 'B' ? "Mua" : "Bán"}
-              </div>
-            </div>
-            <div className='flex flex-col items-center'>
-              <span>Tài khoản</span>
-              <TextFormField
-                name='account'
-                maxLength={7}
-                onBlur={handleOnBlurAccount}
-              />
-            </div>
-            <div className='flex flex-col items-center'>
-              <span>Mã CK</span>
-              <TextFormField
-                name='symbol'
-                onBlur={handleOnBlurSymbol}
-              />
-            </div>
-            <div className='flex flex-col items-center'>
-              <span>Giá</span>
-              <TextFormField
-                name='price'
-                prefixIcon={<FiPlus onClick={() => handleOnClickChangePrice('plus')} />}
-                suffixIcon={<FiMinus onClick={() => handleOnClickChangePrice('minus')} />}
-              />
-            </div>
-            <div className='flex flex-col items-center'>
-              <span>Khối lượng</span>
-              <MaskFormField
-                name='volume'
-                prefixIcon={<FiPlus onClick={() => handleOnClickChangeVolume('plus')} />}
-                suffixIcon={<FiMinus onClick={() => handleOnClickChangeVolume('minus')} />}
-              />
-            </div>
-            <div className='flex flex-col justify-end mb-1'>
-              <Button type='submit' className='w-22' variant='success'>Xác nhân</Button>
+      <Form form={form} onSubmit={onSubmit}>
+        <div className='grid grid-cols-6 gap-1'>
+          <div className='flex flex-col items-center'>
+            <span>Loại</span>
+            <div className={clsx(
+              'py-1 h-7 w-full text-center',
+              sideRef.current === 'B' ? 'bg-bg-buy' : "bg-bg-sell"
+            )}>
+              {sideRef.current === 'B' ? "Mua" : "Bán"}
             </div>
           </div>
-        </form>
-      </FormProvider >
+          <div className='flex flex-col items-center'>
+            <span>Tài khoản</span>
+            <TextFormField
+              name='account'
+              maxLength={7}
+              onBlur={handleOnBlurAccount}
+            />
+          </div>
+          <div className='flex flex-col items-center'>
+            <span>Mã CK</span>
+            <TextFormField
+              name='symbol'
+              onBlur={handleOnBlurSymbol}
+            />
+          </div>
+          <div className='flex flex-col items-center'>
+            <span>Giá</span>
+            <TextFormField
+              name='price'
+              prefixIcon={<FiPlus onClick={() => handleOnClickChangePrice('plus')} />}
+              suffixIcon={<FiMinus onClick={() => handleOnClickChangePrice('minus')} />}
+            />
+          </div>
+          <div className='flex flex-col items-center'>
+            <span>Khối lượng</span>
+            <MaskFormField
+              name='volume'
+              prefixIcon={<FiPlus onClick={() => handleOnClickChangeVolume('plus')} />}
+              suffixIcon={<FiMinus onClick={() => handleOnClickChangeVolume('minus')} />}
+            />
+          </div>
+          <div className='flex flex-col justify-end mb-1'>
+            <Button type='submit' className='w-22' variant='success'>Xác nhân</Button>
+          </div>
+        </div>
+      </Form >
       {
         isOpenOrderConfirm && orderValueRef.current &&
         <OrderConfirm

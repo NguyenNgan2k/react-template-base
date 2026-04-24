@@ -43,7 +43,7 @@ const AccountStatusMargin = () => {
     if (!accountSelected) return;
     dispatch(fetchAccountStatusRequest({ account: accountSelected }));
     dispatch(fetchAccountDebtRequest({ account: accountSelected }));
-  }, [accountSelected, dispatch]);
+  }, [accountSelected]);
 
   useEffect(() => {
     if (!accountSelected) return;
@@ -58,10 +58,9 @@ const AccountStatusMargin = () => {
         dispatch(fetchAccountLMVUBRequest({ account: accountSelected }));
         break;
       default:
-        dispatch(fetchAccountDebtRequest({ account: accountSelected }));
         break;
     }
-  }, [tabActive, accountSelected, dispatch]);
+  }, [tabActive, accountSelected]);
 
   const generalInfoItems = [
     { label: "Mã nhóm", children: accountStatus?.group || "-" },
@@ -135,11 +134,11 @@ const AccountStatusMargin = () => {
   return (
     <div className="flex flex-col gap-1">
       <div className="shrink-0">
-        <p className="text-sm font-bold">Thông tin chung</p>
+        <p className="font-bold">Thông tin chung</p>
         <Descriptions column={4} items={generalInfoItems} />
       </div>
       <div className="shrink-0">
-        <p className="text-sm font-bold">Tiền</p>
+        <p className="font-bold">Tiền</p>
         <Descriptions column={4} items={moneyItems} />
       </div>
       <div className="flex-1">

@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import Paging from "@/components/common/Paging";
 import type { PaginationParams } from "@/types";
 import type { AccountListParams } from "../accountType";
-import AccountDetailModal from "./accout-detail/AccoutDetailModal";
+import AccountDetailModal from "./account-detail/AccountDetailModal";
 
 const AccountPage = () => {
   const dispatch = useAppDispatch()

@@ -5,12 +5,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt, numberFormat } from "@/utils";
 import { useEffect, useState } from "react";
-import type { AccountMatchedByStepPrice } from "../../../accountType";
+import type { AccountMatchedByStepPrice } from "../../../../accountType";
 import {
   fetchAccountMatchedByStepPriceRequest,
   selectAccountMatchedByStepPrice,
   selectAccountSelected,
-} from "../../../redux/accountSlice";
+} from "../../../../redux/accountSlice";
 
 const columns: Column<AccountMatchedByStepPrice>[] = [
   {

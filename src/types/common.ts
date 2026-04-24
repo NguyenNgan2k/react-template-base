@@ -46,8 +46,11 @@ export interface Column<T> {
   key: string;
   title: string;
   className?: string;
-  render: (row: T) => React.ReactNode;
+  render?: (row: T) => React.ReactNode;
   tooltip?: Array<string>;
+  children?: Column<T>[];
+  colSpan?: number;
+  rowSpan?: number;
 }
 
 export interface ErrorInput {

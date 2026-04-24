@@ -49,7 +49,7 @@ function OrderHisOvertime() {
         accountCode: accountProfile?.cAccountDefault || "",
       })
     );
-  }, [accountProfile, dispatch]);
+  }, [accountProfile]);
 
   useEffect(() => {
     if (
@@ -121,10 +121,10 @@ function OrderHisOvertime() {
                   headerText === "LOẠI LỆNH"
                     ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
                     : headerText === "CHI TIẾT LỆNH"
-                    ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
-                    : headerText === "THAO TÁC"
-                    ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
-                    : "";
+                      ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
+                      : headerText === "THAO TÁC"
+                        ? "bg-surface text-text-title text-xs font-medium rounded-md h-6"
+                        : "";
 
                 return (
                   <th

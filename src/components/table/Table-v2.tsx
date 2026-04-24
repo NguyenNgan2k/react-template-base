@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { TbTooltip } from "react-icons/tb";
 import { Tooltip } from 'react-tooltip'
 import { Menu, Item, useContextMenu, type ItemParams } from 'react-contexify';
+import { useHeaderRows } from "./hook/useHeaderRows";
+import { useLeafColumns } from "./hook/useLeafColumns";
 
 type ContextMenuItem = {
   id: string,
@@ -16,6 +18,7 @@ export type MenuProps<T> = {
 
 export type MenuParams<T> = ItemParams<MenuProps<T>>
 
+
 export type TableProps<T> = {
   columns: Column<T>[];
   data: T[] | null;
@@ -23,10 +26,10 @@ export type TableProps<T> = {
   classTable?: string;
   menu?: ContextMenuItem[]
   onClickMenu?: (e: MenuParams<T>) => void
-  onClickRow?: (row: T) => void
 }
 
-export default function Table<T>({ columns, data, classWrapper, classTable, menu, onClickMenu, onClickRow }: TableProps<T>) {
+
+export default function Table<T>({ columns, data, classWrapper, classTable, menu, onClickMenu }: TableProps<T>) {
   const { containerRef } = usePerfectScrollbar();
   const { show } = useContextMenu({ id: 'table' });
 
@@ -37,34 +40,42 @@ export default function Table<T>({ columns, data, classWrapper, classTable, menu
       props: { row: row }
     })
   }
+  const headerRows = useHeaderRows(columns)
+  const leafColumns = useLeafColumns(columns)
 
   return (
     <div ref={containerRef} className={classWrapper}>
       <table className={classTable} >
         <thead>
-          <tr>
-            {columns.map((col) => (
-              <th key={col.key} className={col.className}>
-                {!col.tooltip && col.title}
-                {col.tooltip && (
-                  <div className="flex gap-1 justify-center">
-                    {col.title}
-                    <TbTooltip className={clsx(
-                      "cursor-pointer",
-                      col.title
-                    )} />
-                    <Tooltip anchorSelect={`.${col.title}`}>
-                      <ul className="m-0 p-0" style={{ listStyle: 'none' }}>
-                        {col.tooltip.map((item) => (
-                          <li>{item}</li>
-                        ))}
-                      </ul>
-                    </Tooltip>
-                  </div>
-                )}
-              </th>
-            ))}
-          </tr>
+          {
+            headerRows.map((row) => (
+              <tr>
+                {
+                  row.map((column) => (
+                    <th key={column.key} colSpan={column.colSpan} rowSpan={column.rowSpan}>
+                      {!column.tooltip && column.title}
+                      {column.tooltip && (
+                        <div className="flex gap-1 justify-center">
+                          {column.title}
+                          <TbTooltip className={clsx(
+                            "cursor-pointer",
+                            column.title
+                          )} />
+                          <Tooltip anchorSelect={`.${column.title}`}>
+                            <ul className="m-0 p-0" style={{ listStyle: 'none' }}>
+                              {column.tooltip.map((item) => (
+                                <li>{item}</li>
+                              ))}
+                            </ul>
+                          </Tooltip>
+                        </div>
+                      )}
+                    </th>
+                  ))
+                }
+              </tr>
+            ))
+          }
         </thead>
         <tbody>
           {data?.length === 0 ? (
@@ -75,10 +86,10 @@ export default function Table<T>({ columns, data, classWrapper, classTable, menu
             </tr>
           ) : (
             data?.map((row, idx) => (
-              <tr key={idx} onContextMenu={(e) => handleContextMenu(e, row)} onClick={() => onClickRow?.(row)}>
-                {columns.map(col => (
-                  <td key={col.key} className={col.className}>
-                    {col.render ? col.render(row) : (row as any)[col.key]}
+              <tr key={idx} onContextMenu={(e) => handleContextMenu(e, row)}>
+                {leafColumns.map(column => (
+                  <td key={column.key} className={column.className}>
+                    {column.render ? column.render(row) : (row as any)[column.key]}
                   </td>
                 ))}
               </tr>

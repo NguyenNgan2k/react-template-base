@@ -107,12 +107,12 @@ export default function ForgotAccountModal() {
     return () => {
       dispatch(resetFetchCheckCardId());
     };
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (!checkCard || _.isEqual(preCheckCard, checkCard)) return;
     setStep(2);
-  }, [checkCard, preCheckCard, dispatch]);
+  }, [checkCard, preCheckCard]);
 
   const handleClickLogin = () => {
     onClose();
