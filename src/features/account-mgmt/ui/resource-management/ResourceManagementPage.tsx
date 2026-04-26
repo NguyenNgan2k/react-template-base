@@ -1,7 +1,7 @@
 import Paging from "@/components/common/Paging";
 import ListPage from "@/components/page/ListPage";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import Table from "@/components/table/Table";
+import Table from "@/components/table/Table-v2";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt } from "@/utils";
 import { useEffect, useState } from "react";
@@ -11,7 +11,52 @@ import {
   selectResourceManagements,
 } from "../../redux/accountManagementSlice";
 
-const columns: Column<ResourceManagement>[] = [
+const resourceManagementColumns: Column<ResourceManagement>[] = [
+  {
+    key: "resource",
+    title: "Nguồn",
+    className: "text-center",
+    render: (row) => <></>,
+  },
+  {
+    key: "total",
+    title: "Tổng",
+    children: [
+      {
+        key: "limit",
+        title: "Hạn mức",
+        className: "text-center",
+        render: (row) => <></>,
+      },
+      {
+        key: "debt",
+        title: "Dư nợ",
+        className: "text-center",
+        render: (row) => <></>,
+      },
+    ]
+  },
+  {
+    key: "inday",
+    title: "Trong ngày",
+    children: [
+      {
+        key: "limit",
+        title: "Hạn mức",
+        className: "text-center",
+        render: (row) => <></>,
+      },
+      {
+        key: "debt",
+        title: "Nợ phát sinh",
+        className: "text-center",
+        render: (row) => <></>,
+      },
+    ]
+  },
+];
+
+const detailResourceManagementColumns: Column<ResourceManagement>[] = [
   {
     key: "accountNo",
     title: "Số TK",
@@ -77,27 +122,40 @@ const ResourceManagementPage = () => {
 
   return (
     <ListPage>
-      <ListPage.Table>
-        <Table
-          classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
-          columns={columns}
-          data={resourceManagements}
-        />
-      </ListPage.Table>
-      <ListPage.Paging>
-        <Paging
-          isElement={true}
-          page={pagination.page}
-          size={pagination.size}
-          nextPage={handleNextPage}
-          setSize={handleSetSize}
-          totalRow={
-            resourceManagements?.length
-              ? StringToInt(resourceManagements[0].totalRow)
-              : 0
-          }
-        />
-      </ListPage.Paging>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <ListPage.Table>
+            <Table
+              classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
+              columns={resourceManagementColumns}
+              data={resourceManagements}
+            />
+          </ListPage.Table>
+          <ListPage.Paging>
+            <Paging
+              isElement={true}
+              page={pagination.page}
+              size={pagination.size}
+              nextPage={handleNextPage}
+              setSize={handleSetSize}
+              totalRow={
+                resourceManagements?.length
+                  ? StringToInt(resourceManagements[0].totalRow)
+                  : 0
+              }
+            />
+          </ListPage.Paging>
+        </div>
+        <div>
+          <ListPage.Table>
+            <Table
+              classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
+              columns={detailResourceManagementColumns}
+              data={resourceManagements}
+            />
+          </ListPage.Table>
+        </div>
+      </div>
     </ListPage>
   );
 };

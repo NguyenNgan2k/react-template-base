@@ -5,11 +5,15 @@ import Table from "@/components/table/Table";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt } from "@/utils";
 import { useEffect, useState } from "react";
-import type { StockOwnership } from "../../accountManagementType";
+import type {
+	StockOwnership,
+	StockOwnershipParams,
+} from "../../accountManagementType";
 import {
 	fetchStockOwnershipRequest,
 	selectStockOwnerships,
 } from "../../redux/accountManagementSlice";
+import StockOwnershipSearch from "./StockOwnershipSearch";
 
 const columns: Column<StockOwnership>[] = [
 	{
@@ -125,14 +129,16 @@ const columns: Column<StockOwnership>[] = [
 const StockOwnershipPage = () => {
 	const dispatch = useAppDispatch();
 	const stockOwnerships = useAppSelector(selectStockOwnerships);
+	const [params, setParams] = useState<StockOwnershipParams>();
 	const [pagination, setPagination] = useState<PaginationParams>({
 		page: 1,
 		size: 50,
 	});
 
 	useEffect(() => {
-		dispatch(fetchStockOwnershipRequest(pagination));
-	}, [dispatch, pagination]);
+		if (!params) return;
+		dispatch(fetchStockOwnershipRequest({ ...params, ...pagination }));
+	}, [dispatch, params, pagination]);
 
 	const handleNextPage = (page: number) => {
 		if (page < 1) return;
@@ -149,6 +155,9 @@ const StockOwnershipPage = () => {
 
 	return (
 		<ListPage>
+			<ListPage.Search>
+				<StockOwnershipSearch handleSearch={(searchParams) => setParams(searchParams)} />
+			</ListPage.Search>
 			<ListPage.Table>
 				<Table
 					classWrapper="max-h-[calc(100vh-130px)] overflow-auto"

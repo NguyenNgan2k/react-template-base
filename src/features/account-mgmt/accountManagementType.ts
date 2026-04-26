@@ -61,7 +61,9 @@ export type MarginAccount = {
   totalRow: string;
 };
 
-export type StockOwnershipParams = {};
+export type StockOwnershipParams = {
+  symbol?: string;
+};
 
 export type StockOwnershipRequest = StockOwnershipParams & PaginationParams;
 
@@ -103,7 +105,10 @@ export type AbnormalLimit = {
   totalRow: string;
 };
 
-export type LoanableSecuritiesParams = {};
+export type LoanableSecuritiesParams = {
+  symbol?: string;
+  group?: string;
+};
 
 export type LoanableSecuritiesRequest = LoanableSecuritiesParams & PaginationParams;
 
@@ -164,7 +169,11 @@ export type CollateralAssets = {
   totalRow: string;
 };
 
-export type AccountFilterParams = {};
+export type AccountFilterParams = {
+  symbol?: string;
+  debt?: string;
+  weight?: string;
+};
 
 export type AccountFilterRequest = AccountFilterParams & PaginationParams;
 
