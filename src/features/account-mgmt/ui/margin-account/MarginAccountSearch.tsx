@@ -4,6 +4,10 @@ import TextFormField from "@/components/inputs/text/TextFormField";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { MarginAccountParams } from "../../accountManagementType";
+import { useAppDispatch } from "@/store/hook";
+import { fetchListProductRequest } from "../../redux/accountManagementSlice";
+import SelectFormField from "@/components/inputs/select/standard/SelectFormField";
+import { accountMarginOverdueDebtOptions, accountMarginStatusOptions } from "../../accountManagementConfigs";
 
 type FormValues = {
   marketingId: string;
@@ -15,6 +19,8 @@ type FormValues = {
 const MarginAccountSearch = (props: {
   handleSearch: (data: MarginAccountParams) => void;
 }) => {
+  const dispatch = useAppDispatch();
+
   const form = useForm<FormValues>({
     defaultValues: {
       marketingId: "",
@@ -26,6 +32,7 @@ const MarginAccountSearch = (props: {
 
   useEffect(() => {
     handleSearch();
+    // dispatch(fetchListProductRequest({ page: 1, size: 1000 }));
   }, []);
 
   const onSubmit = () => {
@@ -50,13 +57,13 @@ const MarginAccountSearch = (props: {
           <TextFormField name="marketingId" />
         </FormSearch.Field>
         <FormSearch.Field label="Group">
-          <TextFormField name="groupProduct" />
+          <SelectFormField name="groupProduct" options={[]} mode='label' />
         </FormSearch.Field>
         <FormSearch.Field label="Trạng thái">
-          <TextFormField name="status" />
+          <SelectFormField name="status" options={accountMarginStatusOptions} mode='label' />
         </FormSearch.Field>
         <FormSearch.Field label="Nợ quá hạn">
-          <TextFormField name="overdueDebt" />
+          <SelectFormField name="overdueDebt" options={accountMarginOverdueDebtOptions} mode='label' />
         </FormSearch.Field>
         <Button type="submit">Tìm kiếm</Button>
       </FormSearch.Body>

@@ -7,7 +7,7 @@ type ListPageProps = {
 
 const ListPage = ({ children, className }: ListPageProps) => {
   return (
-    <div className={clsx("flex flex-col h-full", className)}>
+    <div className={clsx("flex flex-col h-full gap-1", className)}>
       {children}
     </div>
   );

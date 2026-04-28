@@ -10,7 +10,7 @@ export type FormProps = {
 const Form = (props: FormProps) => {
   return (
     <FormProvider {...props.form}>
-      <form onSubmit={props.form.handleSubmit(props.onSubmit)} className="h-full">
+      <form onSubmit={props.form.handleSubmit(props.onSubmit)}>
         {props.children}
       </form>
     </FormProvider>

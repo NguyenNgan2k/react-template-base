@@ -5,13 +5,14 @@ import Table from "@/components/table/Table";
 import type { Column, PaginationParams } from "@/types";
 import { StringToInt } from "@/utils";
 import { useEffect, useState } from "react";
-import type { AccountFilter } from "../../accountManagementType";
+import type { AccountFilter, AccountFilterParams } from "../../accountManagementType";
 import {
   fetchAccountFilterRequest,
   selectAccountFilters,
 } from "../../redux/accountManagementSlice";
+import StockFilterSearch from "./StockFilterSearch";
 
-const columns: Column<AccountFilter>[] = [
+const accountFilterColumns: Column<AccountFilter>[] = [
   {
     key: "accountNo",
     title: "Số TK",
@@ -74,17 +75,40 @@ const columns: Column<AccountFilter>[] = [
   },
 ];
 
+const stockFilterColumns: Column<unknown>[] = [
+  {
+    key: "accountNo",
+    title: "Mã CK",
+    className: "text-center",
+    render: (row) => <></>,
+  },
+  {
+    key: "",
+    title: "Theo dõi",
+    className: "text-center",
+    render: (row) => <></>,
+  },
+  {
+    key: "",
+    title: "Bỏ qua",
+    className: "text-center",
+    render: (row) => <></>,
+  },
+]
+
 const AccountFilterPage = () => {
   const dispatch = useAppDispatch();
   const accountFilters = useAppSelector(selectAccountFilters);
+  const [params, setParams] = useState<AccountFilterParams>();
   const [pagination, setPagination] = useState<PaginationParams>({
     page: 1,
     size: 50,
   });
 
   useEffect(() => {
-    dispatch(fetchAccountFilterRequest(pagination));
-  }, [dispatch, pagination]);
+    if (!params) return;
+    dispatch(fetchAccountFilterRequest({ ...params, ...pagination }));
+  }, [dispatch, params, pagination]);
 
   const handleNextPage = (page: number) => {
     if (page < 1) return;
@@ -101,25 +125,41 @@ const AccountFilterPage = () => {
 
   return (
     <ListPage>
-      <ListPage.Table>
-        <Table
-          classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
-          columns={columns}
-          data={accountFilters}
-        />
-      </ListPage.Table>
-      <ListPage.Paging>
-        <Paging
-          isElement={true}
-          page={pagination.page}
-          size={pagination.size}
-          nextPage={handleNextPage}
-          setSize={handleSetSize}
-          totalRow={
-            accountFilters?.length ? StringToInt(accountFilters[0].totalRow) : 0
-          }
-        />
-      </ListPage.Paging>
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-10">
+          <ListPage.Table>
+            <Table
+              classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
+              columns={accountFilterColumns}
+              data={accountFilters}
+            />
+          </ListPage.Table>
+          <ListPage.Paging>
+            <Paging
+              isElement={true}
+              page={pagination.page}
+              size={pagination.size}
+              nextPage={handleNextPage}
+              setSize={handleSetSize}
+              totalRow={
+                accountFilters?.length ? StringToInt(accountFilters[0].totalRow) : 0
+              }
+            />
+          </ListPage.Paging>
+        </div>
+        <div className="col-span-2">
+          <div className="flex flex-col gap-1">
+            <StockFilterSearch handleSearch={(searchParams: AccountFilterParams) => setParams(searchParams)} />
+            <ListPage.Table>
+              <Table
+                classWrapper="max-h-[calc(100vh-130px)] overflow-auto"
+                columns={stockFilterColumns}
+                data={[]}
+              />
+            </ListPage.Table>
+          </div>
+        </div>
+      </div>
     </ListPage>
   );
 };
