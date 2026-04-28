@@ -29,6 +29,8 @@ import type {
   AccountDebt,
   AccountDebtExpire,
   AccountDebtRequest,
+  AccountForceCell,
+  AccountForceCellRequest,
 } from "../accountType";
 
 type AccountState = {
@@ -47,6 +49,7 @@ type AccountState = {
   accountLMVUB: AccountLMVUB;
   accountDebt: AccountDebt[];
   accountDebtExpire: AccountDebtExpire[];
+  accountForceCell: AccountForceCell | null;
   accountSelected: string | null;
 };
 
@@ -69,6 +72,7 @@ const initialState: AccountState = {
   },
   accountDebt: [],
   accountDebtExpire: [],
+  accountForceCell: null,
   accountSelected: "0004156",
 };
 
@@ -256,6 +260,18 @@ export const accountSlice = createSlice({
     },
     fetchAccountDebtExpireError: () => {},
 
+    fetchAccountForceCellRequest: (
+      _state: AccountState,
+      _action: PayloadAction<AccountForceCellRequest>,
+    ) => {},
+    fetchAccountForceCellSuccess: (
+      state: AccountState,
+      action: PayloadAction<AccountForceCell>,
+    ) => {
+      state.accountForceCell = action.payload;
+    },
+    fetchAccountForceCellError: () => {},
+
     setAccountSelected: (
       state: AccountState,
       action: PayloadAction<string>,
@@ -311,6 +327,9 @@ export const {
   fetchAccountDebtExpireRequest,
   fetchAccountDebtExpireSuccess,
   fetchAccountDebtExpireError,
+  fetchAccountForceCellRequest,
+  fetchAccountForceCellSuccess,
+  fetchAccountForceCellError,
   setAccountSelected,
 } = accountSlice.actions;
 export default accountSlice.reducer;
@@ -364,6 +383,9 @@ export const selectAccountDebt = (state: { account: AccountState }) =>
 export const selectAccountDebtExpire = (state: {
   account: AccountState;
 }): AccountDebtExpire[] => state.account.accountDebtExpire;
+
+export const selectAccountForceCell = (state: { account: AccountState }) =>
+  state.account.accountForceCell;
 
 export const selectAccountSelected = (state: { account: AccountState }) =>
   state.account.accountSelected;

@@ -1,11 +1,12 @@
 import Button from "@/components/common/Button";
 import Table from "@/components/table/Table-v2";
+import { fetchAccountForceCellRequest, selectAccountSelected } from "@/features/account/redux/accountSlice";
 import { selectSnapshotBySymbol, selectStockList } from "@/features/stock/redux/stockSelector";
 import { getSymbolKey } from "@/features/stock/stockBusiness";
 import { socketClient } from "@/networks/socket";
-import { useAppSelector } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import type { Column } from "@/types"
-import { use, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Form from "@/components/form/Form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,7 +14,7 @@ import { useForm } from "react-hook-form";
 import TextFormField from "@/components/inputs/text/TextFormField";
 import MaskFormField from "@/components/inputs/mask/MaskFormField";
 import { selectSelectedOrder } from "@/features/order/redux/orderSlice";
-import type { SnapShot, Stock } from "@/features/stock/stockType";
+import type { Stock } from "@/features/stock/stockType";
 import { StringToDouble } from "@/utils/format";
 import type { BidAskQuotes } from "@/features/order/orderType";
 
@@ -33,6 +34,8 @@ const schema: yup.ObjectSchema<FormValues> = yup.object({
 })
 
 const OrderForceCell = () => {
+  const dispatch = useAppDispatch()
+  const accountSelected = useAppSelector(selectAccountSelected)
   const selectedOrder = useAppSelector(selectSelectedOrder)
   const prevSymbolKeyRef = useRef<string>('')
   const stockList = useAppSelector(selectStockList)
@@ -106,8 +109,12 @@ const OrderForceCell = () => {
   }, [selectedOrder?.symbol])
 
   useEffect(() => {
-
-  }, [snapshot])
+    if (!selectedOrder) return;
+    form.reset({
+      price: selectedOrder.price || "",
+      volume: selectedOrder.volume || "",
+    })
+  }, [form, selectedOrder])
 
   const bidAskQuotes: BidAskQuotes[] = useMemo(() => {
     if (!snapshot) return [];
@@ -168,7 +175,19 @@ const OrderForceCell = () => {
     }
   }
 
-  const onSubmit = (data: FormValues) => { }
+  const onSubmit = (_data: FormValues) => { }
+
+  const handleOnClickCheckForceCell = form.handleSubmit((data: FormValues) => {
+    if (!accountSelected || !selectedOrder?.symbol) return;
+    dispatch(fetchAccountForceCellRequest({
+      account: accountSelected,
+      data: {
+        symbol: selectedOrder.symbol,
+        price: data.price,
+        volume: data.volume,
+      },
+    }))
+  })
 
   return (
     <div className="">
@@ -184,18 +203,14 @@ const OrderForceCell = () => {
           </thead>
           <tbody>
             <tr>
-              <td className="text-center">{selectedOrder?.symbol}</td>
-              <td>
-                <TextFormField name='price' />
-              </td>
-              <td>
-                <MaskFormField name='volume' />
-              </td>
+              <td className="text-center w-20">{selectedOrder?.symbol}</td>
+              <td><TextFormField name='price' /></td>
+              <td><MaskFormField name='volume' /></td>
             </tr>
             <tr>
               <td colSpan={3}>
                 <div className="flex gap-1 justify-end">
-                  <Button variant="secondary">Kiểm tra</Button>
+                  <Button type="button" variant="secondary" onClick={handleOnClickCheckForceCell}>Kiểm tra</Button>
                   <Button type="submit" variant="sell">Xác nhận</Button>
                 </div>
               </td>

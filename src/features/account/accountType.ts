@@ -366,3 +366,20 @@ export type AccountDebtExpire = {
   loan: number;
   fee: number;
 };
+
+export type AccountForceCellRequest = {
+  account: string;
+  data: {
+    symbol: string;
+    price: string;
+    volume: string;
+  };
+};
+
+export type AccountForceCell = {
+  asset_value: string;
+  debt_value: string;
+  margin_rate: string;
+  net_value: string;
+  share_volume: string;
+};

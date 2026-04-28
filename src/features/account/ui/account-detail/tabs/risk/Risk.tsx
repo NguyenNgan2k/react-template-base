@@ -5,7 +5,7 @@ import {
 } from "@/features/account/redux/accountSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect } from "react";
-import AccountStatusForceSell from "./accountStatusForceSell";
+import AccountStatusForceSell from "./AccountStatusForceSell";
 import AccountStatusPresent from "./AccountStatusPresent";
 import DebtExpire from "./DebtExpire";
 import PortFolio from "./Portfolio";

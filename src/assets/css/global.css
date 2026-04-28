@@ -122,7 +122,7 @@ input:-webkit-autofill {
 }
 
 .form-control {
-  @apply !h-7 !min-h-6 !px-2 !flex !items-center !justify-between 
+  @apply w-full !h-7 !min-h-6 !px-2 !flex !items-center !justify-between 
          !rounded-md !border !border-bd-default !cursor-pointer !bg-bg-input;
 }
 

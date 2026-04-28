@@ -28,6 +28,8 @@ import type {
   AccountLMVUBRequest,
   AccountDebt,
   AccountDebtRequest,
+  AccountForceCell,
+  AccountForceCellRequest,
 } from "./accountType";
 
 export const apiFetchAccountInfo = async (
@@ -160,6 +162,16 @@ export const apiFetchAccountDebt = async (
 ): Promise<AccountDebt> => {
   const res = await apiRequest.get<AccountDebt>(
     `/broker/accounts/${params?.account}/debt`,
+  );
+  return res.data;
+};
+
+export const apiFetchAccountForceCell = async (
+  params?: AccountForceCellRequest,
+): Promise<AccountForceCell> => {
+  const res = await apiRequest.get<AccountForceCell>(
+    `/broker/accounts/${params?.account}/force-sell`,
+    { params: params?.data },
   );
   return res.data;
 };

@@ -22,6 +22,7 @@ import {
   apiFetchAccountLMVEE,
   apiFetchAccountLMVUB,
   apiFetchAccountDebt,
+  apiFetchAccountForceCell,
 } from "../accountNetwork";
 import type {
   AccountInfo,
@@ -39,6 +40,7 @@ import type {
   AccountLMVUB,
   AccountDebt,
   AccountDebtExpire,
+  AccountForceCell,
 } from "../accountType";
 import {
   fetchAccountInfoError,
@@ -86,6 +88,9 @@ import {
   fetchAccountDebtExpireRequest,
   fetchAccountDebtExpireSuccess,
   fetchAccountDebtExpireError,
+  fetchAccountForceCellRequest,
+  fetchAccountForceCellSuccess,
+  fetchAccountForceCellError,
 } from "./accountSlice";
 
 type GeneratorYield = CallEffect | PutEffect | ForkEffect;
@@ -300,6 +305,20 @@ function* fetchAccountDebtExpireSaga(
   }
 }
 
+function* fetchAccountForceCellSaga(
+  action: ReturnType<typeof fetchAccountForceCellRequest>,
+): Generator<GeneratorYield, void, AccountForceCell> {
+  try {
+    const data = (yield call(
+      apiFetchAccountForceCell,
+      action.payload,
+    )) as AccountForceCell;
+    yield put(fetchAccountForceCellSuccess(data));
+  } catch (error) {
+    yield put(fetchAccountForceCellError());
+  }
+}
+
 export default function* AccountWatcher() {
   yield all([
     takeLatest(fetchAccountInfoRequest.type, fetchAccountInfoSaga),
@@ -323,5 +342,6 @@ export default function* AccountWatcher() {
     takeLatest(fetchAccountLMVUBRequest.type, fetchAccountLMVUBSaga),
     takeLatest(fetchAccountDebtRequest.type, fetchAccountDebtSaga),
     takeLatest(fetchAccountDebtExpireRequest.type, fetchAccountDebtExpireSaga),
+    takeLatest(fetchAccountForceCellRequest.type, fetchAccountForceCellSaga),
   ]);
 }
